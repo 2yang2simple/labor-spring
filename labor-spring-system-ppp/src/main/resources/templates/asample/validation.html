@@ -1,0 +1,193 @@
+<html layout:decorator="asample/layout-labor-2">
+
+<div layout:fragment="content">
+<Strong>A Sample - validation</Strong>
+<div style ="float: right; ">
+	<a class="nav" href="https://jqueryvalidation.org/documentation/">https://jqueryvalidation.org/documentation/</a>&nbsp;
+</div>
+<br><br>
+<style type="text/css">
+input.error { border: 1px dotted red; }
+textarea.error { border: 1px dotted red; }
+.error{
+	color: red;
+}
+.errorlistarea {
+	background-color: white;
+	border: 0px solid red;
+}
+.errorlistarea {
+	display: none;
+}
+.errorlistarea ol li {
+	list-style-type: disc;
+	margin-left: 20px;
+	margin-bottom: 0px;
+}
+.errorlistarea label.error {
+	display: inline;
+}
+</style>
+<div class="errorlistarea"><ol></ol></div>
+
+<form id="validationform" method="get" action="">
+  <fieldset>
+    <legend>Please provide your name, email address (won't be published) and a comment</legend>
+    <div class="form-group">
+      <label for="name">Name</label><error for="name">
+      <input class="form-control" id="name" name="name" minlength="2" type="text">
+    </div>
+    <div class="form-group">
+      <label for="email">E-Mail (required)</label>
+      <input class="form-control" id="email" type="email" name="email">
+    </div>
+    <div class="form-group">
+      <label for="url">URL (optional)</label>
+      <input class="form-control" id="url" type="url" name="url">
+    </div>
+    <div class="form-group">
+      <label for="comment">Your comment (required)</label>
+      <textarea class="form-control" id="comment" name="comment"></textarea>
+    </div>
+    <div class="form-group">
+    	<label for="newsletter">我乐意接收新信息</label><error for="newsletter">
+      	<input type="checkbox" class="" id="newsletter" name="newsletter">
+    </div>
+    <div class="form-group">
+      <button class="btn btn-primary" type="button" onclick="doSubmit()">submit</button>
+    </div>
+  </fieldset>
+</form>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+});
+
+
+function jqvalidate(form,parameters){
+	$.validator.setDefaults({
+		errorContainer: $('.errorlistarea'),
+		errorLabelContainer: $("ol", $('.errorlistarea')),
+		wrapper: 'li'
+	});
+	return $(form).validate(parameters).form();
+	//callback();
+}
+var validateParameters = {
+		rules:{
+        	name: {
+                required: true,
+                minlength: 2
+              },
+        	email: {
+                required: true
+              },
+        	url: {
+                required: true
+              },
+        	comment: {
+                required: true
+              },
+            newsletter: {
+                required: true
+              },
+        },
+        messages:{
+        	name: {
+				required: " Name is Required.",
+				minlength: " Name needs more than 2 characters."
+			},
+			email: {
+				required: " Email is Required."
+			},
+			url: {
+				required: " Url is Required."
+			},
+			comment: {
+				required: " Comment is Required."
+			},
+			newsletter: {
+				required: " Newsletter is Required."
+			},
+        }
+};
+
+function doSubmit(){
+	if(jqvalidate($("#validationform"),validateParameters)){
+		console.log("ok");
+	}
+	
+	//if(validate2()){
+	//	console.log("ok");
+	//}
+};
+
+function validate2(){
+	
+	return $("#validationform").validate({
+
+        rules:{
+        	name: {
+                required: true,
+                minlength: 2
+              },
+
+        },
+        messages:{
+        	name: {
+				required: " (Required)",
+				minlength: " (Input more than 2 characters)"
+			},
+
+        }
+    }).form();
+}
+function validate(form){
+	
+	return $(form).validate({
+
+        rules:{
+        	name: {
+                required: true,
+                minlength: 2
+              },
+        	email: {
+                required: true
+              },
+        	url: {
+                required: true
+              },
+        	comment: {
+                required: true
+              },
+            newsletter: {
+                required: true
+              },
+        },
+        messages:{
+        	name: {
+				required: " Name is Required.",
+				minlength: " Name needs more than 2 characters."
+			},
+			email: {
+				required: " Email is Required."
+			},
+			url: {
+				required: " Url is Required."
+			},
+			comment: {
+				required: " Comment is Required."
+			},
+			newsletter: {
+				required: " Newsletter is Required."
+			},
+        }
+    }).form();
+}
+
+</script>

@@ -1,0 +1,12 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content">
+
+<div id="loadingmessage"style="display: block;"><h3 class="text-muted" th:text="#{tips.login}"></h3></div>
+
+</div>
+</html>
+<script type="text/javascript">
+$(document).ready(function(){
+	window.location.href = getContextPath()+"/auth/login-password";
+});
+
+</script>

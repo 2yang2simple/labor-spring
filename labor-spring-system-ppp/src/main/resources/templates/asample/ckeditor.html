@@ -1,0 +1,84 @@
+<html layout:decorator="asample/layout-labor-2">
+
+<div layout:fragment="content">
+<Strong>A Sample - ckeditor5</Strong>
+<div style ="float: right; ">
+	<a class="nav" href="https://ckeditor.com/">https://ckeditor.com/</a>&nbsp;
+</div>
+<br><br>
+<style type="text/css">
+.error{
+	color: blue;
+}
+</style>
+<form id="form-add" >
+    <input type="file" name="file" />
+    <button type="botton" class="btn2nd" onClick="javascript:submitd();">submit</button>
+</form>
+
+
+<textarea id="editor" style="" ></textarea>
+</html>
+<script type="text/javascript" th:src="@{/js/ckeditor5.js}"></script>
+<script type="text/javascript">
+function submitd(){
+	alert(1);
+	var formData = new FormData($("#form-add")[0]);
+	formData.append('allowSize', 10);
+    $.ajax({
+        url: l('/rest/labor/pic/atta/'),
+        type: 'POST',
+        data: formData,
+        dataType: 'text',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+			alert(data);
+        },
+        complete: function (data) {
+            console.log("complete, data is:", data)
+        }
+    });
+}
+
+function MyCustomUploadAdapterPlugin( editor ) {
+    editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+        // Configure the URL to the upload script in your back-end here!
+		var uploadurl = getContextPath()+'/attachments';
+		var downloadurl = getContextPath()+"/attachments/filename-";
+        return new LaborUploadAdapter( loader,uploadurl,downloadurl );
+    };
+}
+
+$(document).ready(function(){
+	ClassicEditor
+	    .create( document.querySelector( '#editor' ), {
+	        //toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+	        heading: {
+	            options: [
+	                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+	                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+	                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+	            ]
+	        }
+	    	//,
+	    	//extraPlugins: [ MyCustomUploadAdapterPlugin ]
+	    } )
+        .then( editor => {
+            editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                // Configure the URL to the upload script in your back-end here!
+        		var uploadurl = getContextPath()+'/attachments';
+                return new LaborUploadAdapter(loader,uploadurl);
+            };
+        } )
+	    .catch( error => {
+	        console.log( error );
+	    } );
+});
+
+function doAfterUpload(result){
+	 if ( result!=null && result.code==1 ) {
+		console.log("|||"+result.msg);
+	 }
+}
+</script>

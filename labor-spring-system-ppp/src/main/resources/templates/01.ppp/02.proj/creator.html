@@ -1,0 +1,128 @@
+<html layout:decorator="fragment/layout">
+<div layout:fragment="content">
+	
+	<span id="tips" style="color: red;">&nbsp;</span>
+	<div class="errorlistarea">
+		<ol></ol>
+	</div>
+	<br>
+
+	<form id="vueprojectform" class="">
+		<div class="form-group ">
+			<label for="name" data-toggle="tooltip" data-placement="top" th:text="#{label.name}"></label>:&nbsp;
+			<input class="form-control "
+				id="name" name="name" type="text" v-model="name"
+				placeholder="Project Name.">
+		</div>
+		<div class="form-group ">
+			<label for="name" data-toggle="tooltip" data-placement="top" th:text="#{label.customer}"></label> 
+			<input class="form-control "
+				id="customer" name="customer" type="text" v-model="customer"
+				placeholder="Customer.">
+		</div>
+		<div class="form-group ">
+			<label for="name" data-toggle="tooltip" data-placement="top" th:text="#{label.supplier}"></label>:&nbsp;
+			<input class="form-control "
+				id="supplier" name="supplier" type="text" v-model="supplier"
+				placeholder="Supplier.">
+		</div>
+		<div class="form-group ">
+			<label for="name" data-toggle="tooltip" data-placement="top" th:text="#{label.deliverydate}"></label>:&nbsp;
+			<input class="form-control "
+				id="deliveryDate" name="deliveryDate" type="text" v-model="deliveryDate"
+				placeholder="Delivery Date.">
+		</div>
+		<div class="form-group ">
+			<label for="name" data-toggle="tooltip" data-placement="top" th:text="#{label.amount}"></label>:&nbsp;
+			<input class="form-control "
+				id="amount" name="amount" type="text" v-model="amount"
+				placeholder="Amount.">
+		</div>
+		<div class="form-group ">
+			<label for="name" data-toggle="tooltip" data-placement="top" th:text="#{label.currency}"></label>:&nbsp;
+			<input class="form-control "
+				id="currency" name="currency" type="text" v-model="currency"
+				placeholder="Currency">
+		</div>
+		<button id="submitbutton" class="btn btn-primary prms" type="button" onclick='doSubmit();' permission="project:create" data-loading-text="Loading..."
+				th:text="#{button.savetonext}"></button>
+
+	</form>
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+var vueprojectform;
+vueprojectform = new Vue({
+	el: '#vueprojectform',
+	data: {
+		name: '',
+		customer: '',
+		supplier: '',
+		deliveryDate: '',
+		amount: '',
+		currency: '',
+		manager: ''
+
+	}
+});
+var myEditor;
+$(document).ready(function(){
+
+});
+
+var validateParameters = {
+        rules:{
+        	name: {
+                required: true,
+                minlength: 2
+              }
+        },
+        messages:{
+        	name: {
+				required: " Name is required.",
+				minlength: " Name needs more than 2 characters."
+			}
+        }
+};
+function doSubmit(){	
+	$("#submitbutton").button('loading').queue();
+	if(JQueryValidate($("#vueprojectform"),validateParameters)){
+		var postdata;
+		postdata = {
+					"name": vueprojectform.name, 
+					"customer": vueprojectform.customer,
+					"supplier": vueprojectform.supplier,
+					"deliveryDate": vueprojectform.deliveryDate,
+					"amount": vueprojectform.amount,
+					"currency": vueprojectform.currency,
+					"manager": vueprojectform.manager};
+
+		postdata = JSON.stringify(postdata);
+		
+		$.ajax({
+			type: "POST",
+			url: l("/rest/projects"),
+			contentType: "application/json;charset=utf-8",
+			data: postdata,
+			dataType: "json",
+			success:function (result) {
+				handleResultCode(result, function (result) {
+					window.location.href = getContextPath()+"/proj/creator-detail?uuid="+result.data.project.uuid;
+				});
+			},
+	        complete:function(){
+				$("#submitbutton").button('reset');
+		        $("#submitbutton").dequeue(); 
+	        }
+		});
+	} else {
+		$("#submitbutton").button('reset');
+        $("#submitbutton").dequeue(); 
+		
+	}
+	
+}
+
+</script>

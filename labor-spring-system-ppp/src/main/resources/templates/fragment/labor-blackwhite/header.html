@@ -1,0 +1,31 @@
+<div th:fragment="header">  
+<title>Labor Framework</title>
+<head>
+	<META http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+	<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+	<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+	<META HTTP-EQUIV="Expires" CONTENT="0"> 
+	<!--/*  Each token will be replaced by their respective titles in the resulting page. */-->
+		<!--/* add common css */-->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/labor.css}"></link>
+</head>
+<body>
+	<div style="height: 21px;">
+   		<a th:href="@{/settings}"  style="color: darkblue; font-size: 20px; font-weight:bold;">
+			Labor Framework
+		</a>
+		<div style="float: right;">
+		<span style="color:red;" id="resultErrorMsg"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+		<a th:href="@{/}">
+			<span >home</span>
+		</a>
+		&nbsp;|&nbsp;
+		<a th:href="@{/auth/user-info}">
+			<span id="headercfmd5">user info</span>
+		</a>
+		</div>
+   	</div>
+   	
+</body>
+</div>
+

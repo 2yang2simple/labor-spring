@@ -1,0 +1,121 @@
+<html layout:decorator="fragment/layout-labor">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<head>
+	<style type="text/css">	
+		h1{text-decoration: none;}
+	</style>
+</head>
+<div layout:fragment="content">
+	<Strong class="navbar-text">Fingerprints</Strong>
+	<ul class="nav nav-tabs">
+		<li>
+			<a th:href="@{/core/fingerprint/list}">List</a>
+		</li>
+		<li class="active">
+			<a>Online</a>
+		</li>
+	</ul>
+	<span id="tips" style="color: red;">&nbsp;</span>
+	
+	<input size="60" class="" type="text" name="searchkey" id="searchkey">
+	<input type='button' class="btn btn-primary btn-sm" onclick='doSearch(0);' value='SEARCH'/>	 
+	<input type="button" class="btn btn-default btn-xs" onclick="clearInput();" value="clear"/>	
+
+	<p id="datalist"/>
+
+</div>
+</html>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+	doSearch(0);
+});
+
+function clearInput(){
+	//document.getElementById('value').value='';
+	$("#searchkey").val("");
+};
+var currentpage;
+function doSearch(page){
+	var searchkey  = $("input[name='searchkey']").val();
+	var url = "";
+	if (searchkey!=null&&searchkey!=""){
+		url = l("/rest/core/fingerprints/online/valuestart-page-list?sortby=id&page="+page+"&valuestart="+searchkey);
+	}else {
+		url = l("/rest/core/fingerprints/online/page-list?sortby=id&page="+page)
+	}
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if(result.code==1){
+				setData2Page(result.data);
+				currentpage = page;
+			}
+		}
+	});
+};
+function doDelete(foid){
+	if (confirm("Are you sure to delete?")){
+		var url = url = l("/rest/core/fingerprints/online/"+foid);
+		$.ajax({
+			type: "DELETE",
+			url: url,
+			contentType: "application/json;charset=utf-8",
+			dataType: "json",
+			success:function (result) {
+				if(result.code==1){
+					doSearch(currentpage);
+				}
+			}
+		});
+	}
+};
+
+function nextpage(page){
+	doSearch(page+1);
+};
+
+function prevpage(page){
+	doSearch(page-1);
+};
+
+function setData2Page(page){
+	if(page!=null){
+		var data = page.content;
+		var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"doSearch");
+		var datalisthtml = 
+							"<table class='table table-condensed table-hover'>"+
+        					"<tr><th></th>"+	
+					        "<th>type</th>"+
+					        "<th>fp</th>"+
+					        "<th>user</th>"+
+					        "<th>type</th>"+
+					        "<th>auth</th>"+
+					        "<th>date</th>"+	
+					        "<th></th>"+
+	    					"</tr>";
+
+	    var offset = page.number*page.size;
+		for (var i = 0; i < data.length; i++) {
+			datalisthtml = datalisthtml + "<tr>" + "<td>" + (offset+i+1)+ "</td>";
+			datalisthtml = datalisthtml	
+				+ "<td>" + data[i].fpType+ "</td>"
+				+ "<td>" + data[i].fpValue+ "</td>"
+				+ "<td>" + data[i].userName+ "</td>"
+				+ "<td>" + data[i].authType+ "</td>"
+				+ "<td>" + data[i].authValue+ "</td>"
+				+ "<td>" + formatDateString(data[i].lastUpdateDate)+ "</td>"
+				+ '<td><input type="button" class="btn btn-warning btn-xs" onclick="doDelete('+"'"+data[i].id+"'"+');" value="delete"/></td>';
+	    }
+
+		datalisthtml = datalisthtml + "</tr></table>" + "<div style='float: right;'>"+pagehtml + "</div>";
+		$("#datalist").html(datalisthtml);
+	} else {
+		$("#datalist").html("No data found.");
+	}
+};
+</script>

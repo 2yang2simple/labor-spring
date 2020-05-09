@@ -1,0 +1,114 @@
+<html layout:decorator="fragment/layout-labor">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<style type="text/css">
+    .toolbar {
+        border: 1px solid gray;
+    }
+    .text {
+        border: 1px solid #ccc;
+        height: 700px;
+    }
+</style>
+
+<Strong>wangEditor</Strong>&nbsp;/&nbsp;
+<small id="tips" style="color: darkblue;">Create a rich text.</small>
+<div style ="float: right; ">
+		<a class="nav" th:href="@{/core/richtext/list}">List</a>&nbsp;
+</div>
+<br><br>
+	<table border=0>
+	<tr>
+		<td width="130px;">
+		<span style="float:right;font-size: 20px; font-weight:bold;">Name:&nbsp;&nbsp;*</span>
+		</td>
+		<td><input type="hidden" name="id" id="id">
+			<input size="60" type="text" name="name" id="name"
+					onkeyup="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');" 
+					onafterpaste="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');">
+		</td>
+		<td>
+			<input type='button' onclick='doSubmit();' value='&nbsp;&nbsp;&nbsp;SUBMIT&nbsp;&nbsp;&nbsp;'/>
+		</td>
+	</tr>
+	</table>
+	
+	<!-- <input size="60" type="text" name="lob" id="lob">
+	 -->
+	<div id="div1" class="toolbar"></div>
+    <div id="editor" class="text">
+        <p>welcome<b>wangEditor</b></p>
+    </div>
+	<center>
+		<input type='button' onclick='doSubmit();' value='&nbsp;&nbsp;&nbsp;SUBMIT&nbsp;&nbsp;&nbsp;'/>
+	</center>
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/wangEditor.min.js}"></script>
+<script type="text/javascript">
+var E = window.wangEditor;
+var editor = new E('#div1', '#editor');
+editor.create();
+editor.txt.clear();
+
+var uuid=getQueryString("uuid");
+var rtid="";
+$(document).ready(function(){
+	findInfo();
+});
+function findInfo(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/core/richtext/single/uuid/"+uuid),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if(result.code==1){
+				$("input[name='id']").val(result.data.id);
+				$("input[name='name']").val(result.data.name);
+				//$("input[name='lob']").val(data.lob);
+				//$("input[name='lob']").val(data.varchar);
+				rtid = result.data.id;
+				//editor.txt.html(data.text);
+				editor.txt.html(result.data.html);
+			}
+		}
+	});
+}
+function doSubmit(){
+	var name = $("input[name='name']").val();
+	if (name==null||name==""){
+		document.getElementById("tips").innerText="Name Must NOT be empty.";
+		return;
+	} 
+	var id = $("input[name='id']").val();
+	var postdata;
+	if (id!=null||id!=""){
+		postdata = {"id": id, "name": name, "html": editor.txt.html(),"text": editor.txt.text()};
+	} else {
+		postdata = {"name": name, "html": editor.txt.html(), "text": editor.txt.text()};
+	}
+
+	postdata = JSON.stringify(postdata);
+
+	$.ajax({
+		type: "POST",
+		url: l("/rest/core/richtext/single"),
+		contentType: "application/json;charset=utf-8",
+		data: postdata,
+		dataType: "text",
+		success:function (message) {
+			if (message=="1") {
+				window.location.href = getContextPath()+"/core/richtext/list";
+  	       	} else if (message=="-1"){
+  	       		document.getElementById("tips").innerText="error.";
+  	       	} 
+		},
+		error:function (message) {
+			document.getElementById("tips").innerText = JSON.stringify(message);
+		}
+	});
+};
+</script>

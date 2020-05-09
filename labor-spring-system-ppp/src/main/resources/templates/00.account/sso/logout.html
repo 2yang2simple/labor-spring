@@ -1,0 +1,38 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<div layout:fragment="content">
+<div id="loginstatus"style="display: none;"><h3 class="text-muted" th:text="#{tips.waitting}"></h3></div>
+</div>
+</html>
+
+<script type="text/javascript">
+var redirecturl=getQueryString("redirecturl");
+if (redirecturl==null){
+	redirecturl = "http://"+window.location.host + getContextPath();
+}
+var authssologouturl = HTMLURL_AUTH_SSO_LOGOUT;
+$(document).ready(function(){
+	logout();
+	
+});
+
+function logout(){
+	$.ajax({
+		type: "DELETE",
+		url: l("/rest/account/sso"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				window.location.href = authssologouturl+"?redirecturl="+redirecturl;
+			});
+		},
+		error:function (message) {
+		    window.location.href = getContextPath()+"/public/error";
+		}
+	});
+
+}
+
+
+</script>

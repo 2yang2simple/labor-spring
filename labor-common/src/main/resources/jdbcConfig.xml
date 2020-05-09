@@ -1,0 +1,68 @@
+<dbconfig>
+<conn name="default">
+<!-- 
+	<type value="datasource" />
+	<datasource value="java:comp/env/jdbc/TFDISKDB" />
+
+	<type value="Drivermanager" />
+	<host value="sztddsmaj.mfg.cn.hgst.com" />
+	<port value="50002" />
+	<user value="diskweb" />
+	<password value="one1one" />
+	<db value="TFDISKDB" />
+	<driver value="com.ibm.db2.jcc.DB2Driver" />	
+	
+	<type value="Drivermanager" />
+	<host value="xxx.xx.xxx.com" />
+	<port value="50002" />
+	<user value="webuser" />
+	<password value="be3ben" />
+	<db value="TFTESTDB" />
+	<driver value="com.ibm.db2.jcc.DB2Driver" />
+-->	
+
+<!--
+	<type value="Drivermanager" />
+	<host value="localhost" />
+	<port value="3306" />
+	<user value="test" />
+	<password value="test" />
+	<db value="TFDISKDB" />
+	<driver value="com.mysql.jdbc.Driver" />
+
+	<type value="Drivermanager" />
+	<host value="10.81.238.205" />
+	<port value="60000" />
+	<user value="test" />
+	<password value="xxx" />
+	<db value="TESTDB" />
+	<driver value="com.ibm.db2.jcc.DB2Driver" />
+	
+	<type value="datasource" />
+	<datasource value="java:comp/env/jdbc/TFDISKDB" />
+
+	<type value="datasource" />
+	<datasource value="java:comp/env/jdbc/SZDBDISK" />
+
+	<type value="Drivermanager" />
+	<host value="localhost" />
+	<port value="3306" />
+	<user value="test" />
+	<password value="test" />
+	<db value="TFDISKDB" />
+	<driver value="com.mysql.jdbc.Driver" />
+	<type value="datasource" />
+	<datasource value="java:comp/env/jdbc/labor" />
+-->	
+	<type value="Drivermanager" />
+	<host value="localhost" />
+	<port value="3306" />
+	<user value="labor" />
+	<password value="123456" />
+	<db value="labor?useUnicode=true&amp;characterEncoding=UTF8&amp;serverTimezone=GMT%2B8" />
+	<driver value="com.mysql.jdbc.Driver" />
+	
+</conn>
+
+
+</dbconfig> 

@@ -1,0 +1,181 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<style type="text/css">
+
+</style>
+<div layout:fragment="content" >
+<div id="vuecurrentimg" style="width: 99%;">
+	
+	    <div class="carousel visible-lg visible-md">
+	    	<center><img id='imgcurrent' v-bind:src="galleryimgurl"></center>
+        	    <div class="carousel-caption">
+        	    	<span style="color: white; font-weight: bold; ">{{ galleryimg.caption }}</span></div>
+	    </div>
+
+	<div class="panel-group prms" id="accordion" permission="gallery:edit">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+				<h4 class="panel-title" th:text="#{link.editor}"></h4>
+			</a>
+		</div>
+		<div id="collapseOne" class="panel-collapse collapse in">
+			<div class="panel-body">
+				<form class="prms" id="giform" permission="gallery:edit">
+					<!-- 
+					<div class="form-group">
+						<label for="name" data-toggle="tooltip" data-placement="top" title="title">Title:</label> <input class="form-control "
+							v-model="galleryimg.name" type="text"
+							placeholder="Input Title here.">
+					</div>
+					 -->
+					 
+							<input v-model="galleryimg.id" type="hidden">
+							<input v-model="galleryimg.gaId" type="hidden">
+					<div class="form-group">
+						<label for="caption" data-toggle="tooltip" data-placement="top" title="description" th:text="#{label.description}"></label> 
+						<textarea class="form-control "
+							v-model="galleryimg.caption" rows="5"></textarea>
+					</div>
+					<div class="form-group">
+						<label for="status" data-toggle="tooltip" data-placement="top" title="description" th:text="#{label.order}"></label> 
+						<input class="form-control "
+							v-model="galleryimg.order" type="text"
+							placeholder="Input order here."> 
+			
+					</div>
+					<div class="form-group">
+						<label for="status" data-toggle="tooltip" data-placement="top" title="description" th:text="#{label.status}"></label>						
+						<select class="form-control " v-model="galleryimg.status" id="status" name="status">
+							<Option value="1" key="1" th:text="#{label.active}"></Option>
+							<Option value="0" key="0" th:text="#{label.inactive}"></Option>
+							
+						</select>
+					</div>
+					
+					<button class="btn btn-primary prms" id="buttonsave" type="button" onclick='doSave();' permission="gallery:edit"
+							th:text="#{button.save}"></button> 
+				</form>
+			</div>
+		</div>
+	</div>
+	</div>
+	
+</div>
+
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jqthumb.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+galleryRatioSelected();
+
+$("#contentcontainer").removeClass("container");
+
+var uuid=getQueryString("uuid");
+var gaid="";
+var vuecurrentimg;
+vuecurrentimg = new Vue({
+	el: '#vuecurrentimg',
+	data: {
+		galleryimg: {},
+		galleryimgurl: ''
+
+	}
+});
+
+
+$(document).ready(function(){
+	findImage();
+});
+var height = (document.body.clientHeight-300);
+function findImage(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/galleries/images/"+uuid),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				vuecurrentimg.galleryimg = result.data;
+				vuecurrentimg.galleryimgurl = addToken(result.data.url+"/thumbnail?height="+height);
+			});
+		}
+	});
+}
+
+
+function resizeImageThumbnail(hotimg,width,height){
+	$(hotimg).jqthumb({
+		width : width,//宽度
+		height : height,//高度
+		//position : { y: '50%', x: '50%'},//从图片的中间开始产生缩略图
+		zoom : '1',//缩放比例
+		method : 'auto'//提交方法，用于不同的浏览器环境，默认为‘auto’
+	});
+}
+
+function doSave(){
+	$("#buttonsave").button('loading').queue();
+	var data;
+	var type;
+	var url;
+	
+	if (vuecurrentimg.galleryimg.id!=null&&vuecurrentimg.galleryimg.id!=""&&vuecurrentimg.galleryimg.id!='undefined'){
+		type = "PUT";
+		data = {"id": vuecurrentimg.galleryimg.id, 
+				"name": vuecurrentimg.galleryimg.name, 
+				"order": vuecurrentimg.galleryimg.order, 
+				"status": vuecurrentimg.galleryimg.status, 
+				"caption": vuecurrentimg.galleryimg.caption};
+		url = l("/rest/galleries/"+vuecurrentimg.galleryimg.gaId+"/images/"+vuecurrentimg.galleryimg.id)
+
+		data = JSON.stringify(data);
+		$.ajax({
+			type: type,
+			url: url,
+			contentType: "application/json;charset=utf-8",
+			data: data,
+			dataType: "json",
+			success:function (result) {
+				handleResultCode(result, function (result) {
+					window.location.href = getContextPath()+"/public/success";
+	  	       	});
+			},
+	        complete:function(){
+				$("#buttonsave").button('reset');
+		        $("#buttonsave").dequeue(); 
+	        }
+		});
+	} 
+};
+function viewOriginCurrentimg(){
+	var image = vuecurrentimg.galleryimg;
+	if(image!=null){
+		var fulls = "left=0,screenX=0,top=0,screenY=0,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no";
+		if (window.screen) {
+			var ah = screen.availHeight - 60;
+			var aw = screen.availWidth - 10;
+			fulls += ",height=" + ah;
+			fulls += ",innerHeight=" + ah;
+			fulls += ",width=" + aw;
+			fulls += ",innerWidth=" + aw;
+			fulls += ",resizable"
+		} else {
+			fulls += ",resizable"; // 对于不支持screen属性的浏览器，可以手工进行最大化。 manually
+		}
+	    OpenWindow=window.open("","newwin",fulls);
+	    OpenWindow.document.write("<TITLE>origin</TITLE>");
+	    OpenWindow.document.write("<BODY BGCOLOR=#ffffff>");
+	    OpenWindow.document.write("<center><img src='"+l(image.url)+"'/></center>");
+	    //OpenWindow.document.write("<a href='javascript:window.opener=null;window.close();'><img src='"+l(image.url)+"' /></a>");
+	    OpenWindow.document.write("</BODY>");
+	    OpenWindow.document.write("</HTML>");
+	    OpenWindow.document.close();
+	}
+}
+
+
+</script>

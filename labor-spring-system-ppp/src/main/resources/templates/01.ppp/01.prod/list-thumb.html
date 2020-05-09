@@ -1,0 +1,121 @@
+<html layout:decorator="fragment/layout">
+<div layout:fragment="content">
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="input-group">
+      <input class="form-control" type="text" name="searchkey" id="searchkey" th:placeholder="#{tips.press.enter.to.search}">
+      <span class="input-group-btn">	 
+		  <button type="button" class="btn btn-info" onclick="doSearch(0);">Go</button> 
+		  <button type="button" class="btn btn-info" onclick="toListPage();" title="list">&equiv;</button>
+		  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" >
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu pull-right" role="menu">
+		    <li><a href="javascript:clearInput();"><span class="text-primary" th:text="#{ button.clear }"></span></a></li>
+		    <li><a href="javascript:exportAll();"><span class="text-primary" th:text="#{ button.exportall }"></span></a></li>
+			<li role="presentation" class="divider"></li>
+		    <li><a th:href="@{/prod/creator}"><span class="label label-primary" th:text="#{ button.create }"></span></a></li>
+		  </ul>		   
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+	
+	<div class="container">
+		<div class="row" id="vueproductlist">
+			<div class="col-xs-3 col-sm-2 col-md-2 col-lg-1" style="padding-left: 0px; padding-right:0px;" v-for="(entry,index) in productlist">
+				<div class="thumbnail" style="margin-bottom: 0px;">	
+					 <a v-on:click="javascript:toViewerInfoPage(entry.uuid);">
+			      		<IMG width="100%" class="img-thumbnail" v-bind:src="imgurl[entry.uuid]" onload="resizeImageThumbnail(this,'100%','70px')"></a>
+				</div>
+				<div class="caption text-center text-uppercase">
+					<span class="text-muted">{{ entry.itemNo }}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<p id="paginationend"/>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jqthumb.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+
+var vueproductlist;
+vueproductlist = new Vue({
+	el: '#vueproductlist',
+	data: {
+		productlist: [],
+		imgurl:{}
+
+	}
+});
+$(document).ready(function(){
+	doSearch(0);
+});
+function clearInput(){
+	$("#searchkey").val("");
+};
+$("#searchkey").keypress(function (e) {
+    if (e.which == 13) {
+    	doSearch(0);
+    }
+});
+function doSearch(page){	
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/products/name-page-list?name="+searchkey+"&page="+page),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var page = result.data;
+				vueproductlist.productlist = page.content;
+				
+				var first = 4;
+				if (page.content.length<4){
+					first = page.content.length;
+				}
+				//load the first 4
+				for (var i=0;i<first;i++){
+					var product = page.content[i];
+					vueproductlist.imgurl[product.uuid]=addToken(getContextPath()+'/rest/products/'+product.uuid+'/cover');
+				}
+				// then the others;
+				for (var i=first;i<page.content.length;i++){
+					var product = page.content[i];
+					vueproductlist.imgurl[gallery.uuid]=addToken(getContextPath()+'/rest/products/'+product.uuid+'/cover');
+				}
+								
+				var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"doSearch");
+				$("#paginationend").html("<div style='float: right;'>"+pagehtml + "</div>");
+			});
+		}
+	});
+	
+}
+function exportAll(){	
+	openPage(l("/rest/products/excel"));
+	
+}
+function toListPage(){	
+	openPage("/prod/list");
+}
+
+function toViewerInfoPage(uuid){
+	window.location.href = getContextPath()+"/prod/viewer?uuid="+uuid;
+}
+function resizeImageThumbnail(hotimg,width,height){
+	$(hotimg).jqthumb({
+		width : width,//宽度
+		height : height,//高度
+		//position : { y: '50%', x: '50%'},//从图片的中间开始产生缩略图
+		zoom : '1',//缩放比例
+		method : 'auto'//提交方法，用于不同的浏览器环境，默认为‘auto’
+	});
+}
+</script>

@@ -1,0 +1,160 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content">
+	<div id="defaulthtml"style="display: none;">
+	
+	<div class="panel panel-success">
+		<div class="panel-heading">
+	        <span th:text="#{index.label.therunningprojects}"></span>&nbsp;&nbsp;&nbsp;
+	        <a class="label label-success pull-right" style="font-size: 16px;"
+					href='javascript:toCreateProject();'>&nbsp;&#10010;&nbsp;</a>
+	    </div>
+   		<ul class="list-group" id="vueprojectlist">
+	        <li class="list-group-item" v-for="(entry,index) in projectlist">
+		       	<span>{{ index+1 }}</span>
+		       	<a :href="getContextPath()+'/proj/viewer?uuid='+entry.uuid">
+			        <span>{{ entry.name }}
+			        </span>
+			        <span class="pull-right visible-md visible-lg">
+			        {{ entry.lastUpdateDate }}
+			        </span>
+		        </a>
+	        </li>
+	        <li class="list-group-item"><a class="" style="font-size: 16px;"
+					th:href='@{/proj/list-non-closed}' th:text="#{link.more}"></a></li>
+	    </ul>
+	    
+   	</div>
+   	
+	<div class="panel panel-info">
+		<div class="panel-heading">
+	        <span th:text="#{index.label.thenewproducts}"></span>&nbsp;&nbsp;&nbsp;
+	        <a class="label label-info pull-right" style="font-size: 16px;"
+					href='javascript:toCreateProduct();'>&nbsp;&#10010;&nbsp;</a>
+	    </div>
+   		<!-- 
+   		<ul class="list-group" id="vueproductlist">
+	        <li class="list-group-item" v-for="(entry,index) in productlist">
+	       	<span>{{ index+1 }}</span>
+	       	<a :href="getContextPath()+'/prod/viewer?uuid='+entry.uuid">
+		        <span>{{ entry.name }}
+		        </span>
+		        <span class="pull-right visible-md visible-lg">
+		        {{ entry.lastUpdateDate }}
+		        </span>
+	        </a>
+	        </li>
+	        <li class="list-group-item"><a class="" style="font-size: 16px;"
+					th:href='@{/prod/list}' th:text="#{link.more}"></a></li>
+	    </ul>
+	    -->
+
+			<div class="row" id="vueproductlist">
+				<div class="col-xs-12 col-sm-6 col-md-2 col-lg-2" v-for="(entry,index) in productlist">
+					<a :href="getContextPath()+'/prod/viewer?uuid='+entry.uuid">
+						<div class="thumbnail" style="margin-bottom: 0px;">	
+					   		<IMG width="" class="img-thumbnail" v-bind:src="imgurl[entry.uuid]" onload="resizeImageThumbnail(this,'100%','70px')">
+						</div>
+						<div class="caption text-center text-uppercase">
+							<span class="text-muted ">{{ entry.itemNo }}</span>
+						</div>
+					</a>
+				</div>
+			</div>
+
+		<ul class="list-group"><li class="list-group-item"><a class="" th:href='@{/prod/list}' th:text="#{link.more}"></a></li></ul>
+   	</div>
+   	
+				<ul><h4>Tips:  </h4>
+						<h4><li><a href="https://www.google.cn/chrome/index.html">Download Chrome</a></li></h4>
+				</ul>
+	</div>
+	<div id="loadingmessage"style="display: none;"><h3 class="text-muted" th:text="#{tips.verify.client}"></h3></div>
+<!-- content end  -->
+</div></html>
+<script type="text/javascript" th:src="@{/js/jqthumb.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+	$("#defaulthtml").css("display","block");
+	$("#loadingmessage").css("display","none");
+	findProjectList();
+	findProductList();
+});
+
+/***end post canvas fingerptint**********/
+var vueprojectlist;
+vueprojectlist = new Vue({
+	el: '#vueprojectlist',
+	data: {
+		projectlist: []
+	}
+});
+function findProjectList(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/projects/name-page-list?page=0&pagesize=5&notinstatus=0"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				vueprojectlist.projectlist = result.data.content;
+			});
+		}
+	});
+};
+
+var vueproductlist;
+vueproductlist = new Vue({
+	el: '#vueproductlist',
+	data: {
+		productlist: [],
+		imgurl:{}
+	}
+});
+function findProductList(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/products/name-page-list?page=0&pagesize=4"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var page = result.data;
+				vueproductlist.productlist = page.content;
+				var first = 4;
+				if (page.content.length<4){
+					first = page.content.length;
+				}
+				//load the first 4
+				for (var i=0;i<first;i++){
+					var product = page.content[i];
+					vueproductlist.imgurl[product.uuid]=addToken(getContextPath()+'/rest/products/'+product.uuid+'/cover');
+				}
+				// then the others;
+				for (var i=first;i<page.content.length;i++){
+					var product = page.content[i];
+					vueproductlist.imgurl[gallery.uuid]=addToken(getContextPath()+'/rest/products/'+product.uuid+'/cover');
+				}
+			});
+		}
+	});
+};
+
+function toCreateProject(){
+	openPage("/proj/creator");
+}
+function toCreateProduct(){
+	openPage("/prod/creator");
+}
+function resizeImageThumbnail(hotimg,width,height){
+	$(hotimg).jqthumb({
+		width : width,//宽度
+		height : height,//高度
+		//position : { y: '50%', x: '50%'},//从图片的中间开始产生缩略图
+		zoom : '1',//缩放比例
+		method : 'auto'//提交方法，用于不同的浏览器环境，默认为‘auto’
+	});
+}
+</script>

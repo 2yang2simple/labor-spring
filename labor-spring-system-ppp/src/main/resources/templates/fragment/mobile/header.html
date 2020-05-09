@@ -1,0 +1,29 @@
+<div th:fragment="header">  
+<title>Product,Project,Proof</title>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--/*  Each token will be replaced by their respective titles in the resulting page. */-->
+	<!-- Bootstrap -->
+	<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/css/bootstrap-theme.min.css}" rel="stylesheet">
+	<!--/* add common css */-->
+	<link th:href="@{/css/labor-m.css}" rel="stylesheet" type="text/css" ></link>
+</head>	
+
+<body>
+    <p style="color: darkblue; font-size: 20px; font-weight:bold; float: left; margin: 0px 50px 0px 00px;">
+		PPP
+	</p>
+	<div style="float: right;margin: 5px 00px 00px 00px;">
+		<a th:href="@{/auth/user-info}">
+			<span id="headercfmd5">user info</span>
+		</a>
+
+	</div>
+	<HR align="CENTER" color="black" width="100%">
+  
+</body>
+</div>
+

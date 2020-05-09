@@ -1,0 +1,45 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content">
+ 
+<div id="loadingmessage"style="display: none;"><h3 class="text-muted" th:text="#{tips.login}"></h3></div>
+
+<h3 class="text-muted" id="errormessage"style="display: block;"></h3>
+<h3 class="text-muted" id="timer" style="color:red"></h3>
+
+
+
+</div></html>
+
+<script type="text/javascript">
+doLogin();
+var time;
+function doLogin(){
+	$.ajax({
+		type: "POST",
+		url: l("/rest/account/sso/anonymous"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCodeDisplayError("errormessage",result, function (result) {
+				window.location.href = getContextPath();		
+			});
+			time = setInterval(CountDown, 1000);
+		}
+	});
+}
+function doLogout(){
+	window.location.href = getContextPath() + "/account/logout";;		
+}
+var maxtime = 1 * 5; //一个小时，按秒计算，自己调整!   
+function CountDown() {
+    if (maxtime > 0) {
+        minutes = Math.floor(maxtime / 60);
+        seconds = Math.floor(maxtime % 60);
+        msg = seconds + " s";
+        document.all["timer"].innerHTML = msg;
+        --maxtime;
+    } else{
+        clearInterval(timer);
+        doLogout();
+    }
+}
+</script>

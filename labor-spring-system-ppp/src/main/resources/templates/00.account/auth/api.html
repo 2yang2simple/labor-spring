@@ -1,0 +1,49 @@
+<html layout:decorator="fragment/layout-labor">
+
+<div layout:fragment="content">
+
+	<div class="">
+
+		<div class=" ">
+			<div class=" "><strong class="">API</strong> <small><span id="tips"></span></small></div>
+		</div>
+		<ul id="apilist">
+		  <li v-for="url in urls" style="font-family: Courier"><!-- constant width -->
+		    {{ url }}
+		  </li>
+		</ul>
+	</div>
+
+
+
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+$("#tab-radio-home").attr("checked", "true"); 
+$(document).ready(function(){
+	doFindApi();
+});
+
+function doFindApi(){
+	$.ajax({
+		type: "GET",
+		url: l("/a/api"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				var apilist = new Vue({
+				  el: '#apilist',
+				  data: {
+				    urls: result.data
+				  }
+				})
+  	       	} else {
+  	       		document.getElementById("tips").innerText=result.msg;
+  	       	} 
+		},
+	});
+};
+</script>

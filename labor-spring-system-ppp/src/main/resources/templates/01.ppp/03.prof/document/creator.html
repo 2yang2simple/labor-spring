@@ -1,0 +1,212 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<style type="text/css">
+
+</style>
+
+	<div class="errorlistarea">
+		<ol></ol>
+	</div>
+
+	<form id="documentform">
+		<div class="form-group">
+			<label for="name" data-toggle="tooltip" data-placement="top" title="document title"
+					th:text="#{label.title}"></label> 
+			<a class="label label-primary pull-right" style="font-size: 16px;" data-toggle="modal" data-target="#toCopyModel"            	
+		            	th:text="#{button.copy}"></a>   
+			 <input class="form-control "
+				id="name" name="name" type="text" th:placeholder="#{tips.input.title.here}">
+		</div>
+		<div class="form-group">
+			<label for="content" th:text="#{label.content}"></label> 
+			 
+			<div id="toolbar-container"></div>
+			<div id="content" name="content" style="border: 1px solid lightblue; min-height:300px;">
+
+			</div>
+		</div>
+		<!-- 
+		<div class="form-group">
+			<label for="taglist">Tags:</label> <input class="form-control"
+				id="taglist" name="taglist" type="text">
+		</div>
+		<div class="form-group">
+			<label for="taglist">Users:</label> <input class="form-control"
+				id="userlist" name="userlist" type="text">
+		</div>
+ 		-->
+		<button id="submitbutton" class="btn btn-primary prms" type="button" onclick='doSubmit();' permission="document:create" data-loading-text="Loading..."
+				th:text="#{button.submit}"></button> 
+	</form>
+
+	
+<!-- Modal pages -->
+	<div class="modal fade" id="toCopyModel" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+	  <div class="modal-dialog modal-lg" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header ">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	        	<span aria-hidden="true">&times;</span></button>
+        	<div class="input-group">
+		        <input class="form-control" style="width:80%;" type="text" name="searchkey" id="searchkey" th:placeholder="#{tips.press.enter.to.search}">
+			  	<button type="button" class="btn btn-primary" onclick="doSearch(0);">Go</button>
+		  	</div>
+	      </div>
+	      <div class="modal-body">
+	        	<p id="paginationend"/>
+				<table class='table table-condensed table-hover' id="vuedocumentlist">
+					<tbody>
+				
+						<tr v-for="(entry,index) in documentList">
+							<td>{{ index+1 }}</td>
+							<td><a v-on:click="doSelected(entry.uuid)">{{ entry.name }}</a></td>
+							<td class="visible-lg visible-md">{{ entry.creationDate }}</td>
+						</tr>
+						
+					</tbody>
+					
+				
+				</table>
+				
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal"
+				th:text="#{button.close}"></button> 
+	      </div>
+	    </div>
+	  </div>
+	</div>	
+
+<!-- content end  -->
+</div></html>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+documentRatioSelected(); 
+
+var myEditor;
+$(document).ready(function(){
+	DecoupledEditor
+	    .create( document.querySelector( '#content' ) )
+	    .then( editor => {
+	        const toolbarContainer = document.querySelector( '#toolbar-container' );
+	        toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+				return new LaborUploadAdapter(loader,getContextPath(),"","");
+	        };
+	        myEditor = editor;
+	    } )
+	    .catch( error => {
+	        console.error( error );
+	    } );
+
+});
+window.onbeforeunload = function(event) { 
+	return confirm("Are you sure to leave?"); 
+}
+
+var validateParameters = {
+        rules:{
+        	name: {
+                required: true,
+                minlength: 2
+              },
+        	content: {
+                required: true
+              }
+        },
+        messages:{
+        	name: {
+				required: " Title is required.",
+				minlength: " Title needs more than 2 characters."
+			},
+	        content: {
+				required: " Content is required."
+			}
+        }
+};
+
+function doSubmit(){
+	$("#submitbutton").button('loading').queue();
+	window.onbeforeunload = null;
+	if(JQueryValidate($("#documentform"),validateParameters)){
+		var name = $("input[name='name']").val();
+		var postdata;
+		postdata = {"document": {"name": name}, 
+					"content": {"html": myEditor.getData()} };
+		postdata = JSON.stringify(postdata);
+
+		$.ajax({
+			type: "POST",
+			url: l("/rest/documents"),
+			contentType: "application/json;charset=utf-8",
+			data: postdata,
+			dataType: "json",
+			success:function (result) {	
+				handleResultCode(result, function (result) {
+					window.location.href = getContextPath()+"/prof/document/list";
+				});
+			},
+	        complete:function(){
+				$("#submitbutton").button('reset');
+		        $("#submitbutton").dequeue(); 
+	        }
+		});
+	} else {
+		$("#submitbutton").button('reset');
+        $("#submitbutton").dequeue(); 
+	}
+};
+
+function clearInput(){
+	$("#searchkey").val("");
+};
+$("#searchkey").keypress(function (e) {
+    if (e.which == 13) {
+    	doSearch(0);
+    }
+});
+var vuedocumentlist;
+vuedocumentlist = new Vue({
+	el: '#vuedocumentlist',
+	data: {
+		documentList: []
+	}
+});
+function doSearch(page){	
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/name-page-list?name="+searchkey+"&page="+page),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var page = result.data;
+				vuedocumentlist.documentList = page.content;
+				var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"doSearch");
+				//$("#paginationfront").html(pagehtml);
+				$("#paginationend").html("<div style='float: right;'>"+pagehtml + "</div>");
+			});
+		}
+	});	
+}
+function doSelected(docuuid){	
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/uuid-"+docuuid),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				$("input[name='name']").val(result.data.document.name)
+				myEditor.setData(result.data.content.html);
+				$('#toCopyModel').modal('hide')
+			});	
+		}
+	});
+}
+</script>

@@ -1,0 +1,119 @@
+<html layout:decorator="fragment/layout">
+<div layout:fragment="content">
+	
+	<span id="tips" style="color: red;">&nbsp;</span>
+	<div class="errorlistarea">
+		<ol></ol>
+	</div>
+	<br>
+
+	<form id="vueproductform" class="">
+		<div class="form-group ">
+			<label for="name" th:text="#{label.name}"></label> 
+			<input class="form-control "
+				id="name" name="name" type="text" v-model="product.name"
+				placeholder="name.">
+		</div>
+		<div class="form-group ">
+			<label for="code" th:text="#{label.itemno}"></label> 
+			<input class="form-control "
+				id="itemNo" name="itemNo" type="text" v-model="product.itemNo"
+				placeholder="Code">
+		</div>
+		<div class="form-group ">
+			<label for="size" th:text="#{label.size}"></label> 
+			<input class="form-control "
+				id="size" name="size" type="text" v-model="product.size"
+				placeholder="size">
+		</div>
+		<div class="form-group ">
+			<label for="color" th:text="#{label.color}"></label> 
+			<input class="form-control "
+				id="color" name="color" type="text" v-model="product.color"
+				placeholder="color.">
+		</div>
+		<div class="form-group ">
+			<label for="price" th:text="#{label.price}"></label> 
+			<input class="form-control "
+				id="price" name="price" type="text" v-model="product.price"
+				placeholder="price">
+		</div>
+		<div class="form-group ">
+			<label for="currency" th:text="#{label.currency}"></label> 
+			<input class="form-control "
+				id="currency" name="currency" type="text" v-model="product.currency"
+				placeholder="currency">
+		</div>
+		<button id="submitbutton" class="btn btn-primary prms" type="button" onclick='doSubmit();' permission="product:create" data-loading-text="Loading..." 
+				th:text="#{button.submit}"></button> 
+
+	</form>
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+var vueproductform;
+vueproductform = new Vue({
+	el: '#vueproductform',
+	data: {
+		product:{}
+
+	}
+});
+var myEditor;
+$(document).ready(function(){
+
+});
+
+var validateParameters = {
+        rules:{
+        	name: {
+                required: true,
+                minlength: 2
+              },
+            itemNo: {
+                required: true,
+                minlength: 2
+              }
+        },
+        messages:{
+        	name: {
+				required: " Name is required.",
+				minlength: " Name needs more than 2 characters."
+			}
+        }
+};
+function doSubmit(){	
+	$("#submitbutton").button('loading').queue();
+	if(JQueryValidate($("#vueproductform"),validateParameters)){
+		var postdata;
+		postdata = vueproductform.product;
+
+		postdata = JSON.stringify(postdata);
+		
+		$.ajax({
+			type: "POST",
+			url: l("/rest/products"),
+			contentType: "application/json;charset=utf-8",
+			data: postdata,
+			dataType: "json",
+			success:function (result) {
+				handleResultCode(result, function (result) {
+					openPage("/prod/list");
+				});
+			},
+	        complete:function(){
+				$("#submitbutton").button('reset');
+		        $("#submitbutton").dequeue(); 
+	        }
+		});
+	} else {
+		$("#submitbutton").button('reset');
+        $("#submitbutton").dequeue(); 
+		
+	}
+	
+}
+
+</script>

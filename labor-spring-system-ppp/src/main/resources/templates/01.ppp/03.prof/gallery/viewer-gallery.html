@@ -1,0 +1,359 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content" >
+	<div id="vuecurrentimg" class="center-block" style="width: 99%; min-height: 500px;">
+		<div class="carousel slide" style="backgroundColor: #f5f5f5;"> 
+		    <div class="carousel-inner">
+		        <div class="item active">
+		            <a data-toggle="modal" data-target="#originImageMoal">	            	
+		            	<center>
+		            		<img id='imgcurrent' v-bind:src="currentimg" >
+		            		<!-- <img class="visible-lg visible-md" id='imgcurrent' v-bind:src="currentimg" >
+		            		<img class="visible-xs visible-sm" width="100%" id='imgcurrent' v-bind:src="currentimg" > -->
+		            	</center>		            	
+		            </a>
+		            
+	        	    <div class="carousel-caption">
+	        	    	<span style="color: white; font-weight: bold; ">{{ currentimgindex+1 }} &nbsp; {{ currentimgcaption }}</span></div>
+		        </div>
+		    </div>
+		    <a class="left carousel-control" role="button" data-slide="prev" v-on:click="javascript:prev(currentimgindex);">
+			    <span class="sr-only">&lt;&lt;/span>
+			</a>
+			<a class="right carousel-control" role="button" data-slide="next" v-on:click="javascript:next(currentimgindex);">
+			    <span class="sr-only">&gt;&gt;</span>
+			</a>
+		</div>		
+					<!-- Modal -->
+					<div class="modal fade" id="originImageMoal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+					  <div class="modal-dialog modal-lg" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					        	<span aria-hidden="true">&times;</span></button>
+					        	<h4 class="modal-title" id="modalLabel" th:text="#{label.originimage}"></h4>
+					      </div>
+					      <div class="modal-body">
+					        <center><img width="100%" v-bind:src="currentimgorign"/></center>
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-default" data-dismiss="modal"	
+								th:text="#{button.close}"></button> 
+					      </div>
+					    </div>
+					  </div>
+					</div>			
+					
+		<div class="panel-group prms" id="accordion" permission="gallery:edit">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+					<h4 class="panel-title" th:text="#{link.editor}"></h4>
+				</a>
+			</div>
+			<div id="collapseOne" class="panel-collapse collapse">
+				<div class="panel-body">
+					<form class="prms" id="giform" permission="gallery:edit">
+						<!-- 
+						<div class="form-group">
+							<label for="name" data-toggle="tooltip" data-placement="top" title="title">Title:</label> <input class="form-control "
+								v-model="currentimgname" type="text"
+								placeholder="Input Title here.">
+						</div>
+						 -->
+								<input v-model="currentimgid" type="hidden">
+								<input v-model="currentimggaid" type="hidden">
+						<div class="form-group">
+							<label for="caption" data-toggle="tooltip" data-placement="top" title="description" th:text="#{label.description}"></label> 
+							<textarea class="form-control "
+								v-model="currentimgcaption" row="3"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="status" data-toggle="tooltip" data-placement="top" title="description" th:text="#{label.order}"></label> 
+							<input class="form-control "
+								v-model="currentimgorder" type="text"
+								placeholder="Input order here."> 
+						</div>
+						
+						<button class="btn btn-primary prms" id="buttonsave" type="button" onclick='doSave();' permission="gallery:edit"
+							th:text="#{button.save}"></button> 
+					</form>
+				</div>
+			</div>
+		</div>
+		</div>
+		
+	</div>
+	<div class="visible-lg visible-md">
+		<ul class="list-inline" style="margin: 00px 00px 00px 10px;">
+		
+		<li class="list-inline-item col-xs-6 col-sm-6 col-md-2 col-lg-2"><input class="form-control" type="text" name="searchkey" id="searchkey"></li>
+		
+		<li class="list-inline-item col-xs-6 col-sm-6 col-md-2 col-lg-2" >
+			<input type='button' class='btn btn-primary btn-sm'
+				onclick='findImages();' value='SEARCH' /> 
+			<input type="button"
+				class='btn btn-default btn-xs' onclick="clearInput();" value="clear" /></li>
+		
+		</ul>
+		
+		<div class="container pull-right" id="vuegalleryimageslist" style=" overflow-x: auto; overflow-y: hidden; display: none;">
+			<table border="1" class="text-nowrap" style="border: 1px solid lightgray;"><tr>
+				<td style="padding-left:3px;padding-right:3px;padding-bottom:3px;padding-top:3px;" 
+						v-for="(entry,index) in galleryimageslist" v-on:click="javascript:view(index);colorBackground($event);">
+					 <a >
+				      <!-- {{ index + 1 }}   -->
+			      		<IMG class="img-thumbnail" v-bind:src="imgurl[entry.id]" onload="resizeImageThumbnail(this,'70px','70px')"></a>			      		
+				</td>
+			</tr>
+			</table>
+			<!-- 
+			<ul class="list-inline " style=" overflow-y: hidden; overflow-x: auto; ">
+			    <li class="list-inline-item thumbnail"  v-for="(entry,index) in galleryimageslist" >
+			      <a v-on:click="javascript:view(index);">
+			     {{ index }}
+			      		<IMG class="img-thumbnail" v-bind:src="imgurl[entry.id]" onload="resizeImageThumbnail(this,'100px','100px')"></a>
+			    </li>
+			</ul>
+			 -->
+			 
+			<div class="pull-right" id="paginationend"></div>
+		</div>
+	</div>
+	
+
+
+</div>
+</html>
+<!-- 
+网页可见区域宽： document.body.clientWidth
+网页可见区域高： document.body.clientHeight
+网页可见区域宽： document.body.offsetWidth (包括边线的宽)
+网页可见区域高： document.body.offsetHeight (包括边线的高)
+网页正文全文宽： document.body.scrollWidth
+网页正文全文高： document.body.scrollHeight
+网页被卷去的高： document.body.scrollTop
+网页被卷去的左： document.body.scrollLeft
+网页正文部分上： window.screenTop
+网页正文部分左： window.screenLeft
+屏幕分辨率的高： window.screen.height
+屏幕分辨率的宽： window.screen.width
+屏幕可用工作区高度： window.screen.availHeight
+屏幕可用工作区宽度： window.screen.availWidth
+ -->
+<script type="text/javascript" th:src="@{/js/jqthumb.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+galleryRatioSelected();
+$("#contentcontainer").removeClass("container");
+var uuid=getQueryString("uuid");
+var index=getQueryString("index");
+var gaid="";
+var vuecurrentimg;
+vuecurrentimg = new Vue({
+	el: '#vuecurrentimg',
+	data: {
+		currentimg: '',
+		currentimgorign: '',
+		currentimgname: '',
+		currentimgcaption: '',
+		currentimgorder: '',
+		currentimgindex: 0,
+		currentimgid: 0,
+		currentimggaid: 0
+
+	}
+});
+//var imgurlmap = {};
+var vuegalleryimageslist;
+vuegalleryimageslist = new Vue({
+	el: '#vuegalleryimageslist',
+	data: {
+		galleryimageslist: [],
+		imgurl:{}
+
+	}
+});
+
+$(document).ready(function(){
+	findImages();
+});
+$("#searchkey").keypress(function (e) {
+    if (e.which == 13) {
+    	findImages();
+    }
+});
+
+function clearInput(){
+	$("#searchkey").val("");
+};
+
+function findImagePages(page){
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/galleries/"+uuid+"/images/page-list?status=1&sortby=order&capion="+searchkey+"&page="+page),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				viewImage(0,result.data.content[0]);
+				for (var i=0;i<result.data.content.length;i++){
+					var galleryimage = result.data.content[i];
+					vuegalleryimageslist.imgurl[galleryimage.id]=addToken(galleryimage.url+"/thumbnail");
+				}
+				vuegalleryimageslist.galleryimageslist = result.data.content;
+				document.getElementById('vuegalleryimageslist').style.display='block';	
+
+				var pagehtml = createPaginationHtml(result.data.totalPages,result.data.totalElements,result.data.number,"findImages");
+				$("#paginationend").html("<div>"+pagehtml + "</div>");
+			});
+		}
+	});
+}
+function findImages(){
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/galleries/"+uuid+"/images?status=1&capion="+searchkey),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var imagelist = result.data;
+				if (index!=null&&index!="undefine"){
+					viewImage(index,imagelist[index]);
+				} else {
+					viewImage(0,imagelist[0]);
+				}
+				for (var i=0;i<imagelist.length;i++){
+					var galleryimage = imagelist[i];
+					vuegalleryimageslist.imgurl[galleryimage.id]=addToken(galleryimage.url+"/thumbnail");
+					//imgurlmap[galleryimage.id]=galleryimage.url;
+				}
+				//vuecurrentimg.currentimg = l(imagelist[0].url);
+				//vuecurrentimg.currentimgname = imagelist[0].name;
+				//vuecurrentimg.currentimgcaption = imagelist[0].caption;
+				//vuecurrentimg.currentimgindex = 0;
+				//vuecurrentimg.currentimgid = imagelist[0].id;
+				//vuecurrentimg.currentimggaid = imagelist[0].gaId;
+				vuegalleryimageslist.galleryimageslist = imagelist;
+				document.getElementById('vuegalleryimageslist').style.display='block';	
+			});
+		}
+	});
+}
+
+function view(index){
+	var image = vuegalleryimageslist.galleryimageslist[index];
+	viewImage(index,image);
+}
+console.log(document.body.clientHeight);
+console.log(document.body.clientWidth); 
+console.log(window.screen.height);
+
+var clientHeight = (document.body.clientHeight);
+var clientWidth = (document.body.clientWidth);
+
+function viewImage(index,image){
+	if(image!=null){
+		vuecurrentimg.currentimgindex = index;
+		if (clientWidth>clientHeight){
+			vuecurrentimg.currentimg = addToken(image.url+"/thumbnail?height="+(clientHeight-200));
+		} else {
+			vuecurrentimg.currentimg = addToken(image.url+"/thumbnail?width="+(clientWidth-10));
+		}
+		vuecurrentimg.currentimgorign = getContextPath()+"/oss/objects/images/"+image.fileName;
+		vuecurrentimg.currentimgname = image.name;
+		vuecurrentimg.currentimgcaption = image.caption;
+		vuecurrentimg.currentimgorder = image.order;
+		vuecurrentimg.currentimgid = image.id;
+		vuecurrentimg.currentimggaid = image.gaId;
+	}
+}
+
+function next(index){
+	index=index+1;
+	view(index);
+}
+function prev(index){
+	index=index-1;
+	view(index);
+}
+function resizeImageThumbnail(hotimg,width,height){
+	$(hotimg).jqthumb({
+		width : width,//宽度
+		height : height,//高度
+		//position : { y: '50%', x: '50%'},//从图片的中间开始产生缩略图
+		zoom : '1',//缩放比例
+		method : 'auto'//提交方法，用于不同的浏览器环境，默认为‘auto’
+	});
+}
+
+function doSave(){
+	$("#buttonsave").button('loading').queue();
+	var data;
+	var type;
+	var url;
+	
+	if (vuecurrentimg.currentimgid!=null&&vuecurrentimg.currentimgid!=""&&vuecurrentimg.currentimgid!='undefined'){
+		type = "PUT";
+		data = {"id": vuecurrentimg.currentimgid, 
+				"name": vuecurrentimg.currentimgname, 
+				"order": vuecurrentimg.currentimgorder, 
+				"caption": vuecurrentimg.currentimgcaption};
+		url = l("/rest/galleries/"+vuecurrentimg.currentimggaid+"/images/"+vuecurrentimg.currentimgid)
+	} 
+	
+	data = JSON.stringify(data);
+	$.ajax({
+		type: type,
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		data: data,
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var i = vuecurrentimg.currentimgindex;
+				vuegalleryimageslist.galleryimageslist[i].name = vuecurrentimg.currentimgname
+				vuegalleryimageslist.galleryimageslist[i].caption = vuecurrentimg.currentimgcaption;
+				vuegalleryimageslist.galleryimageslist[i].order = vuecurrentimg.currentimgcaption;
+
+  	       	});
+		},
+        complete:function(){
+			$("#buttonsave").button('reset');
+	        $("#buttonsave").dequeue(); 
+        }
+	});
+};
+function viewOriginCurrentimg(){
+	var image = vuegalleryimageslist.galleryimageslist[vuecurrentimg.currentimgindex];
+	if(image!=null){
+		var fulls = "left=0,screenX=0,top=0,screenY=0,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no";
+		if (window.screen) {
+			var ah = screen.availHeight - 60;
+			var aw = screen.availWidth - 20;
+			fulls += ",height=" + ah;
+			fulls += ",innerHeight=" + ah;
+			fulls += ",width=" + aw;
+			fulls += ",innerWidth=" + aw;
+			fulls += ",resizable"
+		} else {
+			fulls += ",resizable"; // 对于不支持screen属性的浏览器，可以手工进行最大化。 manually
+		}
+	    OpenWindow=window.open("","newwin",fulls);
+	    OpenWindow.document.write("<TITLE>image</TITLE>");
+	    OpenWindow.document.write("<BODY BGCOLOR=#ffffff>");
+	    OpenWindow.document.write("<center><img width='100%' src='"+addToken(image.url)+"'/></center>");
+	    //OpenWindow.document.write("<a href='javascript:window.opener=null;window.close();'><img src='"+l(image.url)+"' /></a>");
+	    OpenWindow.document.write("</BODY>");
+	    OpenWindow.document.write("</HTML>");
+	    OpenWindow.document.close();
+	}
+}
+
+function colorBackground(event){
+	var el = event.currentTarget;
+	el.style.backgroundColor="blue";
+};
+</script>

@@ -1,0 +1,293 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<div layout:fragment="content">
+<style type="text/css">
+.container .content {
+	border: 0px solid lightgray;
+	width: 100%;
+	min-height: 300px;
+	padding: 10px 10px 10px 10px;
+}
+</style>
+	
+	<input id="id" name="id" type="hidden">
+	<table width="100%" algin="top" border=0>
+		<tr>
+			<td width="85%" valign="top">
+			 	<div class=" pull-left">
+			 	<span class="text-info" style="font-size: 24px" id="documentname"></span>
+		 		<p>
+					<span class="text-muted" style="font-size: 14px" id="documentcreationdate"></span>&nbsp;&nbsp;
+					<span class="text-muted" style="font-size: 14px"  id="documentcreator"></span>
+				</p>
+				</div>
+			</td>
+			<td valign="top" rowspan="2" class="visible-lg visible-md">
+				<div id="contenthistory" class="panel panel-default"
+					style="display: none;">
+					<!-- <div class="panel-heading"><strong>History</strong></div> -->
+					<ul class="nav nav-tabs nav-stacked" id="vuecontentversions">
+						<li v-for="entry in contentVersions"><a href="#"
+							v-on:click="doFindContent(entry.id)">{{ entry.lastUpdateDate }}</a></li>
+					</ul>
+				</div>
+				<div id="contentdownload" class="panel panel-default"
+					style="display: none;">
+					<!-- <div class="panel-heading"><strong>Download</strong></div> -->
+					<ul class="nav nav-tabs nav-stacked" >
+						<li><a onclick="javascript:downloadFile();" th:text="#{link.download}"></a></li>
+					</ul>
+				</div>
+				<div id="doceditor" class="panel panel-default"
+					style="display: none;">
+					<ul class="nav nav-tabs nav-stacked" >
+						<li><a onClick="javascript:toEditor();" th:text="#{link.editor}"></a></li>
+					</ul>
+				</div>
+				<div id="tagList" class="panel panel-default"
+					style="display: none;">
+					<div class="panel-heading">
+						<strong th:text="#{link.tag}"></strong>
+					</div>
+					<ul class="nav nav-tabs nav-stacked" id="vuetaglist">
+						<li v-for="entry in tagList"><a href="#"
+							v-on:click="toFindDocsByTag(entry.tagName)">#{{ entry.tagName }}</a></li>
+					</ul>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class=" pull-left" style="min-height: 250px;">
+				 	<p class="center-block" id="documentcontent" style="display: none;word-break:break-all;"></p>
+				 	<p class="center-block" id="ckeditordocumentcontent" style="display: none;word-break:break-all;"></p>
+					<!--<textarea id="documentcontent" cols="20" rows="2" class="ckeditor" style="word-break:break-all;"></textarea>  -->
+				</div>
+			</td>
+		</tr>
+
+	</table>
+
+	<HR align="CENTER" width="100%"></HR>
+
+		<form id="commentform">
+
+			<div class="panel panel-default">
+				<div class="panel-body">
+			      	<textarea class="form-control"
+						id="comment" name="comment"  rows="1" th:placeholder="#{tips.input.comments.here}"></textarea>
+				<br>
+					<button class="btn btn-primary btn-sm pull-right" type="button"
+						onclick='doSubmitComment();' th:text="#{button.submit}"></button>
+			    </div>
+			</div>
+		</form>
+
+	<div id="commentlist" class="panel panel-default" style="width: 100%; display: none;">
+		<!-- 
+		<div class="panel-heading">
+			<strong>Comments</strong>
+		</div>
+ 		-->
+		<ul class="list-group" id="vuecommentlist">
+			<li class="list-group-item" v-for="(entry, index) in commentList"><p class="text-info" >{{ entry.text }}</p>
+			<p class="text-muted text-right" style="font-size: 14px">#{{ index+1 }}--&nbsp;{{ entry.creator }}&nbsp;{{ entry.lastUpdateDate }}</p></li>
+		</ul>
+	</div>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+documentRatioSelected(); 
+var userAgent = navigator.userAgent;
+var isLessIE11 = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1;
+var ckeditor= true;
+if(isLessIE11){
+	ckeditor= true; //ckeditor is good showing on the mobile, mobile first;
+}
+var uuid=getQueryString("uuid");
+if(uuid==null||uuid==''||uuid === 'undefined'){
+	uuid = '[[${uuid}]]';
+}
+var contentid=getQueryString("contentid");
+
+var vuecontentversions;
+vuecontentversions = new Vue({
+	el: '#vuecontentversions',
+	data: {
+		contentVersions: []
+	}
+});
+var vuecommentlist;
+vuecommentlist = new Vue({
+	el: '#vuecommentlist',
+	data: {
+		commentList: []
+	}
+});
+
+var vuetaglist;
+vuetaglist = new Vue({
+	el: '#vuetaglist',
+	data: {
+		tagList: []
+	}
+});
+
+var myEditor;
+$(document).ready(function(){
+	if (ckeditor){
+		DecoupledEditor
+		    .create( document.querySelector( '#ckeditordocumentcontent' ) )
+		    .then( function (editor) {
+		    	editor.isReadOnly = true; 
+		        myEditor = editor;
+		    } )
+		    .catch( function (error) {
+		        console.error( error );
+		    } );
+	}
+	findInfo();
+
+});
+function findInfo(){
+	var url;
+	url = l("/rest/documents/uuid-"+uuid);
+	if(contentid!=null&&contentid!=''&&contentid != 'undefined'){
+		url = url+"&contentid="+contentid;
+	}
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {		
+			handleResultCode(result, function (result) {
+				var content;
+				$("#documentname").html(result.data.document.name);
+				$("#documentcreator").html(result.data.creator.name+" "+result.data.creator.realName+" ");
+				$("#documentcreationdate").html(result.data.document.creationDate);
+
+				if (result.data.docStatus=="-1"){
+					content="Expired Content."
+											+result.data.content.html+
+											"<h1 style='color:red'>Expired Content.</h1>";
+				} else{
+					content=result.data.content.html;
+				}
+				
+				$("#id").val(result.data.document.id);
+				if(result.data.document.filePath!=null){
+					if(result.data.document.filePath.indexOf("hasdownload")>0){
+						document.getElementById('contentdownload').style.display='block';
+					}
+					if(result.data.document.filePath.indexOf("nockeditor")>0){
+						ckeditor = true; //ckeditor is good showing on the mobile, mobile first;
+					}
+				} 
+				if (ckeditor){
+					myEditor.setData(content);
+					document.getElementById('ckeditordocumentcontent').style.display='block';
+				} else {
+					$("#documentcontent").html(content);
+					document.getElementById('documentcontent').style.display='block';
+				}
+				if(result.data.contentList!=null){
+					document.getElementById('contenthistory').style.display='block';
+					document.getElementById('doceditor').style.display='block';
+					vuecontentversions.contentVersions = result.data.contentList;
+				}
+				if(result.data.commentList!=null&&result.data.commentList.length>0){
+					document.getElementById('commentlist').style.display='block';
+					vuecommentlist.commentList = result.data.commentList;
+				}
+				if(result.data.tagList!=null&&result.data.tagList.length>0){
+					document.getElementById('tagList').style.display='block';
+					vuetaglist.tagList = result.data.tagList;
+				}
+			});
+		}
+	});
+};
+function doFindContent(contentid){
+	var docid = $("input[name='id']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/"+docid+"/contents/"+contentid),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {		
+			handleResultCode(result, function (result) {
+				myEditor.setData(result.data.html) 
+			});
+		}
+	});
+	
+}
+var validateParameters = {
+     rules:{
+     	comment: {
+             required: true,
+             maxlength: 3000
+       	}
+     }
+};
+
+function doSubmitComment(){
+	if(JQueryValidate($("#commentform"),validateParameters)){
+		var docid = $("input[name='id']").val();
+		var comment = $("textarea[name='comment']").val();
+		var postdata;
+		postdata = {"html": comment };
+		postdata = JSON.stringify(postdata);
+	
+		$.ajax({
+			type: "POST",
+			url: l("/rest/documents/"+docid+"/comments"),
+			contentType: "application/json;charset=utf-8",
+			data: postdata,
+			dataType: "json",
+			success:function (result) {
+				handleResultCode(result, function (result) {
+					doFindComments();
+					$("textarea[name='comment']").val("");
+				});		
+			}
+		});
+	}
+	
+}
+function doFindComments(){
+	var docid = $("input[name='id']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/"+docid+"/comments"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {		
+			handleResultCode(result, function (result) {
+				if(result.data!=null){
+					//callback(result);
+					if(result.data!=null&&result.data.length>0){
+						document.getElementById('commentlist').style.display='block';
+						vuecommentlist.commentList = result.data;
+					}
+				}
+			});
+		}
+	});
+	
+}
+function toFindDocsByTag(tagname){
+	openPage("/prof/tag/tags?tagname="+tagname);
+}
+function downloadFile(){
+	window.location.href = getContextPath()+l("/rest/documents/"+uuid+"/file");
+}
+function toEditor(){
+	window.location.href = getContextPath()+"/prof/document/editor?uuid="+uuid;
+};
+</script>

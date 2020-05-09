@@ -1,0 +1,21 @@
+<html layout:decorator="fragment/layout">
+	<!-- /* Content of this page will be decorated by the elements of layout.html (task/layout) */ -->
+	 
+	<div layout:fragment="content">
+
+		<table border="0">
+			<tr align="center">
+				<td align="left">
+				<IMG th:src="@{/img/404.gif}">
+				</td>
+			</tr>
+			<tr>
+				<td align="left">
+				<H2 th:text="${status}"></H2>
+				</td>
+			</tr>
+		</table>
+		 
+	</div>
+</html>
+						

@@ -1,0 +1,106 @@
+body {font-family: Tahoma, sans-serif;}
+a{text-decoration: none;}
+a:hover{cursor:pointer;}
+/******permission*********/
+.prms{display:none; }
+
+/******Jquery Validate****/
+input.error { border: 1px dotted red; }
+textarea.error { border: 1px dotted red; }
+.error{
+	color: red;
+}
+.errorlistarea {
+	background-color: white;
+	border: 0px solid red;
+}
+.errorlistarea {
+	display: none;
+}
+.errorlistarea ol li {
+	list-style-type: disc;
+	margin-left: 20px;
+	margin-bottom: 0px;
+}
+.errorlistarea label.error {
+	display: inline;
+}
+
+/******input******
+input[type=text],input[type=password]{
+  width: 100%;
+  padding: 5px 5px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type=button]{
+    border-radius: 2px;
+ 
+}
+input[type=button]:hover{
+    background-color: darkblue; 
+    color: white;
+    cursor:pointer;
+}
+***/
+/******button*******
+button {
+	background-color: gray;
+    border: none;
+    color: white;
+    padding: 7px 13px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.10), 0 6px 20px 0 rgba(0,0,0,0.11);
+}
+
+button:hover {
+    background-color: darkblue;
+    color: white;
+    cursor:pointer;
+}
+.btn2nd {
+    background-color: #808080b8;
+    border: none;
+    color: white;
+    padding: 5px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: normal; 
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0), 0 6px 20px 0 rgba(0,0,0,0); 
+}
+.btn2nd:hover {
+    background-color: darkblue; 
+    color: white;
+    cursor:pointer;
+}
+**/
+/******navigator*******
+.nav {
+    background-color: white;
+    border: 1px solid darkblue;
+    color: darkblue;
+    padding: 5px 5px 5px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: normal; 
+    border-radius: 4px;
+}
+.nav:hover {
+    background-color: darkblue; 
+    color: white;
+    cursor:pointer;
+}
+**/
+

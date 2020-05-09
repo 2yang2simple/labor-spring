@@ -1,0 +1,125 @@
+<html layout:decorator="fragment/layout-labor">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+
+<Strong class="navbar-text">Richtext</Strong>
+<ul class="nav nav-tabs">
+	<li class="active">
+		<a>List</a>
+	</li>
+	<li>
+		<a th:href="@{/core/richtext/editor}">Editor</a>
+	</li>
+</ul>
+<span id="tips" style="color: red;">&nbsp;</span>
+	
+<br>
+	<input size="60" type="text" name="searchkey" id="searchkey">
+	<input type='button' class='btn btn-primary btn-sm' onclick='doSearch();' value='&nbsp;&nbsp;&nbsp;SEARCH&nbsp;&nbsp;&nbsp;'/>	 
+	<input type="button" class='btn btn-default btn-xs' onclick="clearInput();" value="clear"/>
+	
+
+	
+	<br>
+	<p id="datalist"/>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/xss.js}"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	doSearch();
+
+});
+function doCreate(){
+	window.location.href = getContextPath()+"/core/richtext/editor";
+}
+
+function clearInput(){
+	//document.getElementById('value').value='';
+	$("#searchkey").val("");
+};
+function doSearch(){
+	var searchkey  = $("input[name='searchkey']").val();
+	var url = "";
+	if (searchkey!=null&&searchkey!=""){
+		url = l("/rest/core/richtexts/namestart-list?namestart="+searchkey);
+	}else {
+		url = l("/rest/core/richtexts/sort-list?sortby=status");
+	}
+	//alert(url);
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if (result.data!=null){
+				setData2Page(result.data);
+			}
+		}
+	});
+	
+};
+function setData2Page(data){
+	if(data!=null&&data.length>0){
+		var datalisthtml = "<table class='table table-condensed table-hover'>"+
+							"<thead><tr>"+				       
+					        "<th width='4%'>id</th>"+
+					        "<th width='20%'>name</th>"+
+					        "<th width='40%'>uuid</th>"+
+					        "<th width='15%'>date</th>"+
+					        "<th width='8%'>status</th>"+
+        					"<th width='5%'></th>"+	
+	    					"</tr></thead>";
+	
+		for (var i = 0; i < data.length; i++) {
+			datalisthtml = datalisthtml + "<tbody><tr>" ;
+			datalisthtml = datalisthtml	
+				+ "<td>"+data[i].id+"</td>"
+				+ "<td><a href='"+getContextPath()+"/rt/name/"+data[i].name+".html'>"+filterXSS(data[i].name)+"</a></td>"
+				+ "<td><a href='"+getContextPath()+"/rt/uuid/"+data[i].uuid+".html'>"+filterXSS(data[i].uuid)+"</a></td>"		
+				+ "<td>"+formatDateString(data[i].lastUpdateDate)+"</td>";
+				
+				if(data[i].status!="1"){
+					datalisthtml = datalisthtml	+ 
+						"<td><input type='button' class='btn btn-default btn-xs' onclick="+"javascript:doStatus('"+data[i].id+"','1');"+" value='open'/></td>";
+				} else {
+					datalisthtml = datalisthtml	+ 
+						"<td><input type='button' class='btn btn-warning btn-xs' onclick="+"javascript:doStatus('"+data[i].id+"','0');"+" value='CLOSE'/></td>";
+				}
+
+			datalisthtml = datalisthtml	+ "<td><input type='button' class='btn btn-link btn-xs' onclick=javascript:toEdit('"+data[i].uuid+"'); value='edit'/></td>"
+			datalisthtml = datalisthtml + "</tr></tbody>" ;
+	    }
+
+		datalisthtml = datalisthtml+ "</table>";
+		$("#datalist").html(datalisthtml);
+	} else {
+		$("#datalist").html("No data found.");
+	}
+};
+function doStatus(id,status){
+
+	$.ajax({
+		type: "PATCH",
+		url: l("/rest/core/richtexts/"+id+"/status/"+status),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1"){
+				window.location.href = getContextPath()+"/core/richtext/list";
+			}else{
+				document.getElementById("tips").innerText=result.msg;
+			}
+		}
+	});
+	
+};
+function toEdit(uuid){
+	window.location.href = getContextPath()+"/core/richtext/editor?uuid="+uuid;
+};
+
+</script>

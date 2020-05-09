@@ -1,0 +1,91 @@
+package com.labor.spring.bean;
+
+import java.util.HashMap;
+
+import com.labor.common.util.StringUtil;
+import com.labor.spring.constants.WebConstants;
+
+public class ClientRegisted {
+
+	private final static HashMap<String,ClientInfo> REGISTED_CLIENTS = new HashMap<String,ClientInfo>();
+	public final static String CLIENTKEY_DEFAULT = "auth-web";
+	
+	static {
+		
+		REGISTED_CLIENTS.put("auth-web", 
+				new ClientInfo(WebConstants.FP_TYPE_CANVAS,
+								WebConstants.AUTH_TYPE_SAVEDIN_COOKIES,
+								"de07c085bfe741caaef26e7b4adf0096",
+								"http://localhost:8080/auth/rest/feign/auth/logins/users/tokens/keys",
+								"http://localhost:8080/auth"));
+		
+		REGISTED_CLIENTS.put("ppp-web", 
+				new ClientInfo(WebConstants.FP_TYPE_CANVAS,
+								WebConstants.AUTH_TYPE_SAVEDIN_COOKIES,
+								"ad89f721e3da95b11378c52112eaa492",
+								"http://47.106.74.136/ppp/rest/account/sso",
+								"http://47.106.74.136/ppp"));
+		
+		REGISTED_CLIENTS.put("ppp-weixin", 
+				new ClientInfo(WebConstants.FP_TYPE_APP_WEIXIN,
+								WebConstants.AUTH_TYPE_SAVEDIN_APP,
+								"e18932510a6546c0a84a00e3219cbe2a",
+								"http://47.106.74.136/ppp/rest/sso/access",
+								"http://47.106.74.136/ppp"));
+		
+	}
+	
+	public static ClientInfo getClientInfo(String key) {
+		ClientInfo ret = null;
+		if (StringUtil.isEmpty(key)) {
+			key = CLIENTKEY_DEFAULT;
+		}
+		ret =  REGISTED_CLIENTS.get(key);
+		return ret;
+	}
+	
+	public static boolean isExisted(String key) {
+		boolean ret = false;
+		ClientInfo ci = REGISTED_CLIENTS.get(key);
+		if (ci!=null) {
+			ret = true;
+		}
+		return ret;
+	}
+	
+	public static String getCallback4AccessToken(String key) {
+		String ret = null;
+		ClientInfo ci = getClientInfo(key);
+		if (ci!=null) {
+			ret = ci.getCallback4AccessToken();
+		} 
+		return ret;
+	}
+	
+	public static String getSecret(String key) {
+		String ret = null;
+		ClientInfo ci = getClientInfo(key);
+		if (ci!=null) {
+			ret = ci.getSecret();
+		} 
+		return ret;
+	}
+	
+	public static String getFpType(String key) {
+		String ret = null;
+		ClientInfo ci = getClientInfo(key);
+		if (ci!=null) {
+			ret = ci.getFpType();
+		} 
+		return ret;
+	}
+	
+	public static String getAuthType(String key) {
+		String ret = null;
+		ClientInfo ci = getClientInfo(key);
+		if (ci!=null) {
+			ret = ci.getAuthType();
+		} 
+		return ret;
+	}
+}

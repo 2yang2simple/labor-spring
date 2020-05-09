@@ -1,0 +1,98 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<div layout:fragment="content">
+<h2 id="signupstatus">Welcome to sign up....</h2>
+
+<table border="0"  width="">
+<tr>
+
+	<td width="500px;" valign="top">
+	<form id="userform">
+		<fieldset>
+		<span id="tips" style="color: red; font-weight: bold;">&nbsp;</span>
+		<table class="table" border=0>
+		<tr>
+			<td width="130px;">
+				<span style="float:right;font-size: 20px; font-weight:bold;">Name:&nbsp;&nbsp;*</span>
+			</td>
+			<td><input size="40" type="text" name="name" id="name"
+						onkeyup="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');" 
+						onafterpaste="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');">
+			</td>
+		</tr>
+			<td>
+			<span style="float:right;font-size: 20px; font-weight:bold;">Password:&nbsp;&nbsp;*</span>
+			</td>
+			<td><input size="40" type="text" name="pwd" id="pwd">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<br>
+				<center>
+					<button id="signupbutton" type='button' class='btn btn-primary' onclick='doSignUp();'>&nbsp;&nbsp;&nbsp;SIGN UP&nbsp;&nbsp;&nbsp;</button>
+				</center>
+			</td>
+		</tr>
+		</table>
+		</fieldset>
+	</form>
+	</td>
+</tr>
+</table>
+
+<br>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jsencrypt.min.js}"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+
+});
+
+function doSignUp(){
+	$("#submitbutton").button('loading').queue();
+	document.getElementById("tips").innerText="\n";
+	var name = $("input[name='name']").val();
+	var pwd=$("input[name='pwd']").val();
+	if (name==null||name==""||pwd==null||pwd==""){
+		document.getElementById("tips").innerText="Empty Name or Password.";
+		$("#signupbutton").button('reset');
+        $("#signupbutton").dequeue(); 
+		return;
+	} 
+	var crypt = new JSEncrypt();
+	crypt.setPublicKey(publickey512);
+	var pwdencrypt=crypt.encrypt(pwd);
+
+	var postdata = {"name": name, "pwdencrypt": pwdencrypt};
+	
+	$.ajax({
+		type: "POST",
+		url: l("/a/signup"),
+		contentType: "application/json;charset=utf-8",
+		data: JSON.stringify(postdata),
+		dataType: "text",
+		success:function (message) {
+			if (message=="1") {
+         		window.location.href = getContextPath()+"/public/success";
+  	       	} else if (message=="-2"){
+  	       		document.getElementById("tips").innerText="Empty Name or Password.";
+  	       	} else if (message=="-3"){
+  	       		document.getElementById("tips").innerText="Name Exist.";
+  	       	} else {
+  	       		window.location.href = getContextPath()+"/public/error";
+  	       	}
+		},
+        complete:function(){
+        	$("#signupbutton").button('reset');
+            $("#signupbutton").dequeue(); 
+        }
+	});
+
+}
+
+</script>

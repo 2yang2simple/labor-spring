@@ -1,0 +1,147 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content">
+<h2 th:text="#{auth.button.newpassword}"></h2>
+<table border="0"  width="">
+<tr>
+
+	<td valign="top">
+		
+	<form id="userform">
+	<fieldset>
+	<span id="tips" style="color: red; font-weight: bold;">&nbsp;</span>
+		<div id="vuenewpasswordinfo">
+		<table class="table" border=0>
+		<tr>
+			<td width="20%">
+				<span style="float:right;font-size: 20px; font-weight:bold;" th:text="#{auth.label.user}"></span>
+			</td>
+			<td>
+				<input class="form-control" readonly="true" type="text" name="name" v-model="name" style="color: red;">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="float:right;font-size: 20px; font-weight:bold;" th:text="#{auth.label.phone}"></span>
+			</td>
+			<td>
+				<input class="form-control" readonly="true" type="text" name="phone" v-model="phone" style="color: red;">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="float:right;font-size: 20px; font-weight:bold;" th:text="#{auth.label.password}"></span>
+			</td>
+			<td>
+				<input class="form-control" type="text" name="pwd" v-model="pwd" style="color: red;">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<br>
+				<center>
+				<button type='button' class='btn btn-primary' onclick='doSubmit();' th:text="#{button.submit}"></button>
+				</center>
+				<center><img v-bind:src="qrcodeimgurl"></img></center>
+			</td>
+		</tr>
+		</table>
+		
+			<ul><h3>Tips:  </h3>
+					<h4><li>请设置新的密码</li></h4>
+					<h4><li><a th:href="@{/rt/name/googleauth.html}">如不设置密码，可以通过微信小程序“二次验证码”扫面上面的二维码,保存登陆号和授权码</a></li></h4>
+					<h4><li>通过登录号或者姓名或者电话以及“二次验证码”显示的授权码登陆</li></h4>
+			</ul>
+		</div>
+ 		</fieldset>
+		</form>
+	</td>
+</tr>
+</table>
+
+<br>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jsencrypt.min.js}"></script>
+<script type="text/javascript">
+var pm = getQueryString("pm");
+var vuenewpasswordinfo;
+vuenewpasswordinfo = new Vue({
+	el: '#vuenewpasswordinfo',
+	data: {
+		name: '',
+		pwd: '',
+		phone: '',
+		qrcodeimgurl:'',
+		secretkey:""
+
+	}
+});
+
+
+$(document).ready(function(){
+	if (pm==null||pm==""){
+		document.getElementById("tips").innerText="The URL is expeired.";
+	} else {
+		$.ajax({
+			type: "GET",
+			url: l("/rest/profiles/users/"+pm),
+			contentType: "application/json;charset=utf-8",
+			dataType: "json",
+			success:function (result) {
+				handleResultCodeDisplayError("tips", result, function (result) {
+					vuenewpasswordinfo.name=result.data.name;
+					vuenewpasswordinfo.phone=result.data.cellPhone;
+					displayQrCode();
+				});
+			}
+		});
+	}
+});
+
+function displayQrCode(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/profiles/users/"+pm+"/auth-qr-code-url"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				vuenewpasswordinfo.qrcodeimgurl=l(getContextPath()+"/rest/profiles/qr-code?content=" + encodeURI(result.data));
+			});
+		}
+	});
+}
+
+function doSubmit(){
+	if (pm==null||pm==""){
+		document.getElementById("tips").innerText="The URL is expeired.";
+		return;
+	}
+	var pwd=vuenewpasswordinfo.pwd;
+	
+	if (pwd==null||pwd==""){
+		document.getElementById("tips").innerText="Password Must NOT be empty.";
+		return;
+	} 
+	var crypt = new JSEncrypt();
+	crypt.setPublicKey(publickey512);
+	var pwdencrypt=crypt.encrypt(pwd);
+	var postdata = {"pwdmodify": pm, "pwdencrypt": pwdencrypt};
+	
+	$.ajax({
+		type: "POST",
+		url: l("/rest/profiles/passwords"),
+		contentType: "application/json;charset=utf-8",
+		data: JSON.stringify(postdata),
+		dataType: "json",
+		success:function (result) {
+			handleResultCodeDisplayError("tips", result, function (result) {
+				window.location.href = getContextPath()+"/public/success";
+			});
+		}
+	});
+
+}
+
+</script>

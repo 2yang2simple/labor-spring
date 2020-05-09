@@ -1,0 +1,121 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<div layout:fragment="content" >
+			<!-- 
+			<input class="form-control" type="text" name="searchkey2" id="searchkey2" placeholder="Press enter to search">
+			<input type='button' class='btn btn-primary btn-sm'
+				onclick='findImages();' value='SEARCH' /> 
+			<input type="button"
+				class='btn btn-default btn-xs' onclick="clearInput();" value="clear" />
+			 -->	
+	
+<div class="row">
+  <div class="col-lg-8">
+    <div class="input-group">
+      <input class="form-control" type="text" name="searchkey" id="searchkey" th:placeholder="#{tips.press.enter.to.search}">
+      <span class="input-group-btn">	 
+		  <button type="button" class="btn btn-primary" onclick="findImages();">Go</button>
+		  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu pull-right" role="menu">
+		    <li><a href="javascript:clearInput();"><span class="text-primary" th:text="#{ button.clear }"></span></a></li>
+		  </ul>		   
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
+	<div class="container">
+		<div class="row" id="vuegalleryimageslist">
+			<div class="col-xs-3 col-sm-2 col-md-2 col-lg-1" style="padding-left: 0px; padding-right:0px;" v-for="(entry,index) in galleryimageslist">
+				<div class="thumbnail" style="margin-bottom: 0px;">	
+					 <a v-on:click="javascript:toViewerImage(index);">
+			      		<IMG width="100%" class="img-thumbnail" v-bind:src="imgurl[entry.id]" onload="resizeImageThumbnail(this,'100%','70px')"></a>
+				</div>
+			</div>
+		</div>
+	</div>
+<br>
+<br>
+<center><button class="btn btn-primary" onClick="toListGallery()" th:text="#{button.back}"></button></center>
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/jqthumb.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+galleryRatioSelected();
+//$("#contentcontainer").removeClass("container");
+var uuid=getQueryString("uuid");
+var gaid="";
+
+
+var vuegalleryimageslist;
+vuegalleryimageslist = new Vue({
+	el: '#vuegalleryimageslist',
+	data: {
+		galleryimageslist: [],
+		imgurl:{}
+
+	}
+});
+
+$(document).ready(function(){
+	findImages();
+});
+$("#searchkey").keypress(function (e) {
+    if (e.which == 13) {
+    	findImages();
+    }
+});
+
+function clearInput(){
+	$("#searchkey").val("");
+};
+
+function findImages(){
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/galleries/"+uuid+"/images?status=1&capion="+searchkey),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var imagelist = result.data;
+				for (var i=0;i<imagelist.length;i++){
+					var galleryimage = imagelist[i];
+					vuegalleryimageslist.imgurl[galleryimage.id]=addToken(galleryimage.url+"/thumbnail");
+				}
+				vuegalleryimageslist.galleryimageslist = imagelist;
+			});
+		}
+	});
+}
+var clientHeight = (document.body.clientHeight);
+var clientWidth = (document.body.clientWidth);
+function resizeImageThumbnail(hotimg,width,height){
+	$(hotimg).jqthumb({
+		width : width,//宽度
+		height : height,//高度
+		//position : { y: '50%', x: '50%'},//从图片的中间开始产生缩略图
+		zoom : '1',//缩放比例
+		method : 'auto'//提交方法，用于不同的浏览器环境，默认为‘auto’
+	});
+}
+function toViewerImage(index){
+	//alert(uuid);
+	window.location.href = getContextPath()+"/prof/gallery/viewer-image?uuid="+uuid+"&index="+index;
+	//window.open(getContextPath()+"/prof/gallery/viewer?uuid="+uuid);
+}
+
+function colorBackground(event){
+	var el = event.currentTarget;
+	el.style.backgroundColor="blue";
+};
+function toListGallery(){
+	window.location.href = getContextPath()+"/prof/gallery/list-gallery";
+}
+</script>

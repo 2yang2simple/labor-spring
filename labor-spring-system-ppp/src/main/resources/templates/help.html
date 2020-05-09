@@ -1,0 +1,28 @@
+<html layout:decorator="fragment/layout"> 
+<!-- /* Content of this page will be decorated by the elements of layout.html (task/layout) */ -->
+<div layout:fragment="content">
+Released@-version-
+		<p id="datahtml"/>
+</div>
+</html>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	findInfo()
+});
+
+function findInfo(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/core/richtexts/name-"+"help"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				$("#datahtml").html(result.data.html);
+			});	
+
+		}
+	});
+};
+</script>

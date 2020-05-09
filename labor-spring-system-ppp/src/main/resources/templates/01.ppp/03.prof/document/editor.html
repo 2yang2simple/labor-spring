@@ -1,0 +1,216 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<style type="text/css">
+
+</style>
+	<div class="errorlistarea" id="errorlistarea" >
+		<ol></ol>
+	</div>
+	<form id="documentform">
+		<div class="form-group">
+			<label for="name" data-toggle="tooltip" data-placement="top" title="document title"
+				th:text="#{label.title}"></label> 
+			 <input class="form-control "
+				id="name" name="name" type="text" th:placeholder="#{tips.input.title.here}">
+				<input id="id" name="id" type="hidden">
+		</div>
+		<div class="form-group">
+			<label for="content"th:text="#{label.content}"></label> 
+			
+			<input id="contentid" name="contentid" type="hidden">
+			<div id="toolbar-container"></div>
+			<div id="content" name="content" style="border: 1px solid lightblue; min-height:300px;">
+
+			</div>
+		</div>
+		<!-- 
+		<div class="form-group">
+			<label for="taglist">Tags:</label> <input class="form-control"
+				id="taglist" name="taglist" type="text">
+		</div>
+		<div class="form-group">
+			<label for="taglist">Users:</label> <input class="form-control"
+				id="userlist" name="userlist" type="text">
+		</div>
+		-->
+		<button class="btn btn-warning btn-sm prms" id="savenewbutton" type="button" onclick='doSaveNew();' permission="document:edit"
+			th:text="#{button.saveasnew}"></button>
+		<button class="btn btn-primary btn-sm pull-right prms" id="submitbutton" type="button" onclick='doSave(1);' permission="document:edit"
+			th:text="#{button.submit}"></button>
+		<button class="btn btn-primary btn-sm pull-right prms" id="savebutton" type="button" onclick='doSave(0);' permission="document:edit"
+			th:text="#{button.save}"></button>
+		
+	</form>
+
+
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+documentRatioSelected(); 
+
+var uuid=getQueryString("uuid");
+if(uuid==null||uuid==''||uuid === 'undefined'){
+	uuid = '[[${uuid}]]';
+}
+
+var myEditor;
+$(document).ready(function(){
+	DecoupledEditor
+	    .create( document.querySelector( '#content' ) )
+	    .then( editor => {
+	        const toolbarContainer = document.querySelector( '#toolbar-container' );
+	        toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+		        return new LaborUploadAdapter(loader,getContextPath(),"","");
+		    };
+	        myEditor = editor;
+	        findInfo();
+	    } )
+	    .catch( error => {
+	        console.error( error );
+	    } );
+
+});
+window.onbeforeunload = function(event) { 
+	event = event || window.event;
+    event.returnValue = "Are you sure to leave?";
+}
+function findInfo(){
+	var url;
+	url = l("/rest/documents/uuid-"+uuid);
+	
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				$("#id").val(result.data.document.id);
+				$("#contentid").val(result.data.content.id);
+				$("#name").val(result.data.document.name);
+				myEditor.setData(result.data.content.html);
+			});	
+		}
+	});
+};
+var validateParameters = {
+        rules:{
+        	name: {
+                required: true,
+                minlength: 2
+              },
+        	content: {
+                required: true
+              }
+        },
+        messages:{
+        	name: {
+				required: " Title is required.",
+				minlength: " Title needs more than 2 characters."
+			},
+	        content: {
+				required: " Content is required."
+			}
+        }
+};
+
+function doSave(submit){
+	queueButton();
+	window.onbeforeunload = null;
+	if(JQueryValidate($("#documentform"),validateParameters)){
+		var id = $("input[name='id']").val();
+		var contentid = $("input[name='contentid']").val();
+		var name = $("input[name='name']").val();
+		var postdata;
+		postdata = {"id":id,
+					"document": {"id": id,"name": name}, 
+					"content": {"id": contentid, "html": myEditor.getData(),"status":1} };
+
+		postdata = JSON.stringify(postdata);
+
+		$.ajax({
+			type: "PUT",
+			url: l("/rest/documents/"+id),
+			contentType: "application/json;charset=utf-8",
+			data: postdata,
+			dataType: "json",
+			success:function (result) {			
+				handleResultCode(result, function (result) {
+					if(submit!=null&&submit=="1"){
+						window.location.href = getContextPath()+"/prof/document/viewer?uuid="+uuid;
+					} else {
+						alert("Save ok.");
+					}
+				});
+			},
+	        complete:function(){
+	    		dequeueButton();
+	        }
+		});
+	}else{
+		dequeueButton();
+	}
+
+};
+
+function doSaveNew(){
+	queueButton();
+	window.onbeforeunload = null;
+	if(JQueryValidate($("#documentform"),validateParameters)){
+		var id = $("input[name='id']").val();
+		var contentid = $("input[name='contentid']").val();
+		var name = $("input[name='name']").val();
+		var postdata;
+		postdata = {"html": myEditor.getData(),"status":1};
+
+		postdata = JSON.stringify(postdata);
+		if (confirm("Save as a new version?")){
+			$.ajax({
+				type: "POST",
+				url: l("/rest/documents/"+id+"/contents"),
+				contentType: "application/json;charset=utf-8",
+				data: postdata,
+				dataType: "json",
+				success:function (result) {
+					handleResultCode(result, function (result) {
+						window.location.href = getContextPath()+"/prof/document/viewer?uuid="+uuid;
+						//alert("Save ok.");
+					});				
+				},
+		        complete:function(){
+		        	dequeueButton(); 
+		        }
+			});
+		} else {
+			dequeueButton();
+		}
+	}else{
+		dequeueButton();
+	}
+	
+}
+function toViewer(){
+	window.location.href = getContextPath()+"/prof/document/viewer?uuid="+uuid;
+};
+
+function queueButton(){
+	$("#savenewbutton").button('loading').queue();
+	$("#submitbutton").button('loading').queue();
+	$("#savebutton").button('loading').queue();
+}
+function dequeueButton(){
+
+	$("#savenewbutton").button('reset');
+    $("#savenewbutton").dequeue(); 
+	$("#savebutton").button('reset');
+    $("#savebutton").dequeue();  
+	$("#submitbutton").button('reset');
+    $("#submitbutton").dequeue(); 
+}
+</script>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+	<link rel="shortcut icon" th:href="@{/img/favicon.png}"/>
+
+   	<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/labor.min.js}"></script>
+
+	
+	<div th:replace="fragment/layui/layout-middlemenu :: layout-middlemenu"></div>
+	
+		
+<script type="text/javascript">
+
+if (/phone|pad|pod|iPhone|iPod|ios|iPad|Android|Fennec|BlackBerry|Mobile|IEMobile|MQQBrowser|JUC|Fennec|WosBrowser|BrowserNG|WebOS|Symbian|Windows Phone/i
+		.test(navigator.userAgent)) {
+	window.location.href = getContextPath() + "/m";
+};
+
+window.onload=function(){
+	var pers = show4Permissions(l('/a/permissions'));
+};
+
+$(document).ready(function(){
+}); 
+</script>
+
+</html>

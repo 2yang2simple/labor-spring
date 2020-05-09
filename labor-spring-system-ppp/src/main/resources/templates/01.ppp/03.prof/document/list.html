@@ -1,0 +1,135 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<!-- 
+<ul class="nav nav-tabs">
+	<li><a th:href="@{/prof/tag/tags}">Tag</a></li>
+	<li class="active"><a>Document</a></li>
+	<li><a th:href="@{/prof/gallery/list-gallery}">Gallery</a></li>
+</ul>
+ -->
+<div class="row">
+  <div class="col-lg-8">
+    <div class="input-group">
+      <input class="form-control" type="text" name="searchkey" id="searchkey" th:placeholder="#{tips.press.enter.to.search}">
+      <span class="input-group-btn">	 
+		  <button type="button" class="btn btn-primary" onclick="doSearch(0);">Go</button>
+		  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu pull-right" role="menu">
+		    <li><a href="javascript:clearInput();"><span class="text-primary" th:text="#{ button.clear }"></span></a></li>
+            <li role="presentation" class="divider"></li>
+            <li><a class='prms' permission="document:create" th:href="@{/prof/document/creator}">
+            		<span class="label label-primary" th:text="#{ button.create }"></span></a></li>
+            <li><a class='prms' permission="document:init" href="javascript:init();">
+            		<span class="label label-warning">init</span></a></li>
+		  </ul>		   
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+ 
+<table class='table table-condensed table-hover' id="vuedocumentlist">
+	<thead>
+		<tr class="active">
+			<td width="5%"></td>
+			<td th:text="#{label.name}"></td>
+			<td width="200px;"class="visible-lg visible-md" th:text="#{label.creationdate}"></td>
+		</tr>
+	</thead>
+
+	<tbody>
+
+		<tr v-for="(entry,index) in documentList">
+			<td>{{ index+1 }}</td>
+			<td><a :href="getContextPath()+'/prof/document/'+entry.uuid+'.html'">{{ entry.name }}</a></td>
+			<td class="visible-lg visible-md">{{ entry.creationDate }}</td>
+		</tr>
+		
+	</tbody>
+</table>
+<p id="paginationend"/>
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+documentRatioSelected(); 
+var vuedocumentlist;
+vuedocumentlist = new Vue({
+	el: '#vuedocumentlist',
+	data: {
+		documentList: []
+	}
+});
+$(document).ready(function(){
+	doSearch(0);
+});
+function clearInput(){
+	$("#searchkey").val("");
+};
+$("#searchkey").keypress(function (e) {
+    if (e.which == 13) {
+    	doSearch(0);
+    }
+});
+function doSearch(page){	
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/name-page-list?name="+searchkey+"&page="+page),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var page = result.data;
+				vuedocumentlist.documentList = page.content;
+				var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"doSearch");
+				//$("#paginationfront").html(pagehtml);
+				$("#paginationend").html("<div style='float: right;'>"+pagehtml + "</div>");
+			});
+		}
+	});
+	
+}
+function toViewerPage(uuid){
+	window.location.href = getContextPath()+"/prof/document/"+uuid+".html";
+	//window.open(getContextPath()+"/prof/document/"+uuid+".html");
+	//toNewViewerPage(uuid);
+}
+function toNewViewerPage(uuid){
+
+	var fulls = "left=0,screenX=0,top=0,screenY=0,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no";
+	if (window.screen) {
+		var ah = screen.availHeight - 60;
+		var aw = screen.availWidth - 10;
+		fulls += ",height=" + ah;
+		fulls += ",innerHeight=" + ah;
+		fulls += ",width=" + aw;
+		fulls += ",innerWidth=" + aw;
+		fulls += ",resizable"
+	} else {
+		fulls += ",resizable"; // 对于不支持screen属性的浏览器，可以手工进行最大化。 manually
+	}
+    window.open(getContextPath()+"/prof/document/"+uuid+".html","newwin",fulls);
+	
+}
+
+function init(){
+	//$("#initbutton").button('loading').queue();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/init"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				alert(result.data);
+			});
+			//$("#initbutton").button('reset');
+	       // $("#initbutton").dequeue(); 
+		}
+	});
+}
+</script>

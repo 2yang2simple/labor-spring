@@ -1,0 +1,183 @@
+<html layout:decorator="fragment/layout-labor">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<style type="text/css">
+    .toolbar {
+        border: 1px solid gray;
+    }
+    .text {
+        border: 1px solid #ccc;
+        height: 700px;
+    }
+</style>
+
+<Strong class="navbar-text">Richtext</Strong>
+<ul class="nav nav-tabs">
+	<li>
+		<a th:href="@{/core/richtext/list}">List</a>
+	</li>
+	<li class="active">
+		<a>Editor</a>
+	</li>
+</ul>
+<span id="tips" style="color: red;">&nbsp;</span>
+<br>
+	<table border=0>
+	<tr>
+		<td width="130px;">
+		<span style="float:left;font-size: 20px; font-weight:bold;">Name:&nbsp;&nbsp;*</span>
+		</td>
+		<td><input type="hidden" name="id" id="id"><input type="hidden" name="status" id="status">
+			<input size="60" type="text" name="name" id="name"
+					onkeyup="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');" 
+					onafterpaste="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');">
+		</td>
+		<td>
+			&nbsp;&nbsp;<input type='button' class='btn btn-primary btn-sm' onclick='doSubmit();' value='SUBMIT'/>
+		</td>
+	</tr>
+	</table>
+	<ul class="nav nav-tabs">
+		<li><a href="javascript:toTextarea();">HTML</a></li>
+		<li><a href="javascript:toCKEditor();">CKeditor</a></li>
+	</ul>
+   	<textarea id="textarea" name="textarea"  rows="25" class="form-control" style="display: none"></textarea>
+	<div id="ckeditor" style="display: none">
+		<div id="toolbar-container"></div>
+   		<div id="editor" style="border: 1px solid lightgray; min-height:500px;]"></div>
+   	</div>
+   	<br>
+	<center>
+		<input type='button' class='btn btn-primary btn-sm' onclick='doSubmit();' value='&nbsp;&nbsp;&nbsp;SUBMIT&nbsp;&nbsp;&nbsp;'/>
+	</center>
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+var uuid=getQueryString("uuid");
+var rtid="";
+var myEditor;
+$(document).ready(function(){
+	DecoupledEditor
+	    .create( document.querySelector( '#editor' ) )
+	    .then( editor => {
+	        const toolbarContainer = document.querySelector( '#toolbar-container' );
+	        toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+	           return new LaborUploadAdapter(loader, getContextPath(),"","");
+	        };
+	        myEditor = editor;
+	    } )
+	    .catch( error => {
+	        console.error( error );
+	    } );
+	/**
+	ClassicEditor
+	    .create( document.querySelector( '#editor' ), {
+	        //toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+	        heading: {
+	            options: [
+	                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+	                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+	                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+	            ]
+	        }
+	    } )
+        .then( editor => {
+            editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                return new LaborUploadAdapter(loader,getContextPath(),"","");
+            };
+            myEditor = editor;
+        } )
+	    .catch( error => {
+	        console.log( error );
+	    } );
+	*/
+	
+	findInfo();
+});
+function findInfo(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/core/richtexts/uuid-"+uuid),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if(result.code==1){
+				$("input[name='id']").val(result.data.id);
+				$("input[name='name']").val(result.data.name);
+				$("input[name='status']").val(result.data.status);
+				rtid = result.data.id;
+				myEditor.setData(result.data.html);
+				$("textarea[name='textarea']").val(result.data.html);
+				
+			}
+		},
+        complete:function(){
+        	toCKEditor();
+        }
+	});
+}
+var textarea = false;
+function toTextarea(){
+	textarea = true;
+	$("textarea[name='textarea']").val(myEditor.getData());
+	document.getElementById('textarea').style.display='block';
+	document.getElementById('ckeditor').style.display='none';
+}
+function toCKEditor(){
+	textarea = false;
+	myEditor.setData($("textarea[name='textarea']").val());
+	document.getElementById('textarea').style.display='none';
+	document.getElementById('ckeditor').style.display='block';
+}
+
+function doSubmit(){
+	var name = $("input[name='name']").val();
+	if (name==null||name==""){
+		document.getElementById("tips").innerText="Name Must NOT be empty.";
+		return;
+	} 
+	var status = $("input[name='status']").val();
+	var id = $("input[name='id']").val();
+	var data;
+	var type;
+	var url;
+	var html;
+	if (textarea){
+		html = $("textarea[name='textarea']").val();
+	} else {
+		html = myEditor.getData();
+	}
+	if (id!=null&&id!=""&&id!='undefined'){
+		type = "PUT";
+		//data = {"id": id, "name": name, "status": status, "html": myEditor.getData()};
+		data = {"id": id, "name": name, "status": status, "html": html};
+		url = l("/rest/core/richtexts/"+id)
+	} else {
+		type = "POST";
+		//data = {"name": name, "html": myEditor.getData()};
+		data = {"name": name, "html": html};
+		url = l("/rest/core/richtexts");
+	}
+	
+	data = JSON.stringify(data);
+
+	$.ajax({
+		type: type,
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		data: data,
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				window.location.href = getContextPath()+"/core/richtext/list";
+  	       	} else {
+  	       		document.getElementById("tips").innerText=result.msg;
+  	       	} 
+		}
+	});
+};
+</script>

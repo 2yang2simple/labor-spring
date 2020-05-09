@@ -1,0 +1,199 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content">
+<div id="defaulthtml"style="display: none;">
+	<ul class="nav nav-tabs">
+		<li><a href="javascript:toLoginPasswordPage();" th:text="#{auth.label.userpassword}"></a></li>
+		<li class="active"><a th:text="#{auth.label.authcode}"></a></li>
+	</ul>
+	
+	<span id="tips" style="color: red; font-weight: bold;">&nbsp;</span>
+	<table class="table" border=0>
+	<tr class="visible-lg visible-md">
+		<td width="20%">
+		<span class="visible-lg visible-md" style="float:right;font-weight:bold;">CF</span>
+		</td>
+		<td><input readonly="true" class="form-control" type="text" id="cfmd5" name="cfmd5">
+		</td>
+	</tr>
+		<td>
+		<span class="visible-lg visible-md" style="float:right;font-weight:bold;"  th:text="#{auth.label.user}"></span>
+		</td>
+		<td><input class="form-control" type="text" name="name" id="name" placeholder="name/sno/phone">
+		</td>
+	</tr>
+		<td>
+		<span class="visible-lg visible-md" style="float:right;font-weight:bold;"  th:text="#{auth.label.authcode}"></span>
+		</td>
+		<td><input class="form-control" type=password name="code" id="code" placeholder="code"> 
+		</td>
+	</tr>
+	<tr style="display:none;">
+		<td>&nbsp;	
+		</td>
+		<td>
+			<div class='checkbox' id="checkboxrememberme" >
+				<label class='btn btn-default'>
+					<input id="rememberme" name="rememberme" value="1" type="checkbox" onchange="javascript:rememberMe(this);"
+						th:text="#{auth.label.rememberme}"></input>
+				</label>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan='2'>
+			<center>
+				<button class='btn btn-primary' id="loginbutton" onclick='doLogin();' type='button' th:text="#{auth.button.login}"></button>
+			</center>
+		</td>
+	</tr>
+	</table>
+</div>
+<div id="loadingmessage"style="display: block;"><h3 class="text-muted" th:text="#{tips.login}"></h3></div>
+</div></html>
+<script type="text/javascript" th:src="@{/js/fingerprint2.min.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+/*
+	if (window.requestIdleCallback) {
+		console.log("requestIdleCallback");
+		requestIdleCallback(doBeforeLogin);
+	} else {
+		console.log("setTimeout");
+		setTimeout(doBeforeLogin, 500);
+	}
+*/
+});
+/***start post canvas fingerptint*********/
+var redirecturl=getQueryString("redirecturl");
+var callbackurl=getQueryString("callbackurl");
+if (redirecturl==null){
+	redirecturl = getContextPath()+"/public/success";
+}
+if (callbackurl==null){
+	callbackurl=getContextPath()+"/public/success";
+}
+
+function toLoginPasswordPage(){
+	window.location.href = getContextPath()+"/sso/login-password?redirecturl="+redirecturl+"&callbackurl="+callbackurl;
+}
+
+var cfmd5;
+if (window.requestIdleCallback) {
+	console.log("requestIdleCallback");
+	requestIdleCallback(postFingerprint);
+} else {
+	console.log("setTimeout");
+	setTimeout(postFingerprint, 500);
+}
+function postFingerprint(){
+	f(function(cf){
+		cfmd5 = cf;
+		toLogin();
+	});
+}
+/***end post canvas fingerptint**********/
+
+$("input[name='name']").keydown(function() {
+    if (event.keyCode == "13") {
+        $("input[name='code']").focus();
+        $("input[name='code']").select();
+    }
+});
+$("input[name='code']").keydown(function() {
+    if (event.keyCode == "13") {
+        doLogin();
+    }
+});
+function toLogin(){
+	$("input[name='cfmd5']").val(cfmd5);
+	$.ajax({
+		type: "POST",
+		url: l("/rest/sso/cfmd5?cfmd5="+cfmd5),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				if (result.data.authCode!=null){
+					window.location.href = callbackurl+"?authcode="+result.data.authCode+"&redirecturl="+redirecturl;
+				} else {
+					$("input[name='name']").val(result.data.sno);
+					/**
+					if (result.data.description!=null){
+						document.getElementById('checkboxrememberme').style.display='block';						
+						if(result.data.description.indexOf("remembermechecked")>0){
+							$("input[name='rememberme']")[0].checked = true;
+							$("input[name='password']").val("rememberme");
+						} else if (result.data.description.indexOf("remembermeunchecked")>0){
+							$("input[name='rememberme']")[0].checked = false;
+							$("input[name='password']").val("");
+						}
+					}
+					**/
+					$("#defaulthtml").css("display","block");
+					$("#loadingmessage").css("display","none");
+				}
+			});
+
+			if (result==null||result.code!='1'){
+				$("#defaulthtml").css("display","block");
+				$("#loadingmessage").css("display","none");
+			}
+		}
+	});
+}
+
+
+function doLogin(){
+	
+	$("#loginbutton").button('loading').queue();
+
+	document.getElementById("tips").innerText="\n";
+	var name = $("input[name='name']").val();
+	var code=$("input[name='code']").val();
+	var cfmd5=$("input[name='cfmd5']").val();
+	
+	var rememberme = 0;
+    var obj=document.getElementsByName('rememberme'); 
+    for(var i=0; i<obj.length; i++){ 
+        if(obj[i].checked) {
+        	rememberme = obj[i].value; 
+        }
+    } 
+	
+	if (name==null||name==""||code==null||code==""){
+		document.getElementById("tips").innerText="Empty Name or Code.";
+		$("#loginbutton").button('reset');
+        $("#loginbutton").dequeue(); 
+		return;
+	} 
+
+	var postdata = {"name": name, "code": code, "cfmd5":cfmd5, "rememberme":rememberme};
+	$.ajax({
+		type: "POST",
+		url: l("/rest/sso/codes"),
+		async: false,
+		contentType: "application/json;charset=utf-8",
+		data: JSON.stringify(postdata),
+		dataType: "json",
+		success:function (result) {
+			handleResultCodeDisplayError("tips", result, function (result) {
+				window.location.href = callbackurl+"?authcode="+result.data+"&redirecturl="+redirecturl;
+			});
+			if (result==null||result.code!='1'){
+				$("#loginbutton").button('reset');
+		        $("#loginbutton").dequeue();
+			}
+		},
+        complete:function(){
+        }
+	});
+
+}
+function rememberMe(obj){
+	if(obj.checked){
+		
+	} else {
+		$("input[name='code']").val("");
+	}
+}
+
+</script>

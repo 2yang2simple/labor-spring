@@ -1,0 +1,132 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<style type="text/css">
+
+</style>
+	<div class="errorlistarea" id="errorlistarea" >
+		<ol></ol>
+	</div>
+	<p class="text-left" style="font-size: 24px" id="documentname" name="documentname"></p>
+
+	<form id="documentform">
+
+		<div class="form-group">
+			<!-- <label for="content">Detail:*</label> -->
+			<div id="toolbar-container"></div>
+			<div id="documentcontent" name="documentcontent" style="border: 1px solid lightblue; min-height:400px;"></div>
+			<input id="documentcontentid" name="documentcontentid" type="hidden">
+			<input id="documentid" name="documentid" type="hidden">
+		</div>
+
+		<button class="btn btn-primary prms" id="savebutton" type="button" onclick='doSave();' permission="document:edit"
+			th:text="#{button.submit}"></button> 
+		
+	</form>
+
+
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+var projectid;
+var uuid=getQueryString("uuid");
+if(uuid==null||uuid==''||uuid === 'undefined'){
+	uuid = '[[${uuid}]]';
+}
+
+var myEditor;
+$(document).ready(function(){
+	findInfo();
+});
+window.onbeforeunload = function(event) { 
+	event = event || window.event;
+    event.returnValue = "Are you sure to leave?";
+}
+function findInfo(){
+	var url;
+	url = l("/rest/projects/uuid-"+uuid);
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				if(result.data!=null){
+					var documentdto = result.data.defaultDocumentDto;
+					projectid = result.data.project.id;
+					$("#documentname").html(documentdto.document.name);
+					$("#documentid").val(documentdto.document.id);
+					$("#documentcontentid").val(documentdto.content.id);
+					var gaid = result.data.defaultGalleryId;
+					DecoupledEditor
+					    .create( document.querySelector( '#documentcontent' ) )
+					    .then( editor => {
+					        const toolbarContainer = document.querySelector( '#toolbar-container' );
+					        toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+					        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+						        return new LaborUploadAdapter(loader,getContextPath(),"/oss/objects/galleries/"+gaid+"/images","/oss/objects/images/");
+						    };
+					        myEditor = editor;
+					        myEditor.setData(documentdto.content.html);
+					    } )
+					    .catch( error => {
+					        console.error( error );
+				    } );
+					
+				}
+			});	
+		}
+	});
+};
+var validateParameters = {
+        rules:{
+        	documentcontent: {
+                required: true
+              }
+        },
+        messages:{
+        	documentcontent: {
+				required: " Content is required."
+			}
+        }
+};
+
+function doSave(){
+	$("#savebutton").button('loading').queue();
+	window.onbeforeunload = null;
+	if(JQueryValidate($("#documentform"),validateParameters)){
+		var id = $("input[name='documentid']").val();
+		var contentid = $("input[name='documentcontentid']").val();
+		var postdata;
+		postdata = {"html": myEditor.getData()};
+		postdata = JSON.stringify(postdata);
+
+		$.ajax({
+			type: "PUT",
+			url: l("/rest/projects/"+projectid+"/docs/"+id+"/contents/"+contentid),
+			contentType: "application/json;charset=utf-8",
+			data: postdata,
+			dataType: "json",
+			success:function (result) {			
+				handleResultCode(result, function (result) {
+					openPage("/proj/viewer?uuid="+uuid);
+				});
+			},
+	        complete:function(){
+				$("#savebutton").button('reset');
+		        $("#savebutton").dequeue(); 
+	        }
+		});
+	}else{
+		$("#savebutton").button('reset');
+        $("#savebutton").dequeue(); 
+	}
+
+};
+
+</script>

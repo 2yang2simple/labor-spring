@@ -1,0 +1,43 @@
+<div th:fragment="sidemenu">  
+	<div style="float: top left;">
+	<ul>
+			<!-- 
+			<a th:href="@{/}">
+				<li>Home</li>
+			</a>
+			 -->
+			<a th:href="@{/asample/index}">
+				<li>A SAMPLE</li>
+			</a>
+			<br>
+			<a th:href="@{/core/fingerprint/list}" class="prms" permission="fingerprint">
+				<li>Fingerprints</li>
+			</a>
+			<br>
+			<a th:href="@{/core/user/list}" class="prms"  permission="user">
+				<li>Users</li>
+			</a>
+			<br>
+			<a th:href="@{/core/richtext/list}" class="prms" permission="richtext">
+				<li>Richtext</li>
+			</a>
+			<br>
+			<a th:href="@{/core/dictionary/list}" class="prms" permission="dictionary">
+				<li>Dictionary</li>
+			</a>
+			<br>
+			<a th:href="@{/core/role/list}" class="prms"  permission="role">
+				<li>Roles</li>
+			</a>
+			<br>
+			<a th:href="@{/core/sysconfig/list}" class="prms" permission="sysconfig">
+				<li>Sysconfig</li>
+			</a>
+			<br>
+			<a th:href="@{/auth/api}">
+				<li>api</li>
+			</a>
+	</ul>	
+	</div>
+</div>
+   

@@ -1,0 +1,86 @@
+<div th:fragment="header">  
+<title>Labor Framework</title>
+<head>
+<style type="text/css">
+.tab-wrapper{
+  position: relative;
+  margin: 3px auto; 
+  width: 98%;
+  height: 20px;
+
+}
+.tab-wrapper .tab-radio{
+  display: none;
+}
+.tab-handler{
+  margin: 0px 0px 0px 30px;
+  display: block;
+  float: left;
+  height: 22px;
+  padding: 0px 0px 5px 00px;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 30px;
+}
+.tab-radio:checked + .tab-handler{
+  border-bottom: 1px solid darkblue;
+  text-decoration: none;
+  padding: 0px 0px 5px 00px;
+  margin: 0px 0px 0px 30px;
+}
+.tab-handler a:hover
+{ 	
+	text-decoration: none;
+	background-color: lightgray;
+}
+.tab-wrapper .tab-content{
+  visibility: hidden;
+  position: relative;
+  top: 22px;
+  left: 10px;
+  width: 100%;
+  padding: 0px 0px 5px 20px;
+  font-size: 14px;
+  transform: translateY(20px);
+}
+
+</style>
+	
+<div class="headbody">
+
+  <div class="tab-wrapper">
+
+	<p class="label label-default" style="float: left; margin: 5px 10px 0px 00px;">
+		<a style="color: white;font-size: 20px; " >Labor Framework</a>
+	</p>
+
+   
+		
+	<div class="dropdown " style="float: right; margin: 5px 5px 0px 5px;">
+	    <button type="button" class="btn dropdown-toggle label label-default" 
+	    		id="dropdownMenu1" data-toggle="dropdown">
+	    	<span style="font-size: 20px; font-size: 20px; font-weight:bold;">&equiv;</span>
+	        <span class="caret" ></span>
+	    </button>
+	    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+	        <li role="presentation">
+				<a th:href="@{/}">
+					<span class="text-primary" th:text="Home"></span>
+				</a>
+	        </li>
+
+
+	    </ul>
+	</div>
+	
+	
+ </div>
+ 
+
+ 
+</div>
+</head>	
+
+
+</div>
+

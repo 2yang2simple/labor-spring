@@ -1,0 +1,179 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content">
+
+<small>
+<a class='prms pull-right' permission='user:create' th:href="@{/core/user/creator}" th:text="#{auth.link.createuser}"></a></small>
+	<form id="userform" style="display: none;">	
+		<table class="table" border=0 >
+		<tr><td width="20%">
+			<span style="float:right;font-weight:bold;">CF</span>
+			</td>
+			<td><input readonly="true" class="form-control" type="text" id="cfmd5" name="cfmd5">
+			<input readonly="true" class="form-control" type="hidden" id="id" name="id">
+		</tr></td>
+		<tr><td>
+			<span style="float:right;font-weight:bold;" th:text="#{auth.label.sno}"></span>
+			</td>
+			<td><input readonly="true" class="form-control" type="text" name="sno">
+		</td></tr>
+		<tr><td> 
+			<span style="float:right; font-weight:bold;" th:text="#{auth.label.user}"></span>
+			</td>
+			<td><input class="form-control" type="text" name="name"
+						onkeyup="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');" 
+						onafterpaste="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');">
+		</td></tr>
+		<tr><td> 
+			<span style="float:right; font-weight:bold;" th:text="#{auth.label.cn}"></span>
+			</td>
+			<td><input class="form-control" type="text" name="realName">
+		</td></tr>
+		<tr><td> 
+			<span style="float:right; font-weight:bold;" th:text="#{auth.label.phone}"></span>
+			</td>
+			<td><input class="form-control" type="text" name="cellPhone" onkeyup="this.value=this.value.replace(/\D/g,'')">
+		</td></tr>
+		<tr><td> 
+			<span style="float:right; font-weight:bold;" th:text="#{auth.label.email}"></span>
+			</td>
+			<td><input class="form-control" type="text" name="email">
+		</td></tr>
+		<tr><td> 
+			<span style="float:right; font-weight:bold;" th:text="#{auth.label.weixin}"></span>
+			</td>
+			<td><input class="form-control" type="text" name="weixin">
+		</td></tr>
+		<tr><td colspan="2"> 
+				<br>
+				<span id="tips" style="color: red; font-weight: bold;">&nbsp;</span>
+				<div style="float: right;">
+					<div id="buttonhtml"/>
+				</div>
+			</td>
+		</tr>
+		</table>
+
+	</form> 
+
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/fingerprint2.min.js}"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	if (window.requestIdleCallback) {
+		console.log("requestIdleCallback");
+		requestIdleCallback(doGetUserInfo);
+	} else {
+		console.log("setTimeout");
+		setTimeout(doGetUserInfo, 500);
+	}
+});
+
+function doGetUserInfo(){
+	f(function setCF(cf){
+		$("input[name='cfmd5']").val(cf);
+	});
+	$.ajax({
+		type: "GET",
+		url: addToken("/rest/core/auth/u"),
+		contentType: "application/json;charset=utf-8",
+		//dataType: "json",
+		success:function (data) {
+			if(data!=null) {
+				if(data.id!=null&&data.id!=""){
+					setData2From(data);
+					var buttonhtml = 
+						"<button class='btn btn-primary' type='button' onclick='doSubmitUserForm();'>SUBMIT</button>";					
+					if(data.pwdmodify!=null&&data.pwdmodify!=""){
+						buttonhtml = buttonhtml	+ "&nbsp;&nbsp;<a href='"+getContextPath()+"/core/auth/user-pwd?pm="+data.pwdmodify+"'>New-PWD</a>";
+					} else {
+						buttonhtml = buttonhtml	+ "&nbsp;&nbsp;<button type='button' class='btn btn-danger btn-xs' onclick="+"javascript:doCreatePwdModifyUrl('"+data.uuid+"');>New-PWD</button>";
+					}
+					buttonhtml = buttonhtml + "&nbsp;&nbsp;<a class='' href='"+getContextPath()+"/core/auth/logout"+"' >Logout</a>";		
+					$("#userform").show(0);
+					$("#buttonhtml").html(buttonhtml);
+					show4Permissions();
+				}else {
+					//document.getElementById("tips").innerText("Please login");
+					//$("#buttonhtml").html("<a href='"+getContextPath()+"/auth/login"+"'>Login</a>");
+					window.location.href = getContextPath()+"/core/auth/login";
+				}
+				
+			}else{
+				//document.getElementById("tips").innerText("Please login");
+				//$("#buttonhtml").html("<a href='"+getContextPath()+"/auth/login"+"'>Login</a>");
+				window.location.href = getContextPath()+"/core/auth/login";
+			}
+		}
+	});
+
+}
+function doCreatePwdModifyUrl(uuid){
+
+	$.ajax({
+		type: "PATCH",
+		url: addToken("/rest/core/users/"+uuid+"/pwdmodify"),
+		contentType: "application/json;charset=utf-8",
+		data: {},
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				window.location.href = getContextPath()+"/core/auth/user-info";
+  	       	} else {
+  	       		alert(JSON.stringify(result.msg));
+  	       	}
+		}
+	});
+};
+
+function setData2From(data){
+	if(data!=null){
+		if(data.status=="1"){
+			//document.getElementById("tips").innerText="Approved.";
+		} else{
+			//document.getElementById("tips").innerText="Please wait for approving.";
+		}
+		//document.getElementById("loginbutton").style="display:none";
+		$("input[name='id']").val(data.id);
+		$("input[name='sno']").val(data.sno);
+		$("input[name='realName']").val(data.realName);
+		$("input[name='cellPhone']").val(data.cellPhone);
+		$("input[name='name']").val(data.name);
+		$("input[name='email']").val(data.email);
+		$("input[name='weixin']").val(data.weixin);
+		//$("input[name='status']").val(data.status);
+	}
+}
+
+function doSubmitUserForm(){
+	var data={};
+	var name = $("input[name='name']").val();
+	$("input[name='name']").val(name.replace(/[^\w~!@#$%^&*_+]/g,''));
+	
+	$("#userform").serializeArray().map(function(x){data[x.name]=x.value;});
+	var postdata = JSON.stringify(data);
+	$.ajax({
+		type: "PATCH",
+		url: addToken("/rest/core/auth/u"),
+		contentType: "application/json;charset=utf-8",
+		data: postdata,
+		dataType: "text",
+		success:function (message) {
+			if (message=="1") {
+				window.location.href = getContextPath()+"/public/success.html";
+				 //document.getElementById("tips").innerText="Submit succeeded.";
+  	       	} else {
+  	       		document.getElementById("tips").innerText=JSON.stringify(message);
+  	       	}
+		}
+	});
+
+}
+
+   //t420 chrome:7517106dc96f24ca65978114835a79b5 ; IE:cb522118ca762dd0a97876f4fab3c005 
+	//7517106dc96f24ca65978114835a79b5 125,1,62,20
+	//09a8846d65fb475497b8f7d93e73cf00 
+	//354e11f1f5da04efa21a4ab2031506b1 
+	//8e390fa4e9f571ee7c7478ee13716267
+</script>

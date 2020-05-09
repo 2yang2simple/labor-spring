@@ -1,0 +1,275 @@
+<div th:fragment="header">  
+<title th:text="#{tips.auth.welcome}">Auth</title>
+<head>
+	
+<style type="text/css">
+.tab-wrapper{
+  position: relative;
+  margin: 3px auto; 
+  width: 98%;
+  height: 20px;
+  background-color: white;
+}
+.tab-wrapper .tab-radio{
+  display: none;
+}
+.tab-handler{
+  margin: 0px 0px 0px 30px;
+  display: block;
+  float: left;
+  height: 22px;
+  padding: 0px 0px 5px 00px;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 30px;
+}
+.tab-radio:checked + .tab-handler{
+  border-bottom: 21px solid lightgray;
+  text-decoration: none;
+  padding: 0px 0px 5px 00px;
+  margin: 0px 0px 0px 30px;
+}
+
+.tab-handler a:hover
+{ 	
+	text-decoration: none;
+	background-color: lightgray;
+}
+
+.tab-wrapper .tab-content{
+  visibility: hidden;
+  position: relative;
+  top: 22px;
+  left: 10px;
+  width: 100%;
+  padding: 0px 0px 5px 20px;
+  font-size: 14px;
+  transform: translateY(20px);
+}
+
+</style>
+
+<div class="headbody">
+	<nav class="navbar navbar-default" style="background-color: white;">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+		    <!--
+		    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		    </button>
+ 			-->
+	      	<div class="navbar-brand">
+		      	<span class="label label-default" style="font-size: 20px; " >
+		      			Auth
+		      	</span>
+		      	&nbsp;
+		      	<label th:text="#{tips.auth.welcome}"></label>
+	     	</div>
+	    </div> 
+	      	    
+	      
+	    	<!-- 
+	     
+		    <div class="collapse navbar-collapse  " id="bs-example-navbar-collapse-1">
+	
+		    <ul class="nav navbar-nav navbar-right">
+		      <li class="dropdown">
+		        	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+		        		<span th:text="#{link.user}"></span>
+		        		<span class="caret"></span></a>
+				    <ul class="dropdown-menu">
+				         
+				        <li role="presentation">
+							<a th:href="@{/help}">
+								<span class="text-primary" th:text="#{link.help}"></span>
+							</a>
+				        </li>
+				        <li role="presentation">
+							<a th:href="@{/settings}" class="prms" permission="user">
+								<span class="text-primary" th:text="#{link.settings}"></span>
+							</a>
+				        </li>
+				        					
+				        <li role="presentation" class="divider"></li>
+				        
+				        <li role="presentation">
+							<a th:href="@{/?lang=zh_CN}">
+								<span class="text-primary">中文</span>
+							</a>
+						</li>
+				        <li role="presentation">
+							<a th:href="@{/?lang=en_US}">
+								<span class="text-primary">English</span>
+							</a>
+						</li>
+						
+				        <li role="presentation" class="divider"></li>
+				        <li role="presentation">
+							<a th:href="@{/profile/user-info}">
+								<span class="text-primary" id="headeruserinfo" th:text="#{link.userinfo}"></span>
+							</a>
+							<a th:href="@{/core/auth/logout}" id="headerlogoutlink" style="display: none;">
+								<span class="text-primary" th:text="#{auth.link.logout}"></span>
+							</a>
+							<a th:href="@{/core/auth/login}" id="headerloginlink" style="display: none;">
+								<span class="text-primary" th:text="#{auth.button.login}"></span>
+							</a>
+						</li>
+				    </ul>
+		      </li>
+		    </ul>
+			</div>
+	    	-->
+	  	</div>
+	</nav>
+	
+<!--  
+	<div class="tab-wrapper visible-lg visible-md">
+	
+	    <p class="label label-primary" style="float: left; margin: 5px 50px 0px 0px;">
+			<a style="color: white;font-size: 20px; " th:href="@{/}">PPP</a>
+		</p>
+	
+	    <input type="radio" name="tab-radio" class="tab-radio" id="tab-radio-home" checked>
+	    <label for="tab-radio-1" class="tab-handler tab-handler-1">
+	    	<a th:href="@{/}">Home</a>
+	    </label>
+	    
+	
+	    <input type="radio" name="tab-radio" class="tab-radio" id="tab-radio-1st" >
+	    <label for="tab-radio-2" class="tab-handler tab-handler-1">
+	    	<a th:href="@{/prod/list}">Product</a>
+	    </label>
+	
+	    <input type="radio" name="tab-radio" class="tab-radio" id="tab-radio-2nd">
+	    <label for="tab-radio-3" class="tab-handler tab-handler-2">
+	    	<a th:href="@{/proj/list}">Project</a>
+	    </label>
+	
+	    <input type="radio" name="tab-radio" class="tab-radio" id="tab-radio-3rd">
+	    <label for="tab-radio-4" class="tab-handler tab-handler-3">
+	    	<a th:href="@{/prof/tag/tags}">Proof</a>
+	    </label>
+	  
+	 	<div class="dropdown " style="float: right; margin: 5px 5px 0px 5px;">
+		    <button type="button" class="btn dropdown-toggle label label-default" 
+		    		id="dropdownMenu1" data-toggle="dropdown">
+		    	<span style="font-size: 20px; font-size: 20px; font-weight:bold;">&equiv;</span>
+		        <span class="caret" ></span>
+		    </button>
+		    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+		        <li role="presentation">
+		        
+					<a th:href="@{/settings}" class="prms" permission="user">
+						<span class="text-primary">Settings</span>
+					</a>
+		        </li>
+		        <li role="presentation">
+					<a th:href="@{/help}">
+						<span class="text-primary">Help</span>
+					</a>
+		        </li>
+		        <li role="presentation" class="divider"></li>
+		        <li role="presentation">
+					<a th:href="@{/profile/user-info}">
+						<span class="text-primary">User Info</span>
+					</a>
+		        </li>
+		    </ul>
+		</div>
+		
+	</div>	
+
+	<div class="tab-wrapper visible-xs visible-sm">
+	 	<p class="label label-primary" style="float: left; margin: 5px 5px 0px 5px;">
+			<a style="color: white;font-size: 20px; font-weight:bold; " th:href="@{/}">PPP</a>
+		</p>
+		<input class="form-control pull-left" style="width: 53%; margin: 1px 0px 0px 10px;" type="text" 
+						name="globalsearchkey" id="globalsearchkey" placeholder="Press enter to search">
+		<div class="dropdown " style="float: right; margin: 5px 5px 0px 5px;">
+		    <button type="button" class="btn dropdown-toggle label label-default" 
+		    		id="dropdownMenu1" data-toggle="dropdown">
+		    	<span style="font-size: 20px; font-size: 20px; font-weight:bold;">&equiv;</span>
+		        <span class="caret" ></span>
+		    </button>
+		    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+		        <li role="presentation">
+		            <a th:href="@{/}">
+		            <span class="text-primary">Home</span></a>
+		        </li>
+		        <li role="presentation">
+		            <a th:href="@{/prod/list}">
+		            <span class="text-primary">Product</span></a>
+		        </li>
+		        <li role="presentation">
+		            <a th:href="@{/proj/list}">
+		            <span class="text-primary">Project</span></a>
+		        </li>
+		        <li role="presentation">
+		            <a th:href="@{/prof/tag/tags}">
+		            <span class="text-primary">Proof</span></a>
+		        </li>
+		        <li role="presentation" class="divider"></li>
+		        <li role="presentation">
+		            <a th:href="@{/profile/user-info}">
+						<span class="text-muted">User Info</span>
+					</a>   
+		        </li>
+		    </ul>
+		</div>
+	</div>
+	-->
+	
+	
+</div>		
+
+<!-- 
+				超小屏幕 手机 (<768px)	小屏幕 平板 (≥768px)	中等屏幕 桌面 (≥992px)	大屏幕 桌面 (≥1200px)
+.visible-xs-*	可见					隐藏				隐藏					隐藏
+.visible-sm-*	隐藏					可见				隐藏					隐藏
+.visible-md-*	隐藏					隐藏				可见					隐藏
+.visible-lg-*	隐藏					隐藏				隐藏					可见
+.hidden-xs		隐藏					可见				可见					可见
+.hidden-sm		可见					隐藏				可见					可见
+.hidden-md		可见					可见				隐藏					可见
+.hidden-lg		可见					可见				可见					隐藏
+
+ -->
+
+<script type="text/javascript">
+//Dropdown on Hover
+/**
+$('.dropdown').hover(
+  function () {
+    $(this).toggleClass('open');
+  },
+  function() {
+    $(this).toggleClass('open');
+  }
+);
+**/
+
+function homeRatioSelected(){
+	$("#tab-radio-home").attr("checked", "true"); 
+}
+
+function do2ndRatioSelected(){
+	$("#tab-radio-2nd").attr("checked", "true"); 
+}
+
+function do1stRatioSelected(){
+	$("#tab-radio-1st").attr("checked", "true"); 
+}
+
+function galleryRatioSelected(){
+	$("#tab-radio-3rd").attr("checked", "true"); 
+}
+function documentRatioSelected(){
+	$("#tab-radio-3rd").attr("checked", "true"); 
+}
+</script>
+</head>	
+</div>

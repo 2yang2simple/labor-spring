@@ -1,0 +1,203 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<div layout:fragment="content">
+<h2 class="visible-lg visible-md" id="signupstatus">Welcome to sign up....</h2>
+
+<table border="0"  width="">
+<tr>
+
+	<td valign="top">
+	<form id="userform">
+		<fieldset>
+		<span id="tips" style="color: red; font-weight: bold;">&nbsp;</span>
+		<div class="errorlistarea">
+			<ol></ol>
+		</div>
+		<div id="vuesignupinfo">
+		<table class="table" border=0>
+		
+		<tr class="tab-wrapper visible-lg visible-md"><td></td><td></td>
+			<td rowspan="5" valign="top">
+				<a target="_blank" th:href="@{/rt/name/googleauth.html}"><img v-bind:src="qrcodeimgurl"></img></a>
+			</td>
+		</tr>
+		<tr>
+			<td width="20%">
+				<span style="float:right;font-size: 20px; font-weight:bold;">Name:&nbsp;&nbsp;</span>
+			</td>
+			<td><input class="form-control" type="text" v-model="name" id="name" name="name" placeholder="name"
+						onkeyup="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');" 
+						onafterpaste="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');">
+			</td>
+		</tr>
+			<td>
+			<span style="float:right;font-size: 20px; font-weight:bold;">Password:&nbsp;&nbsp;</span>
+			</td>
+			<td><input class="form-control" type="text" v-model="password" id="password" name="password" placeholder="password"
+						onkeyup="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');" 
+						onafterpaste="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');">
+			</td>
+		</tr>
+		</tr>
+			<td>
+			<span style="float:right;font-size: 20px; font-weight:bold;">key:&nbsp;&nbsp;*</span>
+			</td>
+			<td>
+				<input readonly="true"  class="form-control" type="text" v-model="secretkey">
+				<input type="hidden" v-model="saltkey">
+				<input type="hidden" v-model="qrcodeurl">
+			</td>
+		</tr>
+		</tr>
+			<td>
+			<span style="float:right;font-size: 20px; font-weight:bold;">Sno:&nbsp;&nbsp;*</span>
+			</td>
+			<td>
+				<input readonly="true"  class="form-control" type="text" v-model="sno">
+			</td>
+		</tr>
+		</tr>
+			<td>
+			<a target="_blank" th:href="@{/rt/name/googleauth.html}">
+				<span style="float:right;font-size: 20px; font-weight:bold;">Code:&nbsp;&nbsp;*</span></a>
+			</td>
+			<td><input class="form-control" type="text" v-model="authcode" id="authcode" name="authcode"
+						onkeyup="this.value=this.value.replace(/[^\d]/g,'');" 
+						onafterpaste="this.value=this.value.replace(/[^\d]/g,'');">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<br>
+				<center>
+					<button id="signupbutton" type='button' class='btn btn-primary' onclick='doSignup();'>&nbsp;&nbsp;&nbsp;SIGN UP&nbsp;&nbsp;&nbsp;</button>
+				</center>
+			</td>
+		</tr>
+		</table>
+
+		<center><a class="visible-xs visible-sm" target="_blank" th:href="@{/rt/name/googleauth.html}"><img v-bind:src="qrcodeimgurl"></img></a></center>
+
+		</div>
+		</fieldset>
+	</form>
+	</td>
+</tr>
+</table>
+
+<br>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jsencrypt.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript">
+var vuesignupinfo;
+vuesignupinfo = new Vue({
+	el: '#vuesignupinfo',
+	data: {
+		name: '',
+		password: '',
+		sno: '',
+		secretkey: '',
+		saltkey: '',
+		qrcodeurl: '',
+		qrcodeimgurl:'',
+		authcode: ''
+
+	}
+});
+$(document).ready(function(){
+	findSignupInfo();
+
+});
+
+var validateParameters = {
+        rules:{
+        	//name: {
+            //    required: true,
+            //    minlength: 2
+            //  },
+            //password: {
+            //    required: true
+            //  },
+            authcode: {
+                required: true
+              }
+        },
+        messages:{
+        	//name: {
+			//	required: " name is required.",
+			//	minlength: " name needs more than 2 characters."
+			//},
+			//password: {
+			//	required: " password is required."
+			//},
+			authcode: {
+				required: " code is required. put the Google Key to the Google Authenticator"
+			}
+        }
+};
+
+function doSignup(){
+	$("#submitbutton").button('loading').queue();
+	if(JQueryValidate($("#userform"),validateParameters)){
+		
+		document.getElementById("tips").innerText="\n";
+
+		var pwd=md5(vuesignupinfo.password);
+		var crypt = new JSEncrypt();
+		crypt.setPublicKey(publickey512);
+		var pwdencrypt=crypt.encrypt(pwd);
+		var postdata = {"name": vuesignupinfo.name,
+						 "pwdencrypt": pwdencrypt,
+						 "sno": vuesignupinfo.sno,
+						 "secretkey": vuesignupinfo.secretkey,
+						 "saltkey": vuesignupinfo.saltkey,
+						 "authcode": vuesignupinfo.authcode};
+		
+		$.ajax({
+			type: "POST",
+			url: l("/a/signup-auth"),
+			contentType: "application/json;charset=utf-8",
+			data: JSON.stringify(postdata),
+			dataType: "json",
+			success:function (result) {
+				handleResultCodeDisplayError("tips", result, function (result) {
+					window.location.href = getContextPath()+"/public/success";
+				});
+				
+			},
+	        complete:function(){
+	        	$("#signupbutton").button('reset');
+	            $("#signupbutton").dequeue(); 
+	        }
+		});
+		
+	} else {
+		$("#signupbutton").button('reset');
+        $("#signupbutton").dequeue(); 
+	}
+	
+}
+function findSignupInfo(){
+	$.ajax({
+		type: "GET",
+		url: l("/a/signup-auth-info"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCodeDisplayError("tips", result, function (result) {
+				vuesignupinfo.sno = result.data.sno;
+				vuesignupinfo.secretkey = result.data.secretkey;
+			 	vuesignupinfo.saltkey = result.data.saltkey;
+				vuesignupinfo.qrcodeurl = result.data.qrcodeurl;
+				vuesignupinfo.qrcodeimgurl = getContextPath() + "/oss/objects/qr-code?content=" + encodeURI(result.data.qrcodeurl);
+				
+			});
+		}
+	});
+}
+
+</script>

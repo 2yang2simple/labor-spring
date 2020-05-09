@@ -1,0 +1,18 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content">
+
+</div>
+</html>
+<script type="text/javascript">
+var redirecturl=getQueryString("redirecturl");
+var callbackurl=getQueryString("callbackurl");
+if (redirecturl==null){
+	redirecturl = getContextPath()+"/profile/user-info";
+}
+if (callbackurl==null){
+	callbackurl = getContextPath()+"/profile/user-info";
+}
+$(document).ready(function(){
+	window.location.href = getContextPath()+"/sso/login-password?redirecturl="+redirecturl+"&callbackurl="+callbackurl;
+});
+
+</script>

@@ -1,0 +1,34 @@
+<div th:fragment="layout-leftmenu"> 
+<div th:replace="fragment/labor-blackwhite/header :: header"></div>
+<body>
+	<!--/* Standard layout can be mixed with Layout Dialect */-->
+	<HR align="CENTER" color="black" width="100%">
+	
+	<table border="0" width="99%">
+		<tr style="height:600px;">
+			<td width="180px;" valign="top">	
+				<div th:replace="fragment/labor-blackwhite/sidemenu :: sidemenu" ></div>		
+			</td>
+			<td width="4px;" bgcolor="black"> 
+			</td>
+			<td width="3px;" bgcolor=""> 
+			</td>
+			<td valign="top">
+				<div class="container">
+					<div layout:fragment="content">
+						<!-- ============================================================================ -->
+						<!-- This content is only used for static prototyping purposes (natural templates)-->
+						<!-- and is therefore entirely optional, as this markup fragment will be included -->
+						<!-- from "fragments/header.html" at runtime.                                     -->
+						<!-- ============================================================================ -->
+					</div>
+				</div>	
+			</td>
+		</tr>
+	</table>
+
+	<HR align="CENTER" color="black" width="100%">
+	<div th:replace="fragment/labor-blackwhite/footer :: footer"></div>
+
+</body>
+</div>

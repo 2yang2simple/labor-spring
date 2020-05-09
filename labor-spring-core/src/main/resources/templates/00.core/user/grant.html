@@ -1,0 +1,159 @@
+<html layout:decorator="fragment/layout-labor">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<Strong>Users - Grant Roles</Strong>&nbsp;&nbsp;
+<span id="tips" style="color: darkblue;">Select the Role for the User.</span>
+<br><br>
+
+<form id="userform">
+	<table border=0>
+	<tr><td width="10%;">
+			<span style="font-size: 20px; font-weight:bold;">Sno:&nbsp;&nbsp;&nbsp;</span>
+		</td>
+		<td width="40%;">
+			<input type="hidden" id="id" name="id">
+			<input readonly="true" size="30" type="text" name="sno">
+		</td>
+		<td width="10%;">
+			<span style="font-size: 20px; font-weight:bold;">Name:&nbsp;&nbsp;&nbsp;</span>
+		</td>
+		<td width="40%;">
+			<input readonly="true" size="30" type="text" name="name">
+		</td>
+	</tr>
+	</table>
+</form> 
+		<br>
+		
+		<p id="datalist"/>
+		
+		<br>
+
+		<center>
+			<input  class="btn btn-primary" type="button" onclick="doGrant();" value="Submit"/>
+		</center>
+</div>
+</html>
+
+<script type="text/javascript">
+
+var uuid=getQueryString("uuid");
+var userid="";
+$(document).ready(function(){
+	//$("input[name='cfmd5']").val(cfmd5);
+	findUserInfo();
+});
+
+function findUserInfo(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/core/users/uuid-"+uuid),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if(result.code=="1"){
+				var data = result.data;
+				if(data!=null){
+					if(data.status=="1"){
+						//document.getElementById("tips").innerText="Approved.";
+					} else{
+						//document.getElementById("tips").innerText="Please wait for approving.";
+					}
+					$("input[name='id']").val(data.id);
+					$("input[name='sno']").val(data.sno);
+					$("input[name='name']").val(data.name);
+					userid = data.id;
+					findRole();
+				}
+			}
+		}
+	});
+
+};
+
+function findRole(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/core/roles/actived-list"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if(result.code=="1"){
+				var data = result.data;
+				if(data!=null&&data.length>0){
+					var datalisthtml = "<div class='row'><div class='checkbox'>";
+					for (var i = 0; i < data.length; i++) {
+						datalisthtml = datalisthtml + "<div class='col-sm-6 col-lg-3'><label class='btn btn-default'>" 
+						+ "<input type='checkbox' value='"+data[i].id+"' name='role'>"
+						+ data[i].name
+						+ "</label></div>";
+					}
+					datalisthtml = datalisthtml+"</div></div>";
+					$("#datalist").html(datalisthtml);
+					findRoleGranted();
+				} else {
+					$("#datalist").html("No data found.");
+				}
+			}
+		}
+	});
+};
+function findRoleGranted(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/core/users/"+userid+"/roles"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if(result.code="1"){
+				var data = result.data;
+				if(data!=null&&data.length>0){
+					for(i=0;i<data.length;i++){
+						var obj=document.getElementsByName('role'); 
+				        for(j=0;j<obj.length;j++){
+				            if(obj[j].value == data[i].id){
+				            	obj[j].checked = true;
+				                break
+				            }
+				        }
+					}
+	  	       	} 
+			}
+		}
+	});
+};
+function doGrant(){
+
+	var rolelist = new Array();
+    var obj=document.getElementsByName('role'); 
+    for(var i=0; i<obj.length; i++){ 
+        if(obj[i].checked) {
+        	rolelist.push({"userid":userid,"roleid":obj[i].value}); 
+        }
+    } 
+	if (rolelist==null||rolelist.length==0){
+		//this will delete all the roles of the user;
+		rolelist.push({"userid":userid,"roleid":"-1"}); 
+	}
+	$.ajax({
+		type: "POST",
+		url: l("/rest/core/users/"+userid+"/roles"),
+		contentType: "application/json;charset=utf-8",
+		data: JSON.stringify(rolelist),
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				window.location.href = getContextPath()+"/core/user/list";
+  	       	} 
+		}
+	});
+    
+};
+
+   //t420 chrome:7517106dc96f24ca65978114835a79b5 ; IE:cb522118ca762dd0a97876f4fab3c005 
+	//7517106dc96f24ca65978114835a79b5 125,1,62,20
+	//09a8846d65fb475497b8f7d93e73cf00 
+	//354e11f1f5da04efa21a4ab2031506b1 
+	//8e390fa4e9f571ee7c7478ee13716267
+</script>

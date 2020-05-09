@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.labor</groupId>
+		<artifactId>labor</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<groupId>com.labor.spring</groupId>
+	<artifactId>labor-spring</artifactId>
+	<name>labor-spring</name>
+	<packaging>jar</packaging>
+	
+	<properties>
+		<labor.version>1.0.0</labor.version>
+		<labor-common.version>1.0.0</labor-common.version>
+		<labor-spring.version>1.0.0</labor-spring.version>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+	</properties>
+	<dependencies>
+		<!-- internal dependencies -->
+		<dependency>
+			<groupId>com.labor.common</groupId>
+			<artifactId>labor-common</artifactId>
+			<version>${labor-common.version}</version>
+		</dependency>
+	
+		<!-- spring.boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!-- provided means when packing war, the tomcat libs are excluded -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+	   		<groupId>org.springframework.boot</groupId>
+	   		<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		
+		<!-- others -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+		   	<groupId>io.springfox</groupId>
+		   	<artifactId>springfox-swagger2</artifactId>
+		   	<version>2.6.1</version>
+		</dependency>
+		<dependency>
+		   	<groupId>io.springfox</groupId>
+		   	<artifactId>springfox-swagger-ui</artifactId>
+		   	<version>2.6.1</version>
+		</dependency>
+		
+		
+		
+	</dependencies>
+		
+</project>

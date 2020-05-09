@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<META http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--/* add common css */-->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" ></link>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/labor.css}"></link>
+	<link rel="shortcut icon" th:href="@{/img/favicon.png}"/>
+</head>
+
+   	<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/labor.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+	
+
+	<!-- 
+	<div th:replace="fragment/richblue/layout-rightmenu :: layout-rightmenu"></div>
+	<div th:replace="fragment/richblue/layout-leftmenu :: layout-leftmenu"></div>
+	<div th:replace="fragment/richblue/layout-middlemenu :: layout-middlemenu"></div>
+ 	-->
+	<div id="layoutmenu">
+		<div th:replace="fragment/richblue/layout-middlemenu :: layout-middlemenu"></div>
+	</div>
+	<!-- 
+	<div id="layoutbare">
+		<div th:replace="fragment/richblue/layout-bare :: layout-bare"></div>
+	</div>
+	 -->
+<!-- 
+<script>/*@cc_on window.location.href="http://support.dmeng.net/upgrade-your-browser.html?referrer="+encodeURIComponent(window.location.href); @*/</script>	
+ -->
+<script type="text/javascript">
+
+if (/phone|pad|pod|iPhone|iPod|ios|iPad|Android|Fennec|BlackBerry|Mobile|IEMobile|MQQBrowser|JUC|Fennec|WosBrowser|BrowserNG|WebOS|Symbian|Windows Phone/i
+		.test(navigator.userAgent)) {
+	//window.location.href = getContextPath() + "/m";
+}
+
+var deletelayout;
+var bare=getQueryString("bare");
+if(bare!=null&&bare=='1'){
+	deletelayout = document.getElementById("layoutmenu");
+} else {
+	deletelayout = document.getElementById("layoutbare");
+}
+if(deletelayout){
+	deletelayout.parentNode.removeChild(deletelayout);
+} 
+
+window.onload=function(){
+	show4Permissions();
+	//show4CurrentUser();
+};
+
+$(document).ready(function(){
+}); 
+
+
+
+</script>
+
+</html>

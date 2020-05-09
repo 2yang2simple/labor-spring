@@ -1,0 +1,164 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+
+<!--  
+<ul class="nav nav-tabs">
+	<li><a th:href="@{/prof/tag/tags}">Tag</a></li>
+	<li><a th:href="@{/prof/document/list}">Document</a></li>
+	<li class="active"><a>Gallery</a></li>
+</ul>
+-->
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="input-group">
+      <input class="form-control" type="text" name="searchkey" id="searchkey" th:placeholder="#{tips.press.enter.to.search}">
+      <span class="input-group-btn">	 
+		  <button type="button" class="btn btn-primary" onclick="status='1';doSearch(0);">Go</button>
+		  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu pull-right" role="menu">
+		    <li><a href="javascript:clearInput();"><span class="text-primary" th:text="#{ button.clear }"></span></a></li>
+		    <li><a href="javascript:status='';doSearch(0);">
+		    		<span class="text-primary" th:text="#{ button.searchall }"></span></a></li>
+            <li role="presentation" class="divider"></li>
+            <li><a class='prms' permission="document:init" th:href="@{/prof/gallery/editor-gallery}">
+            		<span class="label label-primary" th:text="#{ button.create }"></span></a></li>
+		  </ul>		   
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
+	<div class="row" id="vuegallerylist">
+		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-4" v-for="entry in gallerylist">
+			<div class="thumbnail">
+				<a class="visible-lg visible-md" v-on:click="javascript:toViewerGallery(entry.uuid);"
+					data-toggle="tooltip" v-bind:title="entry.caption"> 
+					<IMG class="img-thumbnail" v-bind:src="imgurl[entry.uuid]"
+								onload="resizeImageThumbnail(this)">
+				</a>
+				<a class="visible-xs visible-sm" v-on:click="javascript:toListImage(entry.uuid);"
+					data-toggle="tooltip" v-bind:title="entry.caption"> 
+					<IMG class="img-thumbnail" v-bind:src="imgurl[entry.uuid]"
+								onload="resizeImageThumbnail(this)">
+				</a>
+				<div class="caption">
+					<Strong>{{ entry.name }}&nbsp;&nbsp;</Strong> <a
+						v-on:click="javascript:toEditor(entry.uuid);"
+						class="btn btn-primary btn-xs prms" permission="gallery:edit"
+						role="button" th:text="#{button.edit}"></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<p id="paginationend" />
+	<br>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jqthumb.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+
+<script type="text/javascript">
+galleryRatioSelected();
+
+var vuegallerylist;
+vuegallerylist = new Vue({
+	el: '#vuegallerylist',
+	data: {
+		gallerylist: [],
+		imgurl:{}
+	},
+	updated: function() {
+		Vue.nextTick(function() {
+			show4Permissions();
+        });
+    }
+});
+
+$(document).ready(function(){
+	doSearch(0);
+});
+function clearInput(){
+	$("#searchkey").val("");
+};
+$("#searchkey").keypress(function (e) {
+    if (e.which == 13) {
+    	doSearch(0);
+    }
+});
+var status = 1;
+function doSearch(page){
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/galleries/name-page-list?&name="+searchkey+"&page="+page+"&status="+status),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var page = result.data;
+				var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"doSearch");
+				vuegallerylist.gallerylist = page.content;
+				var first = 4;
+				if (page.content.length<4){
+					first = page.content.length;
+				}
+				// load the first images first;
+				for (var i=0;i<first;i++){
+					var gallery = page.content[i];
+					vuegallerylist.imgurl[gallery.uuid]=addToken(getContextPath()+'/rest/galleries/'+gallery.uuid+'/cover');
+				}
+				// then the others;
+				for (var i=first;i<page.content.length;i++){
+					var gallery = page.content[i];
+					vuegallerylist.imgurl[gallery.uuid]=addToken(getContextPath()+'/rest/galleries/'+gallery.uuid+'/cover');
+				}
+				
+				$("#paginationend").html("<div style='float: right;'>"+pagehtml + "</div>");
+				
+			});
+		},
+        complete:function(){
+        	//setTimeout(resizeImages, 500);
+        }
+	});
+}
+function toEditor(uuid){
+	window.location.href = getContextPath()+"/prof/gallery/editor-gallery?uuid="+uuid;
+	//window.open(getContextPath()+"/prof/gallery/editor-gallery?uuid="+uuid);
+}
+
+function toViewerGallery(uuid){
+	//alert(uuid);
+	window.location.href = getContextPath()+"/prof/gallery/viewer-gallery?uuid="+uuid;
+	//window.open(getContextPath()+"/prof/gallery/viewer?uuid="+uuid);
+}
+
+function toListImage(uuid){
+	//alert(uuid);
+	window.location.href = getContextPath()+"/prof/gallery/list-image?uuid="+uuid;
+	//window.open(getContextPath()+"/prof/gallery/viewer?uuid="+uuid);
+}
+function resizeImageThumbnail(hotimg){
+	$(hotimg).jqthumb({
+		width : '100%',//宽度
+		height : '142px',//高度
+		//position : { y: '50%', x: '50%'},//从图片的中间开始产生缩略图
+		zoom : '1',//缩放比例
+		method : 'auto'//提交方法，用于不同的浏览器环境，默认为‘auto’
+	});
+}
+function resizeImages(){
+	 $('#vuegallerylist img').jqthumb({
+	    classname      : 'jqthumb',
+		width : '100%',//宽度
+	    height : '100px',//高度
+	    showoncomplete : true
+	});
+}
+</script>

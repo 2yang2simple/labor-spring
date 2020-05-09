@@ -1,0 +1,154 @@
+<html layout:decorator="asample/layout-labor-2">
+	<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/bootstrap-theme.min.css}" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+  </head>
+<div layout:fragment="content">
+<Strong>A Sample - bootstrap</Strong>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container">
+   	bottom
+  </div>
+</nav>
+<div style ="float: right; ">
+	<a class="nav" href="https://v3.bootcss.com/getting-started/#download">https://v3.bootcss.com/getting-started/#download</a>&nbsp;
+</div>
+<br>
+
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+    <span class="sr-only">60% Complete</span>
+  </div>
+</div>
+<div class="alert alert-success" role="alert">success</div>
+<div class="alert alert-info" role="alert">infomation</div>
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>Warning!</strong> Better check yourself, you're not looking too good.
+</div>
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation" class="active"><a href="#">Home <span class="badge">42</span></a></li>
+  <li role="presentation"><a href="#">Profile</a></li>
+  <li role="presentation"><a href="#">Messages <span class="badge">3</span></a></li>
+</ul>
+<!-- Split button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-danger">Action</button>
+  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="#">Action</a></li>
+    <li><a href="#">Another action</a></li>
+    <li><a href="#">Something else here</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#">Separated link</a></li>
+  </ul>
+</div>
+<!-- 标准的按钮 -->
+<button type="button" class="btn btn-default">默认按钮</button>
+<!-- 提供额外的视觉效果，标识一组按钮中的原始动作 -->
+<button type="button" class="btn btn-primary">原始按钮</button>
+<!-- 表示一个成功的或积极的动作 -->
+<button type="button" class="btn btn-success">成功按钮</button>
+<!-- 信息警告消息的上下文按钮 -->
+<button type="button" class="btn btn-info">信息按钮</button>
+<!-- 表示应谨慎采取的动作 -->
+<button type="button" class="btn btn-warning">警告按钮</button>
+<!-- 表示一个危险的或潜在的负面动作 -->
+<button type="button" class="btn btn-danger">危险按钮</button>
+<!-- 并不强调是一个按钮，看起来像一个链接，但同时保持按钮的行为 -->
+<button type="button" class="btn btn-link">链接按钮</button>
+
+<p>
+  <button type="button" class="btn btn-primary btn-lg">大的原始按钮</button>
+  <button type="button" class="btn btn-default btn-lg">大的按钮</button>
+</p>
+<p>
+  <button type="button" class="btn btn-primary">默认大小的原始按钮</button>
+  <button type="button" class="btn btn-default">默认大小的按钮</button>
+</p>
+<p>
+  <button type="button" class="btn btn-primary btn-sm">小的原始按钮</button>
+  <button type="button" class="btn btn-default btn-sm">小的按钮</button>
+</p>
+<p>
+  <button type="button" class="btn btn-primary btn-xs">特别小的原始按钮</button>
+  <button type="button" class="btn btn-default btn-xs">特别小的按钮</button>
+</p>
+<p>
+  <button type="button" class="btn btn-primary btn-lg btn-block">块级的原始按钮</button>
+  <button type="button" class="btn btn-default btn-lg btn-block">块级的按钮</button>
+</p>
+<label for="basic-url">Your vanity URL</label>
+<div class="input-group">
+  <span class="input-group-addon" id="basic-addon3">https://example.com/users/</span>
+  <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+</div>
+
+<div class="row">
+  <div class="col-lg-6">
+    <div class="input-group">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+      <input type="text" class="form-control" placeholder="Search for...">
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+  <div class="col-lg-6">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Search for...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</html>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+});
+</script>

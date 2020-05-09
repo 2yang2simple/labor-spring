@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.labor</groupId>
+		<artifactId>labor</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<groupId>com.labor.spring.core</groupId>
+	<artifactId>labor-spring-core</artifactId>
+	<name>labor-spring-core</name>
+	<packaging>jar</packaging>
+	
+	<properties>
+		<labor.version>1.0.0</labor.version>
+		<labor-common.version>1.0.0</labor-common.version>
+		<labor-spring.version>1.0.0</labor-spring.version>
+		<labor-spring-core.version>1.0.0</labor-spring-core.version>
+		<labor-spring-feign.version>1.0.0</labor-spring-feign.version>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- internal dependencies -->
+		<dependency>
+			<groupId>com.labor.common</groupId>
+			<artifactId>labor-common</artifactId>
+			<version>${labor-common.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.labor.spring.feign</groupId>
+			<artifactId>labor-spring-feign</artifactId>
+			<version>${labor-spring-feign.version}</version>
+		</dependency>
+		
+		<!-- spring boot -->
+		
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<!-- ehcache 	
+		<dependency>
+		    <groupId>net.sf.ehcache</groupId>
+		    <artifactId>ehcache</artifactId>
+		</dependency>-->
+		<!-- redis -->
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+		 
+	
+	</dependencies>
+</project>

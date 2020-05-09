@@ -1,0 +1,267 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<div layout:fragment="content">
+<style type="text/css">
+</style>
+
+		 		
+	<div class="panel panel-success">
+		<div class="panel-heading">
+	        <span th:text="#{proj.label.whatstheproblem}"></span>
+			<span class="pull-right" id="documentstatus"></span>&nbsp;
+				
+	    </div>
+   		<div class="panel-body" >
+	   		<span class="text-info text-left" id="documentname"></span>
+	   		<div id="ckeditordocumentcontent" style="word-break:break-all; border: 0px solid lightgray;">
+   			</div>
+   		
+			<span class="text-muted pull-right" id="documentcreator"></span>&nbsp;
+   		</div>
+   	</div>
+
+   	
+   	<div id="vuecommentlist" >
+	<div class="panel panel-default "  v-for="(entry, index) in commentList">
+		<div class="panel-heading ">
+	        <span th:text="#{proj.label.progress}"></span>-{{ index+1 }}
+	        <span class="pull-right visible-lg visible-md">{{ entry.creator }}&nbsp;{{ entry.lastUpdateDate }}</span>
+	        <span class="pull-right visible-sm visible-xs">{{ entry.lastUpdateDate }}</span>
+	    </div>
+   		<div class="panel-body ckeditor" width="100%" style="word-break:break-all;" v-bind:id="'ckeditor'+index">
+	
+   		</div>
+   		
+   	</div>
+   	</div>
+
+	   		
+	   		<form id="commentform">
+	   			<div id="toolbar-container"></div>
+				<div id="ckeditorupdatecomment" name="ckeditorupdatecomment" style="border: 1px solid lightblue; min-height:300px;"></div>
+			</form>
+
+			<button class="btn btn-primary btn-sm pull-right" type="button" style="display: none;" id="updatebutton"
+				onclick='doSubmitComment();'><span th:text="#{proj.button.update.progress}"></span></button>
+			<button class="btn btn-warning btn-sm pull-left" type="button" style="display: none;" id="closebutton"
+				onclick='doCloseTodo();'><span th:text="#{proj.button.closetodo}"></span></button>
+			<button class="btn btn-info btn-sm pull-left" type="button" style="display: none;" id="openbutton"
+				onclick='doOpenTodo();'><span th:text="#{proj.button.opentodo}"></span></button>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+
+var documentid;
+var projectuuid;
+
+var projectid=getQueryString("projectid");
+var uuid=getQueryString("uuid");
+var maxckeditor=0;
+var vuecommentlist;
+vuecommentlist = new Vue({
+	el: '#vuecommentlist',
+	data: {
+		commentList: []
+	},
+	watch: {
+		commentList: function() {
+			this.$nextTick(function(){
+				/**
+				for(var i=0;i<vuecommentlist.commentList.length;i++){
+					var comment = vuecommentlist.commentList[i];
+					$("#ckeditor"+i).html(comment.html);
+				}
+				**/
+				var allEditors = document.querySelectorAll('.ckeditor');
+				for (var i = 0; i < allEditors.length; i++) {
+					if (maxckeditor<i){
+						maxckeditor=i;
+						DecoupledEditor
+							.create(allEditors[i])
+						  	.then( function (editor) {
+						  		editor.isReadOnly = true; 
+						  		
+						  	})
+						  	.catch( function (error) {
+						      	console.error( error );
+						});
+					}
+					
+					$("#ckeditor"+i).html(vuecommentlist.commentList[i].html);
+					
+				}
+				
+		     });
+	    }
+	 }
+});
+var myEditor;
+var updateCommentEditor;
+
+$(document).ready(function(){
+
+
+	DecoupledEditor
+	    .create( document.querySelector( '#ckeditordocumentcontent' ) )
+	    .then( function (editor) {
+	    	editor.isReadOnly = true; 
+	        myEditor = editor;
+	    } )
+	    .catch( function (error) {
+	        console.error( error );
+	    } );
+	    
+	DecoupledEditor
+	    .create( document.querySelector( '#ckeditorupdatecomment' ) )
+	    .then( editor => {
+	        const toolbarContainer = document.querySelector( '#toolbar-container' );
+	        toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+				return new LaborUploadAdapter(loader,getContextPath(),"","");
+	        };
+	        updateCommentEditor = editor;
+	    } )
+	    .catch( error => {
+	        console.error( error );
+	    } );
+	findInfo();
+
+});
+function findInfo(){
+	var url;
+	url = l("/rest/projects/"+projectid+"/docs/uuid-"+uuid);
+
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {		
+			handleResultCode(result, function (result) {
+				var content;
+				var documentdto = result.data;
+				documentid = documentdto.document.id;
+				
+				$("#documentname").html(documentdto.document.name);
+				$("#documentcreator").html(documentdto.creator.name+" "+documentdto.creator.realName+" "+documentdto.document.creationDate);
+				setProjectStatus(documentdto.docStatus);
+				myEditor.setData(documentdto.content.html);
+				//$("#ckeditordocumentcontent").html(documentdto.content.html);
+				
+				if(documentdto.commentList!=null&&documentdto.commentList.length>0){
+					document.getElementById('vuecommentlist').style.display='block';
+					vuecommentlist.commentList = documentdto.commentList;
+				}
+			});
+		}
+	});
+};
+
+var validateCommentParameters = {
+     rules:{
+    	 ckeditorupdatecomment: {
+             required: true,
+             maxlength: 3000
+       	}
+     }
+};
+function doSubmitComment(){
+	if(JQueryValidate($("#commentform"),validateCommentParameters)){
+		var comment = updateCommentEditor.getData();
+		var postdata;
+		postdata = {"html": comment };
+		postdata = JSON.stringify(postdata);
+	
+		$.ajax({
+			type: "POST",
+			url: l("/rest/projects/"+projectid+"/docs/"+documentid+"/comments"),
+			contentType: "application/json;charset=utf-8",
+			data: postdata,
+			dataType: "json",
+			success:function (result) {
+				handleResultCode(result, function (result) {
+					doFindComments();
+					updateCommentEditor.setData("");
+				});		
+			}
+		});
+	}
+	
+}
+function doFindComments(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/projects/"+projectid+"/docs/"+documentid+"/comments"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {		
+			handleResultCode(result, function (result) {
+				if(result.data!=null){
+					//callback(result);
+					if(result.data!=null&&result.data.length>0){
+						document.getElementById('vuecommentlist').style.display='block';
+						vuecommentlist.commentList = result.data;
+					}
+				}
+			});
+		}
+	});
+	
+}
+function setProjectStatus(status){
+	if (status!=null&&status=='0'){
+		$("#documentstatus").html("CLOSED");
+		document.getElementById('openbutton').style.display='block';
+		document.getElementById('closebutton').style.display='none';
+		document.getElementById('updatebutton').style.display='none';
+	} else {
+		$("#documentstatus").html("OPENED");
+		document.getElementById('openbutton').style.display='none';
+		document.getElementById('closebutton').style.display='block';
+		document.getElementById('updatebutton').style.display='block';
+	}
+}
+function doCloseTodo(){
+	if(JQueryValidate($("#commentform"),validateCommentParameters)){
+		$.ajax({
+			type: "PATCH",
+			url: l("/rest/projects/"+projectid+"/docs/todo/"+documentid+"/status/closed"),
+			contentType: "application/json;charset=utf-8",
+			dataType: "json",
+			success:function (result) {
+				handleResultCode(result, function (result) {
+					setProjectStatus(result.data.pdStatus);
+					var comment = updateCommentEditor.getData();
+					updateCommentEditor.setData("CLOSED:"+comment);
+					doSubmitComment();
+				});		
+			}
+		});
+	}
+}
+function doOpenTodo(){
+	if(JQueryValidate($("#commentform"),validateCommentParameters)){
+		$.ajax({
+			type: "PATCH",
+			url: l("/rest/projects/"+projectid+"/docs/todo/"+documentid+"/status/opened"),
+			contentType: "application/json;charset=utf-8",
+			dataType: "json",
+			success:function (result) {
+				handleResultCode(result, function (result) {
+					setProjectStatus(result.data.pdStatus);
+					var comment = updateCommentEditor.getData();
+					updateCommentEditor.setData("OPENED:"+comment);
+					doSubmitComment();
+				});		
+			}
+		});
+	}
+}
+function toViewerPage(uuid){
+	window.location.href = getContextPath()+"/proj/viewer?uuid="+projectuuid;
+}
+</script>

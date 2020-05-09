@@ -1,0 +1,24 @@
+<html layout:decorator="fragment/layout">
+	<!-- /* Content of this page will be decorated by the elements of layout.html (task/layout) */ -->
+	 
+	<div layout:fragment="content">
+	<br>
+	<br>	
+		<div>
+			<fieldset>
+				<table border="0" >
+					<tr align="left">
+						<td align="left">
+							<IMG th:src= "@{/img/error.png}">
+						</td>
+						<td align="left">
+							<H2>ERROR</H2>
+							<a th:href="@{/}"  style="color: darkblue;">Home</a>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</div>
+	</div>
+</html>
+						

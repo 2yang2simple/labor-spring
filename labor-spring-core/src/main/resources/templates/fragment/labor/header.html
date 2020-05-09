@@ -1,0 +1,127 @@
+<div th:fragment="header">  
+<title>Labor Framework</title>
+<head>
+<style type="text/css">
+.tab-wrapper{
+  position: relative;
+  margin: 3px auto; 
+  width: 98%;
+  height: 20px;
+
+}
+.tab-wrapper .tab-radio{
+  display: none;
+}
+.tab-handler{
+  margin: 0px 0px 0px 30px;
+  display: block;
+  float: left;
+  height: 22px;
+  padding: 0px 0px 5px 00px;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 30px;
+}
+.tab-radio:checked + .tab-handler{
+  border-bottom: 1px solid darkblue;
+  text-decoration: none;
+  padding: 0px 0px 5px 00px;
+  margin: 0px 0px 0px 30px;
+}
+.tab-handler a:hover
+{ 	
+	text-decoration: none;
+	background-color: lightgray;
+}
+.tab-wrapper .tab-content{
+  visibility: hidden;
+  position: relative;
+  top: 22px;
+  left: 10px;
+  width: 100%;
+  padding: 0px 0px 5px 20px;
+  font-size: 14px;
+  transform: translateY(20px);
+}
+
+</style>
+	
+<div class="headbody">
+
+  <div class="tab-wrapper">
+
+	<p class="label label-default" style="float: left; margin: 5px 10px 0px 00px;">
+		<a style="color: white;font-size: 20px; " th:href="@{/core}">Labor Framework</a>
+	</p>
+
+    <input type="radio" name="tab-radio" class="tab-radio" id="tab-radio-product" >
+    <label for="tab-radio-2" class="tab-handler tab-handler-2">
+			<a th:href="@{/core/fingerprint/list}" class="prms" permission="fingerprint">
+				Fingerprints
+			</a>
+    </label>
+
+    <input type="radio" name="tab-radio" class="tab-radio" id="tab-radio-document">
+    <label for="tab-radio-3" class="tab-handler tab-handler-3">
+    	<a th:href="@{/core/user/list}" class="prms"  permission="user">
+				Users
+			</a>
+    </label>
+
+    <input type="radio" name="tab-radio" class="tab-radio" id="tab-radio-document">
+    <label for="tab-radio-6" class="tab-handler tab-handler-6">
+			<a th:href="@{/core/role/list}" class="prms"  permission="role">
+				Roles
+			</a>
+    </label>
+    
+    <input type="radio" name="tab-radio" class="tab-radio" id="tab-radio-document">
+    <label for="tab-radio-7" class="tab-handler tab-handler-7">
+			<a th:href="@{/core/sysconfig/list}" class="prms" permission="sysconfig">
+				Sysconfig
+			</a>
+    </label>
+		
+	<div class="dropdown " style="float: right; margin: 5px 5px 0px 5px;">
+	    <button type="button" class="btn dropdown-toggle label label-default" 
+	    		id="dropdownMenu1" data-toggle="dropdown">
+	    	<span style="font-size: 20px; font-size: 20px; font-weight:bold;">&equiv;</span>
+	        <span class="caret" ></span>
+	    </button>
+	    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+	        <li role="presentation">
+				<a th:href="@{/}">
+					<span class="text-primary" th:text="#{link.home}"></span>
+				</a>
+	        </li>
+	        <li role="presentation">
+				<a th:href="@{/help}">
+					<span class="text-primary" th:text="#{link.help}"></span>
+				</a>
+	        </li>
+	        <li role="presentation" class="divider"></li>
+	        <li role="presentation">
+				<a th:href="@{/profile/user-info}">
+					<span class="text-primary" id="headeruserinfo" th:text="#{link.userinfo}"></span>
+				</a>
+				<a href="javascript:gotoLogoutPage();" id="headerlogoutlink" style="display: none;">
+					<span class="text-primary" th:text="#{auth.link.logout}"></span>
+				</a>
+				<a href="javascript:gotoLoginPage();" id="headerloginlink" style="display: none;">
+					<span class="text-primary" th:text="#{auth.button.login}"></span>
+				</a>
+	        </li>
+	    </ul>
+	</div>
+	
+	
+ </div>
+ 
+
+ 
+</div>
+</head>	
+
+
+</div>
+

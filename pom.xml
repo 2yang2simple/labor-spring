@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.6.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.labor</groupId>
+	<artifactId>labor</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<name>labor</name>
+	<description>labor projects</description>
+
+	<properties>
+		<labor.version>1.0.0</labor.version>
+		<labor-common.version>1.0.0</labor-common.version>
+		<labor-spring-core.version>1.0.0</labor-spring-core.version>
+		<labor-spring-feign.version>1.0.0</labor-spring-feign.version>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+	</properties>
+
+	<!-- 
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+ 	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	-->
+	<modules>
+		<module>labor-common</module>
+		<module>labor-spring</module>
+		<module>labor-spring-feign</module>
+		<module>labor-spring-core</module>
+		<module>labor-spring-system-auth</module>
+		<module>labor-spring-system-ppp</module>
+	</modules>
+</project>

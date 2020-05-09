@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.labor</groupId>
+		<artifactId>labor</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<groupId>com.labor.spring.system.ppp</groupId>
+	<artifactId>labor-spring-system-ppp</artifactId>
+	<name>labor-spring-system-ppp</name>
+	<packaging>war</packaging>
+	
+	<properties>
+		<labor.version>1.0.0</labor.version>
+		<labor-common.version>1.0.0</labor-common.version>
+		<labor-spring.version>1.0.0</labor-spring.version>
+		<labor-spring-core.version>1.0.0</labor-spring-core.version>
+		<labor-spring-feign.version>1.0.0</labor-spring-feign.version>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+		<final-file-name>ppp</final-file-name>
+		<final-file-path>D:\output-directory</final-file-path>
+	</properties>
+	
+	<dependencies>
+		<!-- internal dependencies -->
+		<dependency>
+			<groupId>com.labor.spring.core</groupId>
+			<artifactId>labor-spring-core</artifactId>
+			<version>${labor-spring-core.version}</version>
+		</dependency>
+		<!-- hanlp -->
+		<dependency>
+		    <groupId>com.hankcs</groupId>
+		    <artifactId>hanlp</artifactId>
+		    <version>portable-1.7.4</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<outputDirectory>${final-file-path}</outputDirectory>
+					<finalName>${final-file-name}</finalName>
+				</configuration>
+			</plugin>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-war-plugin</artifactId>
+			    <configuration>
+			        <webResources>
+			            <resource>
+			                <directory>${project.basedir}/production</directory>
+			                <targetPath>WEB-INF/classes</targetPath>
+			                <includes>
+			                    <include>*.*</include>
+			                </includes>
+			            </resource>
+			        </webResources>
+			    </configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<executions>
+				 <execution>
+					<id>prepare-war</id>
+					<phase>prepare-package</phase>
+					<goals>
+					<goal>replace</goal>
+					</goals>
+				 </execution>
+				</executions>
+				<configuration>
+				 <includes>
+				  <include>${project.basedir}\src\main\resources\templates\help.html
+				  </include>
+				 </includes>
+				 <outputFile>${project.basedir}\target\classes\templates\help.html
+				 </outputFile>
+				<replacements>
+				 <replacement>
+				  <token>-version-</token>
+				  <value>${maven.build.timestamp}</value>
+				 </replacement>
+				</replacements>
+				</configuration>
+			</plugin>
+		</plugins>
+		
+
+	</build>
+	
+</project>

@@ -1,0 +1,69 @@
+<html layout:decorator="fragment/layout">
+<div layout:fragment="content">
+
+<!-- 
+<div class="row">
+  <div class="col-lg-6">
+    <div class="input-group">
+      <input class="form-control" type="text" name="searchkey" id="searchkey" placeholder="Press enter to search">
+      <span class="input-group-btn">	 
+		  <button type="button" class="btn btn-primary" onclick="doSearch(0);">Go</button>
+		  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu pull-right" role="menu">
+		    <li><a href="javascript:clearInput();"><span class="text-primary">Clear</span></a></li>
+		  </ul>		   
+      </span>
+    </div>
+  </div>
+</div>
+-->
+<div class="panel panel-success">
+	<div class="panel-heading">
+		Project TO-DO List
+	</div>
+	<table class='table table-condensed table-hover' id="vuetodolist">
+		<tbody>
+			<tr v-for="(entry,index) in todolist">
+				<td>{{ index+1 }}</td>
+				<td width="80%"><a v-on:click="toViewerTodo(entry.uuid)">{{ entry.name }}</a></td>
+				<td class="visible-lg visible-md">{{ entry.creationDate }}</td>
+			</tr>		
+		</tbody>
+	</table>
+</div>
+
+</div></html>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+var projectid=getQueryString("projectid");
+
+var vuetodolist;
+vuetodolist = new Vue({
+	el: '#vuetodolist',
+	data: {
+		todolist: []
+	}
+});
+$(document).ready(function(){
+	doSearch(0);
+});
+function doSearch(page){	
+	$.ajax({
+		type: "GET",
+		url: l("/rest/projects/"+projectid+"/docs/todo-list"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				vuetodolist.todolist = result.data;
+			});
+		}
+	});
+}
+
+function toViewerTodo(todouuid){
+	window.location.href = getContextPath()+"/proj/viewer-todo?uuid="+todouuid+"&projectid="+projectid;
+}
+</script>

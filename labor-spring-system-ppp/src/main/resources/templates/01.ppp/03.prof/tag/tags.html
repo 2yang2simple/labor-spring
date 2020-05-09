@@ -1,0 +1,164 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<!-- 
+<ul class="nav nav-tabs">
+	<li role="presentation" class="active"><a>Tag</a></li>
+	<li role="presentation"><a th:href="@{/prof/document/list}">Document</a></li>
+	<li role="presentation"><a th:href="@{/prof/gallery/list-gallery}">Gallery</a></li>
+</ul>
+-->
+<div class="row">
+  <div class="col-lg-8">
+    <div class="input-group">
+      <input class="form-control" type="text" name="searchkey" id="searchkey" th:placeholder="#{tips.press.enter.to.search}">
+      <span class="input-group-btn">	 
+		  <button type="button" class="btn btn-primary" onclick="doSearch(0);">Go</button>
+		  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu pull-right" role="menu">
+		    <li><a href="javascript:clearInput();"><span class="text-primary" th:text="#{ button.clear }"></span></a></li>
+		  </ul>		   
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+<!-- 
+	<input class="form-control" type="text" name="searchkey2" id="searchkey2" placeholder="Press enter to search">
+	<input class='btn btn-primary btn-sm prms' permission="document:create" type='button' onclick='doSearch(0);' value='SEARCH'/>	 
+	<input class='btn btn-default btn-xs prms' permission="document:create" type="button" onclick="clearInput();" value="clear"/>	
+	<a class='btn btn-warning btn-sm pull-right prms' permission="document:create" th:href="@{/prof/document/creator}" >CREATE</a> 
+ -->
+	<ul class="list-inline" id="vuetaglist">
+      <li class="list-inline-item"><a onClick="javascript:listMyDocuments(0);"><h3>#我的文档</h2></a></li>
+      <li class="list-inline-item" v-for="(entry,index) in tagList">
+      	<a v-on:click="javascript:doSearchDocByTag(entry.name,0);"><h5>#{{ entry.name }}</h3></a></li>
+  	</ul>
+	<p id="tagpaginationend"/>
+<table class='table table-condensed table-hover' id="vuedocumentlist">
+	<thead>
+		<tr class="active">
+			<td width="5%"></td>
+			<td th:text="#{label.name}"></td>
+			<td width="200px;"class="visible-lg visible-md" th:text="#{label.creationdate}"></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr v-for="(entry,index) in documentList">
+			<td>{{ index+1 }}</td>
+			<td><a v-on:click="toViewerPage(entry.uuid)">{{ entry.name }}</a></td>
+			<td class="visible-lg visible-md">{{ entry.creationDate }}</td>
+		</tr>
+		
+	</tbody>
+</table>
+<p id="paginationend"/>
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+documentRatioSelected(); 
+var tagname=getQueryString("tagname");
+var vuedocumentlist;
+vuedocumentlist = new Vue({
+	el: '#vuedocumentlist',
+	data: {
+		documentList: []
+	}
+});
+var vuetaglist;
+vuetaglist = new Vue({
+	el: '#vuetaglist',
+	data: {
+		tagList: []
+	}
+});
+var searchkey;
+$(document).ready(function(){
+	doSearchTags(0);
+	if (tagname!=null&&tagname!=''&&tagname!="undefined"){
+		doSearchDocByTag(tagname,0)
+	}
+});
+function clearInput(){
+	$("#searchkey").val("");
+};
+$("#searchkey").keypress(function (e) {
+	if(event.keyCode == "13") {   
+		doSearch(0);
+	}
+});
+function doSearch(page){
+	searchkey = $("#searchkey").val();
+	doSearchTags(page);
+}
+function doSearchTags(page){
+	var searchkey = $("#searchkey").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/tags/name-page-list?name="+searchkey+"&page="+page),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var page = result.data;
+				vuetaglist.tagList = page.content;
+				var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"doSearchTags");
+				//$("#paginationfront").html(pagehtml);
+				$("#tagpaginationend").html("<div style='float: right;'>"+pagehtml + "</div>");
+			});
+		}
+	});
+	
+}
+
+function doSearchDocByTag(tag,page){
+	tagname = tag;
+	listTagDocuments(page);
+}
+function listTagDocuments(page){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/tag-page-list?sortby=doc_id&tag="+tagname+"&page="+page),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var page = result.data;
+				vuedocumentlist.documentList = page.content;
+				var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"listTagDocuments");
+				//$("#paginationfront").html(pagehtml);
+				$("#paginationend").html("<div style='float: right;'>"+pagehtml + "</div>");
+			});
+		}
+	});
+	
+}
+function listMyDocuments(page){
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/documents/my-page-list?page="+page),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				var page = result.data;
+				vuedocumentlist.documentList = page.content;
+				var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"listMyDocuments");
+				//$("#paginationfront").html(pagehtml);
+				$("#paginationend").html("<div style='float: right;'>"+pagehtml + "</div>");
+			});
+		}
+	});
+	
+}
+function toViewerPage(uuid){
+	window.location.href = getContextPath()+"/prof/document/"+uuid+".html";
+	//window.open(getContextPath()+"/prof/document/"+uuid+".html");
+}
+
+</script>

@@ -1,0 +1,35 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<div layout:fragment="content">
+<h2 id="loginstatus">Waiting....</h2>
+</div>
+</html>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	logout();
+	
+});
+
+function logout(){
+	$.ajax({
+		type: "GET",
+		url: l("/a/logout/"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (message) {
+			if (message=="1") {
+  	       		window.location.href = getContextPath()+"/auth/login";
+  	       	} else {
+  	       		window.location.href = getContextPath()+"/auth/user-info"; 		
+  	       	}
+		},
+		error:function (message) {
+		    window.location.href = getContextPath()+"/public/error";
+		}
+	});
+
+}
+
+
+</script>

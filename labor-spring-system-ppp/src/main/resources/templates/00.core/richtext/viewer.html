@@ -1,0 +1,63 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+	<div class="container visible-lg visible-md">
+		<p class="" id="datahtml"/>
+	</div>
+	<div class="container visible-xs visible-sm">
+		<p class="" id="ckeditordatahtml"/>
+	</div>
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+
+var uuid=getQueryString("uuid");
+var rtname=getQueryString("name");
+
+if(uuid==null||uuid==''||uuid === 'undefined'){
+	uuid = '[[${uuid}]]';
+}
+if(rtname==null||rtname==''||rtname === 'undefined'){
+	rtname = '[[${name}]]';
+}
+var myEditor;
+$(document).ready(function(){
+
+	DecoupledEditor
+	    .create( document.querySelector( '#ckeditordatahtml' ) )
+	    .then( function (editor) {
+	    	editor.isReadOnly = true; 
+	        myEditor = editor;
+	    } )
+	    .catch( function (error) {
+	        console.error( error );
+	    } );
+
+	findInfo();
+
+});
+function findInfo(){
+	var url;
+	if(uuid!=null&&uuid!=''){
+		url = l("/rest/core/richtexts/uuid-"+uuid);
+	} else {
+		url = l("/rest/core/richtexts/name-"+rtname);
+	}
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			resultErrorMsg(result);
+			if(result.code==1){
+				$("#datahtml").html(result.data.html);
+				myEditor.setData(result.data.html);
+			}
+		}
+	});
+};
+</script>

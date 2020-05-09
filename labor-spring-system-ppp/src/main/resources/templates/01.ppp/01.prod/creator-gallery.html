@@ -1,0 +1,283 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+
+	<div class="errorlistarea" id="errorlistarea" >
+		<ol></ol>
+	</div>
+
+	<form id="galleryform">
+		<div class="form-group">
+			<label for="name" data-toggle="tooltip" data-placement="top" title="title" th:text="#{label.title}"></label> 
+			<input class="form-control "
+				id="name" name="name" type="text"
+				placeholder="Input Title here.">
+				<input id="id" name="id" type="hidden">
+		</div>
+		<div class="form-group">
+			<label for="caption" data-toggle="tooltip" data-placement="top" title="description" th:text="#{label.description}"></label> 
+			<textarea class="form-control "
+				id="caption" name="caption" rows="3"></textarea>
+		</div>
+		<div class="form-group">
+			<label for="status" data-toggle="tooltip" data-placement="top" title="description" th:text="#{label.status}"></label> 
+			<!-- <input class="form-control "
+				id="status" name="status" type="text"
+				placeholder="Input description here."> -->
+				
+			<select class="form-control " id="status" name="status">
+				<Option value="1" key="1" th:text="#{label.active}"></Option>
+				<Option value="0" key="0" th:text="#{label.inactive}"></Option>
+				
+			</select>
+		</div>
+		
+		<button class="btn btn-primary prms" id="buttonsave" type="button" onclick='doSave();' permission="gallery:edit"
+			 th:text="#{button.save}"></button> 
+
+	</form>
+	<HR align="CENTER" color="black" width="100%">
+	<form id="filesForm" >
+	    <input class="form-control" type="file" name="files" id="files" accept="image/*" multiple/>
+	</form>
+	<br>
+	<button class="btn btn-warning prms" id="buttonfilessubmit" type="botton" onClick="javascript:submitFiles();" permission="gallery:edit"
+			 th:text="#{button.submit}"></button> 
+
+	<br>
+	<input class="form-control" type="text" name="searchkey" id="searchkey">
+	<button class='btn btn-primary' onclick='findImages();'  th:text="#{button.search}"></button> 
+	<button class='btn btn-default btn-xs' onclick="clearInput();"  th:text="#{button.clear}"></button> 
+	<HR align="CENTER" color="black" width="100%">
+	<div class="row" id="vuegalleryimageslist">
+	  <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2" v-for="entry in galleryimageslist">
+	    	<div v-if="entry.status === '1'">
+			   	<div class="thumbnail" v-on:click="javascript:toImageEditor(entry.uuid);colorBackground($event);">
+			      	<a>
+						<IMG class="img-thumbnail" v-bind:src="imgUrl[entry.id]" onload="resizeImageThumbnail(this)"></a>
+			      	<div class="caption">
+			       		<a><span class="text-muted">{{ entry.order }}</span></a>
+			      	</div>
+			    </div>
+		  	</div>
+	  
+	    	<div v-else>
+			   <div class="thumbnail" style="backgroundColor:black;" v-on:click="javascript:toImageEditor(entry.uuid);colorBackground($event);">
+			      <a v-on:click="javascript:toImageEditor(entry.uuid);">
+			      		<!-- <IMG class="img-thumbnail" v-bind:src="imgUrl[entry.id]" onload="resizeImageThumbnail(this)"></a> -->
+			      <div class="caption">
+			        <span class="text-muted">{{ entry.order }}</span>
+			      </div>
+			    </div>
+		  	</div>
+	  </div>
+ 	</div>
+	</div>
+	<p id="paginationend"/>
+	<br>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/jqthumb.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript">
+galleryRatioSelected();
+var uuid=getQueryString("uuid");
+var gaid="";
+var productuuid=getQueryString("productuuid");
+
+var vuegalleryimageslist;
+vuegalleryimageslist = new Vue({
+	el: '#vuegalleryimageslist',
+	data: {
+		galleryimageslist: [],
+		imgUrl:{}
+	}
+});
+$(document).ready(function(){
+	findInfo();
+});
+$("#searchkey").keypress(function (e) {
+    if (e.which == 13) {
+    	findImages();
+    }
+});
+
+function clearInput(){
+	$("#searchkey").val("");
+};
+function findInfo(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/galleries/uuid-"+uuid),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				$("input[name='id']").val(result.data.id);
+				$("input[name='name']").val(result.data.name);
+				$("textarea[name='caption']").val(result.data.caption);
+				$("select[name='status']").val(result.data.status);
+				gaid = result.data.id;
+				findImages();
+			});
+		}
+	});
+}
+function findImages(){
+	var searchkey  = $("input[name='searchkey']").val();
+	$.ajax({
+		type: "GET",
+		url: l("/rest/galleries/"+uuid+"/images?capion="+searchkey),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+
+				for (var i=0;i<result.data.length;i++){
+					var galleryimage = result.data[i];
+					vuegalleryimageslist.imgUrl[galleryimage.id]=addToken(galleryimage.url+"/thumbnail");
+				}
+				vuegalleryimageslist.galleryimageslist = result.data;
+
+			});
+		}
+	});
+}
+
+function doSave(){
+	$("#buttonsave").button('loading').queue();
+	if(JQueryValidate($("#galleryform"),validateParameters)){
+		var name = $("input[name='name']").val();
+		var status = $("select[name='status']").val();
+		var id = $("input[name='id']").val();
+		var caption = $("textarea[name='caption']").val();
+		var data;
+		var type;
+		var url;
+		
+		if (id!=null&&id!=""&&id!='undefined'){
+			type = "PUT";
+			data = {"id": id, "name": name, "status": status, "caption": caption};
+			url = l("/rest/galleries/"+id)
+		} else {
+			type = "POST";
+			data = {"name": name, "status": status, "caption": caption};
+			url = l("/rest/products/"+productuuid+"/galleries");
+		}
+		
+		data = JSON.stringify(data);
+	
+		$.ajax({
+			type: type,
+			url: url,
+			contentType: "application/json;charset=utf-8",
+			data: data,
+			dataType: "json",
+			success:function (result) {
+				handleResultCode(result, function (result) {
+					//window.location.href = getContextPath()+"/prof/gallery/list-gallery";
+					if (result.data.id!=null&&result.data.id!=""&&result.data.id!='undefined'){
+						$("input[name='id']").val(result.data.id);
+						uuid=result.data.uuid;
+					}
+			        alert("Save OK.");
+	  	       	});
+			},
+	        complete:function(){
+				$("#buttonsave").button('reset');
+		        $("#buttonsave").dequeue(); 
+	        }
+		});
+	} else {
+		$("#buttonsave").button('reset');
+        $("#buttonsave").dequeue(); 
+	}
+};
+
+function submitFiles(){
+	$("#buttonfilessubmit").button('loading').queue();
+	var id = $("input[name='id']").val();
+	if (id!=null&&id!=""&&id!='undefined'){
+		if ($("#files")[0].files.length>0){
+			var formData = new FormData();
+			for (var i=0;i<$("#files")[0].files.length;i++){
+				formData.append("files",$("#files")[0].files[i]);
+			}
+		    $.ajax({
+		        url: l('/rest/galleries/'+id+'/images'),
+		        type: 'POST',
+		        data: formData,
+		        dataType: 'json',
+		        contentType: false,
+		        processData: false,
+		        success: function (result) {
+		        	handleResultCode(result, function (result) {
+		        		findImages();
+		        		document.getElementById("filesForm").reset();
+				        alert("Submit OK.");
+		  	       	});
+		        },
+		        complete:function(){
+		        	$("#buttonfilessubmit").button('reset');
+		            $("#buttonfilessubmit").dequeue(); 
+		        }
+		    });
+		} else {
+			alert("Choose a file first.");
+	    	$("#buttonfilessubmit").button('reset');
+	        $("#buttonfilessubmit").dequeue(); 
+		}
+	}else {
+		alert("Save the gallery first.");
+    	$("#buttonfilessubmit").button('reset');
+        $("#buttonfilessubmit").dequeue(); 
+	}
+}
+
+function toImageEditor(uuid){
+	//window.location.href = getContextPath()+"/prof/gallery/editor-image?uuid="+uuid;
+	window.open(getContextPath()+"/prof/gallery/editor-image?uuid="+uuid);
+}
+var validateParameters = {
+        rules:{
+        	name: {
+                required: true,
+                minlength: 2
+              },
+            caption: {
+                required: true
+              },
+            status: {
+                required: true
+              }
+        },
+        messages:{
+        	name: {
+				required: " Title is required.",
+				minlength: " Title needs more than 2 characters."
+			},
+			caption: {
+				required: " Caption is required."
+			},
+			status: {
+				required: " Status is required."
+			}
+        }
+};
+function resizeImageThumbnail(hotimg){
+	$(hotimg).jqthumb({
+		width : '100%',//宽度
+		height : '142px',//高度
+		//position : { y: '50%', x: '50%'},//从图片的中间开始产生缩略图
+		zoom : '1',//缩放比例
+		method : 'auto'//提交方法，用于不同的浏览器环境，默认为‘auto’
+	});
+}
+function colorBackground(event){
+	var el = event.currentTarget;
+	el.style.backgroundColor="lightblue";
+};
+</script>
