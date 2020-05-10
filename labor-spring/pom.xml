@@ -5,19 +5,27 @@
 		<artifactId>labor</artifactId>
 		<version>1.0.0</version>
 	</parent>
+
 	<groupId>com.labor.spring</groupId>
 	<artifactId>labor-spring</artifactId>
 	<name>labor-spring</name>
 	<packaging>jar</packaging>
+		
 	
-	<properties>
-		<labor.version>1.0.0</labor.version>
-		<labor-common.version>1.0.0</labor-common.version>
-		<labor-spring.version>1.0.0</labor-spring.version>
-		<java.version>1.8</java.version>
-		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-	</properties>
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-dependencies</artifactId>
+	            <version>${spring-boot.version}</version>
+	            <type>pom</type>
+	            <scope>import</scope>
+	        </dependency>
+	        
+		</dependencies>
+	</dependencyManagement>
+		
 	<dependencies>
 		<!-- internal dependencies -->
 		<dependency>
@@ -25,8 +33,10 @@
 			<artifactId>labor-common</artifactId>
 			<version>${labor-common.version}</version>
 		</dependency>
-	
+
+
 		<!-- spring.boot -->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>

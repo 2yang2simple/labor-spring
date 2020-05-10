@@ -13,14 +13,14 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
         </File> 
         -->
-        <RollingFile name="RollingDebug" fileName="/opt/logs/ppp/debug.log"
+        <RollingFile name="RollingDebug" fileName="/opt/logs/labor/labor-common-debug.log"
                  filePattern="/opt/logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
              <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
             <SizeBasedTriggeringPolicy size="50MB"/>
             <DefaultRolloverStrategy max="20"/>
         </RollingFile>
        
-        <RollingFile name="RollingError" fileName="/opt/logs/ppp/error.log"
+        <RollingFile name="RollingError" fileName="/opt/logs/labor/labor-common-error.log"
                  filePattern="/opt/logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
              <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
              <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
@@ -28,7 +28,7 @@
             <DefaultRolloverStrategy max="20"/>
         </RollingFile>
         
-        <RollingFile name="RollingInfo" fileName="/opt/logs/ppp/info.log"
+        <RollingFile name="RollingInfo" fileName="/opt/logs/labor/labor-common-info.log"
                  filePattern="/opt/logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
              <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
              <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>

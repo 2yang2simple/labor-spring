@@ -9,19 +9,18 @@
 	<artifactId>labor-spring-system-ppp</artifactId>
 	<name>labor-spring-system-ppp</name>
 	<packaging>war</packaging>
-	
-	<properties>
-		<labor.version>1.0.0</labor.version>
-		<labor-common.version>1.0.0</labor-common.version>
-		<labor-spring.version>1.0.0</labor-spring.version>
-		<labor-spring-core.version>1.0.0</labor-spring-core.version>
-		<labor-spring-feign.version>1.0.0</labor-spring-feign.version>
-		<java.version>1.8</java.version>
-		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-		<final-file-name>ppp</final-file-name>
-		<final-file-path>D:\output-directory</final-file-path>
-	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-dependencies</artifactId>
+	            <version>${spring-boot.version}</version>
+	            <type>pom</type>
+	            <scope>import</scope>
+	        </dependency>
+		</dependencies>
+	</dependencyManagement>
 	
 	<dependencies>
 		<!-- internal dependencies -->

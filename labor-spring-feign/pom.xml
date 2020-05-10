@@ -10,14 +10,6 @@
 	<name>labor-spring-feign</name>
 	<packaging>jar</packaging>
 	
-  	<properties>
-		<labor.version>1.0.0</labor.version>
-		<labor-common.version>1.0.0</labor-common.version>
-		<labor-spring.version>1.0.0</labor-spring.version>
-		<java.version>1.8</java.version>
-		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-	</properties>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -26,7 +18,7 @@
 				<version>${spring-cloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
+			</dependency>        
 		</dependencies>
 	</dependencyManagement>
 	

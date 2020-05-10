@@ -10,23 +10,18 @@
 	<name>labor-common</name>
 	<packaging>jar</packaging>
 	
-	<properties>
-		<labor.version>1.0.0</labor.version>
-		<labor-common.version>1.0.0</labor-common.version>
-		<java.version>1.8</java.version>
-	</properties>
-	
+
   <dependencies>
 
   		<dependency>
 			 <groupId>org.apache.logging.log4j</groupId>
-			 <artifactId>log4j-core</artifactId>
-		
+			 <artifactId>log4j-core</artifactId>	
+			 <version>2.5</version>
 		</dependency>
 		<dependency>
 			 <groupId>org.apache.logging.log4j</groupId>
 			 <artifactId>log4j-api</artifactId>
-			 
+			 <version>2.5</version>
 		</dependency>
 
   		<!-- ibatis -->
