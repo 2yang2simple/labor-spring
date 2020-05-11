@@ -91,5 +91,6 @@
 		<module>labor-spring-core</module>
 		<module>labor-spring-system-auth</module>
 		<module>labor-spring-system-ppp</module>
+		<module>labor-spring-system-oss</module>
 	</modules>
 </project>

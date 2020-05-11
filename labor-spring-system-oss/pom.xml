@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.labor</groupId>
+		<artifactId>labor</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<groupId>com.labor.spring.system.oss</groupId>
+	<artifactId>labor-spring-system-oss</artifactId>
+	<name>labor-spring-system-oss</name>
+	
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-dependencies</artifactId>
+	            <version>${spring-boot.version}</version>
+	            <type>pom</type>
+	            <scope>import</scope>
+	        </dependency>
+	        
+		</dependencies>
+	</dependencyManagement>
+	
+	<dependencies>
+		<!-- internal dependencies -->
+		<dependency>
+			<groupId>com.labor.spring</groupId>
+			<artifactId>labor-spring</artifactId>
+			<version>${labor-spring.version}</version>
+		</dependency>
+		
+	</dependencies>
+	
+	
+</project>

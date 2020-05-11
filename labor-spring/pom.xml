@@ -75,6 +75,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+		<!-- -->
 		<dependency>
 		   	<groupId>io.springfox</groupId>
 		   	<artifactId>springfox-swagger2</artifactId>
@@ -85,7 +86,7 @@
 		   	<artifactId>springfox-swagger-ui</artifactId>
 		   	<version>2.6.1</version>
 		</dependency>
-		
+		 
 		
 		
 	</dependencies>

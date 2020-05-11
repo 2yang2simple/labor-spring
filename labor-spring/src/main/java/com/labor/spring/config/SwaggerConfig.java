@@ -26,9 +26,9 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title("Labor-Auth")
+				.title("Labor-Spring")
 				.description("OAuth, SSO, Accounts etc management")
-				.termsOfServiceUrl("http://47.106.74.136/auth")
+//				.termsOfServiceUrl("http://47.106.74.136/auth")
 				.version("1.0").build();
 	}
 

@@ -1,0 +1,97 @@
+<html layout:decorator="fragment/layout">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<style type="text/css">
+    .toolbar {
+        border: 1px solid gray;
+    }
+    .text {
+        border: 1px solid #ccc;
+        height: 700px;
+    }
+</style>
+
+
+<span id="tips" style="color: red;">&nbsp;</span>
+<br>
+
+	<ul class="nav nav-tabs">
+		<li><a href="javascript:toTextarea();">HTML</a></li>
+		<li><a href="javascript:toCKEditor();">CKeditor</a></li>
+	</ul>
+   	<textarea id="textarea" name="textarea"  rows="25" class="form-control" style="display: none"></textarea>
+	<div id="ckeditor" >
+		<div id="toolbar-container"></div>
+   		<div id="editor" style="border: 1px solid lightgray; min-height:500px;]"></div>
+   	</div>
+   	<br>
+
+</div>
+</html>
+
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+
+var rtid="";
+var myEditor;
+$(document).ready(function(){
+	DecoupledEditor
+	    .create( document.querySelector( '#editor' ) )
+	    .then( editor => {
+	        const toolbarContainer = document.querySelector( '#toolbar-container' );
+	        toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+	           return new LaborUploadAdapter(loader, "/oss","","");
+	        };
+	        myEditor = editor;
+	    } )
+	    .catch( error => {
+	        console.error( error );
+	    } );
+	/**
+	ClassicEditor
+	    .create( document.querySelector( '#editor' ), {
+	        //toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+	        heading: {
+	            options: [
+	                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+	                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+	                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+	            ]
+	        }
+	    } )
+        .then( editor => {
+            editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                return new LaborUploadAdapter(loader,getContextPath(),"","");
+            };
+            myEditor = editor;
+        } )
+	    .catch( error => {
+	        console.log( error );
+	    } );
+	*/
+	
+	findInfo();
+});
+function findInfo(){
+
+}
+var textarea = false;
+function toTextarea(){
+	textarea = true;
+	$("textarea[name='textarea']").val(myEditor.getData());
+	document.getElementById('textarea').style.display='block';
+	document.getElementById('ckeditor').style.display='none';
+}
+function toCKEditor(){
+	textarea = false;
+	myEditor.setData($("textarea[name='textarea']").val());
+	document.getElementById('textarea').style.display='none';
+	document.getElementById('ckeditor').style.display='block';
+}
+
+function doSubmit(){
+	
+};
+</script>
