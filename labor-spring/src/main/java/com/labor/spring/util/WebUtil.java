@@ -328,7 +328,7 @@ public class WebUtil {
 	}
 
 	
-    private static HttpServletResponse getResponse() {
+    public static HttpServletResponse getResponse() {
     	HttpServletResponse ret = null;
 		ServletRequestAttributes sra = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
 		if (sra!=null) {

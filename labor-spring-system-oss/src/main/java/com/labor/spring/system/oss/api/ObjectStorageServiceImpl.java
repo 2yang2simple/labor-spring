@@ -207,16 +207,16 @@ public class ObjectStorageServiceImpl implements ObjectStorageServiceIntf{
 	}
 	
 	@Override
-	public FileObject findFileObjectByFileName(String filename, String ext) {
-		FileObject ret = null;
+	public ObjectStorage findObjectStorageByFileName(String filename, String ext) {
+		ObjectStorage ret = null;
 		Optional<ObjectHeader> oa = objectHeaderRepository.findOneByFileName(filename);
 		if (oa.isPresent()) {
 			ObjectHeader oh = oa.get();
 			byte[] bytes = getBytes(oh.getObjectBodyPath(),oh.getObjectBodyMd5(),ext);
-			ret = new FileObject();
+			ret = new ObjectStorage();
 			ret.setBytes(bytes);
 			ret.setType(oh.getFileType());
-			ret.setName(oh.getName());
+			ret.setName(oh.getFileName());
 			ret.setSize(oh.getFileSize());
 		}
 		return ret;
@@ -241,14 +241,15 @@ public class ObjectStorageServiceImpl implements ObjectStorageServiceIntf{
 	public byte[] findBytesByFileName(String fileName, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width){
 		byte[] fileBody = null;
 
-		FileObject fo = null;
-		fo = findFileObjectByFileName(fileName, (compressed?ImageUtil.IMAGE_COMPRESSED_SUFFIX:""));
-		if (fo != null) {
+		ObjectStorage os = null;
+		os = findObjectStorageByFileName(fileName, (compressed?ImageUtil.IMAGE_COMPRESSED_SUFFIX:""));
+		if (os != null) {
 			if (getThumbnail) {
-				fileBody = ImageUtil.resizeThumbnails(fo.getBytes(),fo.getType(),accuracy, height, width,
+				System.err.println("::"+WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_WATERMARK_FILE);
+				fileBody = ImageUtil.resizeThumbnails(os.getBytes(),os.getType(),accuracy, height, width,
 								WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_WATERMARK_FILE);
 			} else {
-				fileBody = fo.getBytes();
+				fileBody = os.getBytes();
 			}
 		}
 		

@@ -26,7 +26,7 @@ public interface ObjectStorageServiceIntf {
 	
 	public Long countByExample(ObjectBody entity);
 
-	public FileObject findFileObjectByFileName(String filename, String ext);
+	public ObjectStorage findObjectStorageByFileName(String filename, String ext);
 	public byte[] findBytesByFileName(String filename);
 	public byte[] findBytesByFileName(String filename, String ext);
 	public byte[] findBytesByFileName(String fileName, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width);

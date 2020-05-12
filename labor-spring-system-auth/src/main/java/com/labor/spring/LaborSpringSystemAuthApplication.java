@@ -29,11 +29,11 @@ public class LaborSpringSystemAuthApplication {
 	public AuthCacheService authCacheService() {
 		
 		//production
-//		AuthCacheServiceFeignRedisImpl authCacheService = new AuthCacheServiceFeignRedisImpl();
+		AuthCacheServiceFeignRedisImpl authCacheService = new AuthCacheServiceFeignRedisImpl();
 		//test
 //		AuthCacheServiceFeignImpl authCacheService = new AuthCacheServiceFeignImpl();
 		//development
-		AuthCacheServiceLocalImpl authCacheService = new AuthCacheServiceLocalImpl();
+//		AuthCacheServiceLocalImpl authCacheService = new AuthCacheServiceLocalImpl();
 		
 		return authCacheService;
 	}

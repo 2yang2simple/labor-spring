@@ -1,6 +1,6 @@
 package com.labor.spring.system.oss.api;
 
-public class FileObject {
+public class ObjectStorage {
 	
 	private byte[] bytes;
 	
