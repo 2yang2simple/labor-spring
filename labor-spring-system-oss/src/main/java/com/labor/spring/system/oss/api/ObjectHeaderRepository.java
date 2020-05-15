@@ -15,7 +15,7 @@ import com.labor.spring.system.oss.entity.ObjectHeader;
 public interface ObjectHeaderRepository extends JpaRepository<ObjectHeader,Long> {
 	
 	public Optional<ObjectHeader> findOneByFileName(String fileName);
-	
+	public Optional<ObjectHeader> findOneByUrl(String url);
 
 
 }

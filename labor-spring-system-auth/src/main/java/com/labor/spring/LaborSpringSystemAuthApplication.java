@@ -8,6 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 import com.labor.spring.feign.auth.AuthCacheService;
 import com.labor.spring.feign.auth.AuthCacheServiceFeignRedisImpl;
 import com.labor.spring.feign.auth.AuthCacheServiceLocalImpl;

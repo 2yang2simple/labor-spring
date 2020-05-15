@@ -28,7 +28,7 @@ public class User extends AbstractEntity implements Serializable {
 	private static final long serialVersionUID = -8326446655561277937L;
 
 	@Id
-    @GeneratedValue 
+//    @GeneratedValue 
     @Column(name="user_id")
     private Integer id;
 	

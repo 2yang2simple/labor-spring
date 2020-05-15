@@ -337,6 +337,9 @@ public class FileUtil {
 	 * return the file name
 	 */
 	public static String getFileName(String fileFullName) {
+		if (fileFullName.lastIndexOf(".")<0) {
+			return fileFullName;
+		}
 		return fileFullName.substring(0, fileFullName.lastIndexOf("."));
 	}
 
@@ -344,37 +347,48 @@ public class FileUtil {
 	 * return file ext name;
 	 */
 	public static String getFileType(String fileFullName) {
+		if (fileFullName.lastIndexOf(".")<0) {
+			return "";
+		}
 		return fileFullName.substring(fileFullName.lastIndexOf(".") + 1);
 	}
 
 	public static void main(String[] args) {
-		File file = new File("D:\\test\\69310321-5.jpg");
-//		FileUtil.saveFile(file, "d:/opt/dm/labor/attachments/1223124324322242.doc");
-		System.out.println(file.getName() + "|" + file.getPath());
-		System.out.println("name:" + getFileName(file.getName()));
-		System.out.println(getFileType(file.getName()));
-
-		try {
-			InputStream in = new FileInputStream(file);
-			long size = file.length() / 1024;
-
-			double accuracy;
-			if (size < 200) {
-				accuracy = 1;
-			} else if (size < 900) {
-				accuracy = 0.85;
-			} else if (size < 2047) {
-				accuracy = 0.6;
-			} else if (size < 3275) {
-				accuracy = 0.44;
-			} else {
-				accuracy = 0.4;
-			}
-			System.out.println(size + "|" + file.length() + "|" + accuracy);
-
-		} catch (IOException ioe) {
-			log.error("", ioe);
-		}
+		String fileName = "f025a6d7dfd340c68a6f6a67ff3084af.png";
+		fileName = FileUtil.getFileName(fileName);
+		System.err.println(fileName);
+		fileName = FileUtil.getFileName(fileName);
+		System.err.println(fileName);
+		fileName = FileUtil.getFileType(fileName);
+		fileName = FileUtil.getFileType(fileName);
+		System.err.println("|"+fileName);
+//		File file = new File("D:\\test\\69310321-5.jpg");
+////		FileUtil.saveFile(file, "d:/opt/dm/labor/attachments/1223124324322242.doc");
+//		System.out.println(file.getName() + "|" + file.getPath());
+//		System.out.println("name:" + getFileName(file.getName()));
+//		System.out.println(getFileType(file.getName()));
+//
+//		try {
+//			InputStream in = new FileInputStream(file);
+//			long size = file.length() / 1024;
+//
+//			double accuracy;
+//			if (size < 200) {
+//				accuracy = 1;
+//			} else if (size < 900) {
+//				accuracy = 0.85;
+//			} else if (size < 2047) {
+//				accuracy = 0.6;
+//			} else if (size < 3275) {
+//				accuracy = 0.44;
+//			} else {
+//				accuracy = 0.4;
+//			}
+//			System.out.println(size + "|" + file.length() + "|" + accuracy);
+//
+//		} catch (IOException ioe) {
+//			log.error("", ioe);
+//		}
 	}
 	
 	public static void iterateFolder(String path, Integer parentid, String parentname) {

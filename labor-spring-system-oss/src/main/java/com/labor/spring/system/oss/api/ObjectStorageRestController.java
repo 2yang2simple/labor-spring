@@ -58,104 +58,65 @@ public class ObjectStorageRestController {
 		return Result.success(objectStorageService.createImage(file));
 	}
 	
-	@RequestMapping(value = {"/files/{filename}"}, method = RequestMethod.GET)
-	public void findFileByFilename(
-					@PathVariable(value="filename") String filename) {
-		OutputStream out = null;
-		ObjectStorage os = null;
-		try {
-			HttpServletResponse response = WebUtil.getResponse();
-			out = response.getOutputStream();
-			os =objectStorageService.findObjectStorageByFileName(filename, null);
-			if (os == null) {
-				return;
-			}
-			response.setHeader("Content-Disposition", "attachment;fileName="+os.getName() + "." + os.getType());   
-			response.setContentType("multipart/form-data");   
-			out.write(os.getBytes());
-			out.flush();
-		} catch (IOException ioe){
-			LogManager.getLogger().error(ioe);
-		} finally {
-			if (out!=null) {
-				try {
-					out.close();
-				} catch (IOException ioe){
-					LogManager.getLogger().error(ioe);
-				}
-			}
+	@RequestMapping(value = {"/files/{query}"}, method = RequestMethod.GET)
+	public void findFile(
+					@PathVariable(value="query") String query) {
+		ObjectStorage os = objectStorageService.findObjectStorage(query, null);
+		if (os == null) {
+			return;
 		}
-		
-//		byte[] fileBody = objectStorageService.findBytesByFileName(filename, null);
-//		String attachment = "";
-//		if (fileBody == null) {
-//			// if not exist or error, return 404.gif;
-//			fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
-//			attachment = properties.IMG_404_FILE;
-//		}
-//		return createResponseEntity(fileBody, attachment);
+		String contentType = "multipart/form-data";
+		String contentDisposition = "attachment;fileName="+System.currentTimeMillis() + "." + os.getType();
+		writeBytes2Response(os.getBytes(),contentType,contentDisposition);
 	}
 	
-	@RequestMapping(value = {"/images/{filename}/origin"}, method = RequestMethod.GET)
-	public void findImageOriginByFilename(
-					@PathVariable(value="filename") String filename) {
-
-		OutputStream out = null;
-		byte[] fileBody = null;
-		try {
-			HttpServletResponse response = WebUtil.getResponse();
-			response.setContentType("image/jpeg");
-			out = response.getOutputStream();
-			fileBody =objectStorageService.findBytesByFileName(filename,false,true,Double.valueOf(1),null,null);
-			if (fileBody == null) {
-				// if not exist or error, return 404.gif;
-				fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
-			}
-			out.write(fileBody);
-			out.flush();
-		} catch (IOException ioe){
-			LogManager.getLogger().error(ioe);
-			
-		} finally {
-			if (out!=null) {
-				try {
-					out.close();
-				} catch (IOException ioe){
-					LogManager.getLogger().error(ioe);
-				}
-			}
+	@RequestMapping(value = {"/images/{query}/origin"}, method = RequestMethod.GET)
+	public void findImageOrigin(
+					@PathVariable(value="query") String query) {
+		ObjectStorage os = objectStorageService.findObjectStorage(query,false,true,Double.valueOf(1),null,null);
+		if (os == null) {
+			// if not exist or error, return 404.gif;
+			byte[] fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
+			os = new ObjectStorage();
+			os.setBytes(fileBody);
+			os.setName(properties.IMG_404_FILE);
+			os.setType("png");
 		}
-		
-//		byte[] fileBody = objectStorageService.findBytesByFileName(filename,false,true,Double.valueOf(1),null,null);
-//		String attachment = "";
-//		if (fileBody == null) {
-//			// if not exist or error, return 404.gif;
-//			fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
-//			attachment = properties.IMG_404_FILE;
-//		}
-//		return createResponseEntity(fileBody, attachment);
-
+		String contentType = "image/"+os.getType();
+		writeBytes2Response(os.getBytes(),contentType,null);
 	}
 	
-	@RequestMapping(value = {"/images/{filename}"}, method = RequestMethod.GET)
-	public void findImageByFilename(
-					@PathVariable(value="filename") String filename) {
+	@RequestMapping(value = {"/images/{query}"}, method = RequestMethod.GET)
+	public void findImage(
+					@PathVariable(value="query") String query) {
+		ObjectStorage os = objectStorageService.findObjectStorage(query,true,true,Double.valueOf(1),null,null);
+		if (os == null) {
+			// if not exist or error, return 404.gif;
+			byte[] fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
+			os = new ObjectStorage();
+			os.setBytes(fileBody);
+			os.setName(properties.IMG_404_FILE);
+			os.setType("png");
+		}
+		String contentType = "image/"+os.getType();
+		writeBytes2Response(os.getBytes(),contentType,null);
+	}
+	
+	private void writeBytes2Response(byte[] bytes, String contentType, String contentDisposition) {
 		OutputStream out = null;
-		byte[] fileBody = null;
 		try {
 			HttpServletResponse response = WebUtil.getResponse();
-			response.setContentType("image/jpeg");
-			out = response.getOutputStream();
-			fileBody = objectStorageService.findBytesByFileName(filename,true,true,Double.valueOf(1),null,null);
-			if (fileBody == null) {
-				// if not exist or error, return 404.gif;
-				fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
+			if (!StringUtil.isEmpty(contentType)) {
+				response.setContentType(contentType);
 			}
-			out.write(fileBody);
+			if (!StringUtil.isEmpty(contentDisposition)) {
+				response.setHeader("Content-Disposition", contentDisposition);   
+			}
+			out = response.getOutputStream();
+			out.write(bytes);
 			out.flush();
 		} catch (IOException ioe){
 			LogManager.getLogger().error(ioe);
-			
 		} finally {
 			if (out!=null) {
 				try {
@@ -165,16 +126,6 @@ public class ObjectStorageRestController {
 				}
 			}
 		}
-
-//		byte[] fileBody = objectStorageService.findBytesByFileName(filename,true,true,Double.valueOf(1),null,null);
-//		String attachment = "";
-//		if (fileBody == null) {
-//			// if not exist or error, return 404.gif;
-//			fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
-//			attachment = properties.IMG_404_FILE;
-//		}
-//		return createResponseEntity(fileBody, attachment);
-		
 	}
 	
 //	private ResponseEntity<byte[]> createResponseEntity(byte[] fileBody, String fileName){

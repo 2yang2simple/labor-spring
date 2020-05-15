@@ -1,0 +1,203 @@
+<html layout:decorator="fragment/layout-labor">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<head>
+	<style type="text/css">	
+		h1{text-decoration: none;}
+	</style>
+</head>
+<div layout:fragment="content">
+<Strong>Users - List</Strong>
+<br>
+	<table width="100%">
+	<tr><td>
+	<input size="30" type="text" name="searchkey" id="searchkey" placeholder="name/phone">
+	<input type='button' class='btn btn-primary btn-xs' onclick='doSearch(0);' value='SEARCH'/>	 
+	<input type="button" class='btn btn-default btn-xs' onclick="clearInput();" value="clear"/>	
+	</td><td class="pull-right">
+	<input size="30" type="text" name="phone" id="phone" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="cell phone number">
+	<input type='button' class='btn btn-danger btn-xs prms' permission="user:create" onclick='doCreate();' value='CREATE'/>	 
+	
+	
+	</td></tr>
+	
+	</table>
+	
+
+	
+	<p id="datalist"/>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/xss.js}"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	//alert(document.location.pathname.substr(0,5+1));
+	//alert($("#PageContext").value);
+	//alert(l("/rest/core/user/"));
+	doSearch(0);
+	//SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	//Date date = new Date("2019-08-02T14:46:40.000+0000"); 
+	//alert(s.format(date)); 
+	//console.log(l('xx'));
+	
+});
+
+
+function clearInput(){
+	//document.getElementById('value').value='';
+	$("#searchkey").val("");
+};
+$("#searchkey").keypress(function (e) {
+    if (e.which == 13) {
+    	doSearch(0);
+    }
+});
+
+
+function doCreate(){
+	var phone  = $("input[name='phone']").val();
+	var postdata = {"phone":phone,"name":""};
+	var url = l("/rest/core/users");
+	$.ajax({
+		type: "POST",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		data: JSON.stringify(postdata),
+		dataType: "json",
+		success:function (result) {
+			handleResultCode(result, function (result) {
+				doSearch(0);
+			});
+		}
+	});
+}
+
+
+function doSearch(page){
+	var searchkey  = $("input[name='searchkey']").val();
+	var url = "";
+	if (searchkey!=null&&searchkey!=""){
+		url = l("/rest/core/users/namestart-page-list?namestart="+searchkey+"&page="+page);
+	}else {
+		url = l("/rest/core/users/page-list?page="+page);
+	}
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if(result.code=="1"){
+				setData2Page(result.data);
+			}
+		}
+	});
+}
+function nextpage(page){
+	doSearch(page+1);
+};
+
+function prevpage(page){
+	doSearch(page-1);
+}
+
+function setData2Page(page){
+	if(page!=null){
+		var data = page.content;
+		var pagehtml = createPaginationHtml(page.totalPages,page.totalElements,page.number,"doSearch");
+		var datalisthtml = 	
+							"<table class='table table-condensed table-hover'>"+
+							//"<tr><td align='right' colspan='11'>"+
+						
+							//"totalpage:"+page.totalPages+
+							//"|totalElements:"+page.totalElements+
+							//"|number:"+page.number+
+							//"|numberOfElements:"+page.numberOfElements+
+
+							//"<input type='button' class='btn btn-default btn-sm' onclick="+"'javascript:nextpage("+page.number+");'"+" value='Next Page'>"+
+							//"<input type='button' class='btn btn-default btn-sm' onclick="+"'javascript:prevpage("+page.number+");'"+" value='Prev Page'>"+
+							//"</td></tr>"+
+		 					"<tr>"+
+					        "<th></th>"+
+					        "<th>name</th>"+
+					        "<th>rname</th>"+
+					        "<th>phone</th>"+
+					        //"<th>email</th>"+
+					        //"<th>weixin</th>"+
+					        "<th>date</th>"+
+					        "<th>PWD</th>"+
+					        "<th>Status</th>"+
+	    					"</tr>";
+		var offset = page.number*page.size;
+		for (var i = 0; i < data.length; i++) {
+			//datalisthtml = datalisthtml + "<tr><td>"+(offset+i+1)+"</td>" ;
+
+			datalisthtml = datalisthtml +  "<td>" + filterXSS(data[i].sno)+ "</td>"
+			datalisthtml = datalisthtml	
+				+ "<td>" + filterXSS(data[i].name)+ "</td>"
+				+ "<td>" + filterXSS(data[i].realName)+ "</td>"
+				+ "<td>" + filterXSS(data[i].cellPhone)+ "</td>"
+				//+ "<td>" + filterXSS(data[i].email)+ "</td>"
+				//+ "<td>" + filterXSS(data[i].weixin)+ "</td>"
+				+ "<td>" + formatDateString(data[i].lastUpdateDate)+ "</td>";
+
+			if(data[i].pwdmodify!=null&&data[i].pwdmodify!=""){
+				datalisthtml = datalisthtml	+ "<td><a href='"+getContextPath()+"/profile/user-pwd?pm="+data[i].pwdmodify+"'>link</a></td>";
+			} else {
+				datalisthtml = datalisthtml	+ "<td><input type='button' class='btn btn-danger btn-xs' onclick="+"javascript:doCreatePwdModifyUrl('"+data[i].uuid+"');"+" value='new'></td>";	
+			}
+				
+				
+			if(data[i].status!="1"){
+				datalisthtml = datalisthtml	+ "<td><input type='button' class='btn btn-default btn-xs' onclick="+"javascript:doSubmitStatus('"+data[i].uuid+"',1);"+" value='Open'>";
+			} else {
+				datalisthtml = datalisthtml	+ "<td><input type='button' class='btn btn-warning btn-xs' onclick="+"javascript:doSubmitStatus('"+data[i].uuid+"',0);"+" value='CLOSE'>";
+			}
+			datalisthtml = datalisthtml + "<input type='button' class='btn btn-link btn-xs' onclick=javascript:toGrant('"+data[i].uuid+"'); value='grant'/></td></tr>";
+	    }
+
+		datalisthtml = datalisthtml + "</table>" + "<div style='float: right;'>"+pagehtml + "</div>";
+		$("#datalist").html(datalisthtml);
+	}
+};
+
+
+function doSubmitStatus(uuid,status){
+
+	$.ajax({
+		type: "PATCH",
+		url: l("/rest/core/users/"+uuid+"/status/"+status),
+		contentType: "application/json;charset=utf-8",
+		data: {},
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				window.location.href = getContextPath()+"/core/user/list";
+  	       	} else {
+  	       		alert(JSON.stringify(result.msg));
+  	       	}
+		}
+	});
+};
+function doCreatePwdModifyUrl(uuid){
+
+	$.ajax({
+		type: "PATCH",
+		url: l("/rest/core/users/"+uuid+"/pwdmodify"),
+		contentType: "application/json;charset=utf-8",
+		data: {},
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				window.location.href = getContextPath()+"/core/user/list";
+  	       	} else {
+  	       		alert(JSON.stringify(result.msg));
+  	       	}
+		}
+	});
+};
+function toGrant(uuid){
+	window.location.href = getContextPath()+"/core/user/grant?uuid="+uuid;
+};
+</script>

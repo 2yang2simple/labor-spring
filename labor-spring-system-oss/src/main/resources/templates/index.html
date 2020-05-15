@@ -1,7 +1,7 @@
 <html layout:decorator="fragment/layout">
 <!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
 
-<div layout:fragment="content">
+<div layout:fragment="content" id="layout">
 <style type="text/css">
     .toolbar {
         border: 1px solid gray;
@@ -15,7 +15,10 @@
 
 <span id="tips" style="color: red;">&nbsp;</span>
 <br>
-
+<button class="btn btn-primary prms" type="button" onclick='doCapture();' th:text="capture"></button>
+<div id="capture" style="padding: 10px; background: #f5da55">
+    <h4 style="color: #000; ">Hello world!</h4>
+</div>
 	<ul class="nav nav-tabs">
 		<li><a href="javascript:toTextarea();">HTML</a></li>
 		<li><a href="javascript:toCKEditor();">CKeditor</a></li>
@@ -29,7 +32,7 @@
 
 </div>
 </html>
-
+<script type="text/javascript" th:src="@{/js/html2canvas.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
 <script type="text/javascript">
 
@@ -91,7 +94,11 @@ function toCKEditor(){
 	document.getElementById('ckeditor').style.display='block';
 }
 
-function doSubmit(){
-	
+function doCapture(){
+	html2canvas(document.querySelector("#layout")).then(canvas => {
+	    document.body.appendChild(canvas)
+	});
 };
+
+
 </script>

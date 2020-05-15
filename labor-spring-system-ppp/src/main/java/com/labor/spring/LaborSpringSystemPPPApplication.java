@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.labor.spring.feign.auth.AuthCacheService;
+import com.labor.spring.feign.auth.AuthCacheServiceFeignRedisImpl;
 import com.labor.spring.feign.auth.AuthCacheServiceLocalImpl;
 
 

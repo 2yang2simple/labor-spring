@@ -165,7 +165,7 @@ function doSubmitStatus(uuid,status){
 		dataType: "json",
 		success:function (result) {
 			if (result.code=="1") {
-				window.location.href = getContextPath()+"/core/user/list";
+				window.location.href = getContextPath()+"/core/user/list-grant";
   	       	} else {
   	       		alert(JSON.stringify(result.msg));
   	       	}

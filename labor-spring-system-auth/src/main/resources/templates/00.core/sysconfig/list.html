@@ -1,0 +1,262 @@
+<html layout:decorator="fragment/layout-labor">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+
+<div layout:fragment="content">
+<Strong>System Config - List</Strong>
+<span id="tips" style="color: red;">&nbsp;</span>
+<br><br>
+<form id="sysconfigform">
+	<table border=0>
+	<tr>
+		<td width="130px;">
+		<span style="float:right;font-size: 20px; font-weight:bold;">Key:&nbsp;&nbsp;*</span>
+		</td>
+		<td><input size="60" type="text" name="key" id="key"
+					onkeyup="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');" 
+					onafterpaste="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');">
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<span style="float:right;font-size: 20px; font-weight:bold;">Value:&nbsp;&nbsp;*</span>
+		</td>
+		<td><input size="60" type="text" name="value" id="value"
+					onkeyup="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');" 
+					onafterpaste="this.value=this.value.replace(/[^\w~!@#$%^&*_+]/g,'');">
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<span style="float:right;font-size: 20px; font-weight:bold;">Description:&nbsp;&nbsp;&nbsp;</span>
+		</td>
+		<td><input size="60" type="text" name="description" id="description">
+		<input type='button' class="btn btn-primary btn-sm" onclick='doCreate();' value='CREATE'/>
+		</td>
+	</tr>
+	</table>
+		
+</form>
+	<br>
+		<input size="60" type="text" name="searchkey" id="searchkey">
+		<input type='button' class="btn btn-primary btn-sm" onclick='doSearch();' value='SEARCH'/>	 
+		<input type="button" class="btn btn-default btn-xs" onclick="clearInput();" value="clear"/>	
+			
+		
+		<input type="button" id="activebottuon" class="btn btn-warning btn-xs pull-right" onclick="initSysconfig2Constants();" value="Active Configs"/>
+		<span class="pull-right">&nbsp;</span>	
+		<input type="button" id="createdefaultbottuon" class="btn btn-warning btn-xs pull-right" onclick="createDefaultSysconfig();" value="Create Defaults"/>
+	
+	
+	<br>
+	<p id="datalist"/>
+
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/xss.js}"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	listAll();
+});
+
+function doCreate(){
+	var key = $("input[name='key']").val();
+	var value=$("input[name='value']").val();
+	if (key==null||key==""||value==null||value==""){
+		document.getElementById("tips").innerText="Key and Value Must NOT be empty.";
+		return;
+	} 
+	var data={};
+	$("#sysconfigform").serializeArray().map(function(x){data[x.name]=x.value;});
+	var postdata = JSON.stringify(data);
+
+	$.ajax({
+		type: "POST",
+		url: l("/rest/core/sysconfigs"),
+		contentType: "application/json;charset=utf-8",
+		data: postdata,
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				listAll();
+  	       	} else{
+  	       		document.getElementById("tips").innerText=result.msg;
+  	       	} 
+		}
+	});
+};
+
+function listAll(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/core/sysconfigs/sort-list?sortby="+"status"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				setData2Page(result.data);
+			} else {
+				document.getElementById("tips").innerText=result.msg;
+			}
+		}
+	});
+};
+function clearInput(){
+	//document.getElementById('value').value='';
+	$("#searchkey").val("");
+};
+function doSearch(){
+	var searchkey  = $("input[name='searchkey']").val();
+	if (searchkey!=null&&searchkey!=""){
+		$.ajax({
+			type: "GET",
+			url: l("/rest/core/sysconfigs/keystart-list?keystart="+searchkey),
+			contentType: "application/json;charset=utf-8",
+			dataType: "json",
+			success:function (result) {
+				if (result.code=="1") {
+					//alert(JSON.stringify(data));
+					setData2Page(result.data);
+				} else {
+					document.getElementById("tips").innerText=result.msg;
+				}
+			}
+		});
+	}else {
+		listAll();
+	}
+};
+function setData2Page(data){
+	if(data!=null&&data.length>0){
+		var datalisthtml = "<table class='table table-condensed table-hover'><tr>"+       
+					        "<th width='8%'>id</th>"+
+					        "<th>key</th>"+
+					        "<th width='10%'>value</th>"+
+					        "<th>description</th>"+
+					        "<th width='5%'>status</th>"+
+					        "<th>date</th>"+
+	    					"<th></th>"+
+	    					"</tr>";
+	
+		for (var i = 0; i < data.length; i++) {
+			datalisthtml = datalisthtml + "<tr>" ;
+			datalisthtml = datalisthtml	+ "<td><input class='form-control' id='scid"				+data[i].id+"' readonly type='text' value='"+data[i].id+"'/></td>"
+				+ "<td><input class='form-control' id='sckey"			+data[i].id+"' readonly type='text' value='"+filterXSS(data[i].key)+"'/></td>"
+				+ "<td><input class='form-control' id='scvalue"			+data[i].id+"' readonly type='text' value='"+filterXSS(data[i].value)+"'/></td>"
+				+ "<td><input class='form-control' id='scdescription"	+data[i].id+"' readonly type='text' value='"+filterXSS(data[i].description)+"'/></td>"
+				+ "<td><input class='form-control' id='scstatus"			+data[i].id+"' readonly type='text' value='"+filterXSS(data[i].status)+"'/></td>"
+				+ "<td>"+formatDateString(data[i].lastUpdateDate)+"</td>"
+				+ "<td><input class='btn btn-warning btn-xs' id='button"			+data[i].id+"' type='button' onclick='javascript:toEdit("+data[i].id+");' value='edit'/></td>"
+				
+				
+				//+ "<td id='scid"+data[i].id+"'>" + data[i].id+ "</td>"
+				//+ "<td id='sckey"+data[i].id+"'>" + data[i].key+ "</td>"
+				//+ "<td id='scvalue"+data[i].id+"'>" + data[i].value+ "</td>"
+				//+ "<td id='scdescription"+data[i].id+"'>" + data[i].description+ "</td>"
+				//+ "<td id='scstatus"+data[i].id+"'>" + data[i].status+ "</td>"
+				//+ "<td>" + formatDateString(data[i].lastUpdateDate)+ "</td>";
+			
+			datalisthtml = datalisthtml + "</tr>" ;
+	    }
+
+		datalisthtml = datalisthtml+ "</table>";
+		$("#datalist").html(datalisthtml);
+	} else {
+		$("#datalist").html("No data found.");
+	}
+};
+
+function toEdit(id){
+
+	setEditEnabled(id,true);
+	
+}
+function doEdit(id){
+	var id = 			$("#scid"+id).val();
+	var key = 			$("#sckey"+id).val();
+	var value = 		$("#scvalue"+id).val();
+	var description = 	$("#scdescription"+id).val();
+	var status = 		$("#scstatus"+id).val();
+	var postdata = {"id": id, "key": key, "value": value, "description": description, "status": status};
+	
+	//if (key==null||key==""||value==null||value==""){
+	//	document.getElementById("tips").innerText="Key and Value Must NOT be empty.";
+	//	return;
+	//} 
+	
+	$.ajax({
+		type: "PUT",
+		url: l("/rest/core/sysconfigs/"+id),
+		contentType: "application/json;charset=utf-8",
+		data: JSON.stringify(postdata),
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+				setEditEnabled(id,false);
+  	       	} else {
+  	       		document.getElementById("tips").innerText=result.msg;
+  	       	} 
+		}
+	});
+}
+
+function setEditEnabled(id,enabled){
+
+	if(enabled) {
+		$("#button"+id).removeAttr("onclick"); 
+		$("#button"+id).attr("onclick","doEdit("+id+")"); 
+		$("#button"+id).removeAttr("value"); 
+		$("#button"+id).attr("value","SUBMIT"); 
+	
+		$("#sckey"+id).removeAttr("readOnly");
+		$("#scvalue"+id).removeAttr("readOnly");
+		$("#scdescription"+id).removeAttr("readOnly");
+		$("#scstatus"+id).removeAttr("readOnly");
+	} else {
+		
+		$("#button"+id).removeAttr("onclick"); 
+		$("#button"+id).attr("onclick","toEdit("+id+")"); 
+		$("#button"+id).removeAttr("value"); 
+		$("#button"+id).attr("value","edit"); 
+	
+		$("#sckey"+id).attr("readOnly","readOnly");
+		$("#scvalue"+id).attr("readOnly","readOnly");
+		$("#scdescription"+id).attr("readOnly","readOnly");
+		$("#scstatus"+id).attr("readOnly","readOnly");
+		
+	}
+	
+}
+function initSysconfig2Constants(){
+	$.ajax({
+		type: "GET",
+		url: l("/rest/core/sysconfigs/initialization"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+  	       		document.getElementById("tips").innerText="Congfigs actived,"+result.data;
+			} else {
+				document.getElementById("tips").innerText=result.msg;
+			}
+		}
+	});
+	
+}
+function createDefaultSysconfig(){
+	$.ajax({
+		type: "POST",
+		url: l("/rest/core/sysconfigs/defaults"),
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			if (result.code=="1") {
+	  	       	document.getElementById("tips").innerText="Default Configs created,"+result.data;
+			} else {
+				document.getElementById("tips").innerText=result.msg;
+			}
+		}
+	});
+	
+}
+</script>

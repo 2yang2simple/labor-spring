@@ -15,10 +15,10 @@ class LaborUploadAdapter {
         this.loader = loader;
         //config post and get url here.
         if(toposturl==null||toposturl==""||toposturl==undefined){
-        	toposturl = '/rest/foreign/images';
+        	toposturl = '/images';
         } 
         if(togeturl==null||togeturl==""||togeturl==undefined){
-        	togeturl =  '/rest/foreign/images/';
+        	togeturl =  '/images/';
         } 
 
         this.posturl = contextpath+toposturl;
@@ -58,7 +58,8 @@ class LaborUploadAdapter {
                 return reject( response && response.msg ? response.msg : genericErrorText );
             }
             resolve( {
-                default: this.geturl + response.data.fileName
+//                default: this.geturl + response.data.fileName + '.' + response.data.fileType
+            	default: this.geturl+response.data.url
             } );
         } );
 
@@ -158,7 +159,8 @@ class CustomizeUploadAdapter {
             // This URL will be used to display the image in the content. Learn more in the
             // UploadAdapter#upload documentation.
             resolve( {
-                default: this.geturl+response.data.fileName
+//                default: this.geturl+response.data.fileName + '.' + response.data.fileType
+            	default: this.geturl+response.data.url
             } );
             
             //do-something after file uploaded;

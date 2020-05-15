@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.labor.common.constants.CommonConstants;
+import com.labor.common.exception.PermissionException;
 import com.labor.common.exception.ServiceException;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
@@ -88,7 +89,7 @@ public class LoginServiceImpl implements LoginService {
 		if (StringUtil.isEmpty(user.getStatus())
 				|| !StringUtil.isEqualedTrimLower(user.getStatus(), CommonConstants.ACTIVE)) {
 			LogManager.getLogger().debug("--createOnline--getStatus");
-			throw new ServiceException("user status is inactive.");
+			throw new PermissionException("auth account is closed.");
 		}
 		LogManager.getLogger().debug("--createOnline--"+5);
 		

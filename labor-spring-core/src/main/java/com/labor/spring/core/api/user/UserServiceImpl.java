@@ -112,70 +112,76 @@ public class UserServiceImpl implements UserServiceIntf{
     					String googleSecretKey, 
     					String cellPhone, String weixin, String email,
     					String pwd, String uuid, String status) {
+    	
     	User ret = null;
-    	User newuser = new User();
+    	/***
+    	 * pls create user by auth system.
+    	 * 
+    	 */
 
-    	if(!StringUtil.isEmpty(cellPhone)) {
-	    	ret = userRepository.findByCellPhoneIgnoreCase(cellPhone);
-	    	if (ret!=null&&ret.getId()>0){
-	    		return null;
-	    	}
-    	}
-    	if(!StringUtil.isEmpty(weixin)) {
-	    	ret = userRepository.findByWeixinIgnoreCase(weixin);
-	    	if (ret!=null&&ret.getId()>0){
-	    		return null;
-	    	}
-    	}
-    	if(!StringUtil.isEmpty(email)) {
-	    	ret = userRepository.findByEmailIgnoreCase(email);
-	    	if (ret!=null&&ret.getId()>0){
-	    		return null;
-	    	}
-    	}
-    	
-    	if (StringUtil.isEmpty(name)) {
-    		name = TokenUtil.generateUNum();
-    	}
-    	if (StringUtil.isEmpty(sno)) {
-    		//created by singup in contorller;
-    		sno = WebUtil.nextSno(); 
-    	}
-    	if (StringUtil.isEmpty(googleSecretKey)) {
-    		googleSecretKey = GoogleAuthenticator.generateSecretKey();
-    	}
-    	ret = userRepository.findByNameIgnoreCase(name);
-    	if (ret!=null&&ret.getId()>0){
-    		return null;
-    	}
-    	ret = userRepository.findByGoogleSecretKeyIgnoreCase(googleSecretKey);
-    	if (ret!=null&&ret.getId()>0){
-    		return null;
-    	}
-    	ret = userRepository.findBySnoIgnoreCase(sno);
-    	if (ret!=null&&ret.getId()>0){
-    		return null;
-    	}
-    	
-		newuser.setName(name);
-		newuser.setSno(sno);
-		//e50ad1f2da5443f988af5f43d90f50c6
-		newuser.setUuid(TokenUtil.generateUUID(uuid));
-		newuser.setStatus(status);
-		newuser.setGoogleSecretKey(googleSecretKey);
-		newuser.setCellPhone(cellPhone);
-		newuser.setWeixin(weixin);
-		newuser.setEmail(email);
-		ret = userRepository.save(newuser);
-		
-		if(!StringUtil.isEmpty(pwd)) {
-//			UserPassword newup = new UserPassword();
-//			newup.setUserid(ret.getId());
-//			newup.setPwdmd5(TokenUtil.md5(user.getUuid()+PWD_SALT+TokenUtil.md5(pwd)));
-//			newup.setStatus(CommonConstants.ACTIVE);
-//			userPasswordRepository.save(newup);
-			createPassword(ret.getId(),pwd);
-		}
+//    	User newuser = new User();
+//
+//    	if(!StringUtil.isEmpty(cellPhone)) {
+//	    	ret = userRepository.findByCellPhoneIgnoreCase(cellPhone);
+//	    	if (ret!=null&&ret.getId()>0){
+//	    		return null;
+//	    	}
+//    	}
+//    	if(!StringUtil.isEmpty(weixin)) {
+//	    	ret = userRepository.findByWeixinIgnoreCase(weixin);
+//	    	if (ret!=null&&ret.getId()>0){
+//	    		return null;
+//	    	}
+//    	}
+//    	if(!StringUtil.isEmpty(email)) {
+//	    	ret = userRepository.findByEmailIgnoreCase(email);
+//	    	if (ret!=null&&ret.getId()>0){
+//	    		return null;
+//	    	}
+//    	}
+//    	
+//    	if (StringUtil.isEmpty(name)) {
+//    		name = TokenUtil.generateUNum();
+//    	}
+//    	if (StringUtil.isEmpty(sno)) {
+//    		//created by singup in contorller;
+//    		sno = WebUtil.nextSno(); 
+//    	}
+//    	if (StringUtil.isEmpty(googleSecretKey)) {
+//    		googleSecretKey = GoogleAuthenticator.generateSecretKey();
+//    	}
+//    	ret = userRepository.findByNameIgnoreCase(name);
+//    	if (ret!=null&&ret.getId()>0){
+//    		return null;
+//    	}
+//    	ret = userRepository.findByGoogleSecretKeyIgnoreCase(googleSecretKey);
+//    	if (ret!=null&&ret.getId()>0){
+//    		return null;
+//    	}
+//    	ret = userRepository.findBySnoIgnoreCase(sno);
+//    	if (ret!=null&&ret.getId()>0){
+//    		return null;
+//    	}
+//    	
+//		newuser.setName(name);
+//		newuser.setSno(sno);
+//		//e50ad1f2da5443f988af5f43d90f50c6
+//		newuser.setUuid(TokenUtil.generateUUID(uuid));
+//		newuser.setStatus(status);
+//		newuser.setGoogleSecretKey(googleSecretKey);
+//		newuser.setCellPhone(cellPhone);
+//		newuser.setWeixin(weixin);
+//		newuser.setEmail(email);
+//		ret = userRepository.save(newuser);
+//		
+//		if(!StringUtil.isEmpty(pwd)) {
+////			UserPassword newup = new UserPassword();
+////			newup.setUserid(ret.getId());
+////			newup.setPwdmd5(TokenUtil.md5(user.getUuid()+PWD_SALT+TokenUtil.md5(pwd)));
+////			newup.setStatus(CommonConstants.ACTIVE);
+////			userPasswordRepository.save(newup);
+//			createPassword(ret.getId(),pwd);
+//		}
 
     	return ret;
     }

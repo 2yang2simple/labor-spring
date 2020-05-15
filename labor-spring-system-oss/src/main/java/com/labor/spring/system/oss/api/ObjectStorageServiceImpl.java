@@ -21,7 +21,7 @@ import com.labor.common.util.TokenUtil;
 import com.labor.spring.system.oss.entity.ObjectBody;
 import com.labor.spring.system.oss.entity.ObjectHeader;
 import com.labor.spring.system.oss.util.ApplicationProperties;
-
+import com.labor.spring.system.oss.util.ObjectHeaderUtil;
 import com.labor.spring.util.WebUtil;
 @Service
 public class ObjectStorageServiceImpl implements ObjectStorageServiceIntf{
@@ -119,14 +119,16 @@ public class ObjectStorageServiceImpl implements ObjectStorageServiceIntf{
 		if (objectBody!=null) {
 			/***** save the file header */
 			ObjectHeader objectHeader = new ObjectHeader();
+			String fileName = TokenUtil.generateUUID();
+			String url = ObjectHeaderUtil.args2url(objectBody.getPath(), objectBody.getMd5(), FileUtil.getFileType(fileOriginalName));
 			// save the header to db;
 			objectHeader.setName(fileOriginalName);
 			objectHeader.setFilePath(objectBody.getPath());
-			objectHeader.setFileName(TokenUtil.generateUUID());
+			objectHeader.setFileName(fileName);
 			objectHeader.setFileType(FileUtil.getFileType(fileOriginalName));
 			objectHeader.setFileSize(fileSize);
 			//url set null when store file in internal server; set real url when store in external server, like easyimg etc.
-			objectHeader.setUrl("");
+			objectHeader.setUrl(url);
 			objectHeader.setObjectBodyId(objectBody.getId());
 			objectHeader.setObjectBodyPath(objectBody.getPath());
 			objectHeader.setObjectBodyMd5(objectBody.getMd5());
@@ -207,9 +209,16 @@ public class ObjectStorageServiceImpl implements ObjectStorageServiceIntf{
 	}
 	
 	@Override
-	public ObjectStorage findObjectStorageByFileName(String filename, String ext) {
+	public ObjectStorage findObjectStorageByFileName(String filename) {
+		return findObjectStorageByFileName(filename, null);
+	}
+	
+	@Override
+	public ObjectStorage findObjectStorageByFileName(String fileName, String ext) {
 		ObjectStorage ret = null;
-		Optional<ObjectHeader> oa = objectHeaderRepository.findOneByFileName(filename);
+		System.err.println(fileName);
+		fileName = FileUtil.getFileName(fileName);
+		Optional<ObjectHeader> oa = objectHeaderRepository.findOneByFileName(fileName);
 		if (oa.isPresent()) {
 			ObjectHeader oh = oa.get();
 			byte[] bytes = getBytes(oh.getObjectBodyPath(),oh.getObjectBodyMd5(),ext);
@@ -221,53 +230,90 @@ public class ObjectStorageServiceImpl implements ObjectStorageServiceIntf{
 		}
 		return ret;
 	}
-	
+
+
 	@Override
-	public byte[] findBytesByFileName(String filename) {
-		return findBytesByFileName(filename, null);
-	}
-	
-	@Override
-	public byte[] findBytesByFileName(String filename, String ext){
-		byte[] ret = null;
-		Optional<ObjectHeader> oa = objectHeaderRepository.findOneByFileName(filename);
-		if (oa.isPresent()) {
-			ObjectHeader oh = oa.get();
-			ret = getBytes(oh.getObjectBodyPath(),oh.getObjectBodyMd5(),ext);
+	public ObjectStorage findObjectStorageByFileName(String fileName, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width){
+		ObjectStorage ret = null;
+		fileName = FileUtil.getFileName(fileName);
+		ret = findObjectStorageByFileName(fileName, (compressed?ImageUtil.IMAGE_COMPRESSED_SUFFIX:""));
+		if (ret != null) {
+			if (getThumbnail) {
+				System.err.println("::"+WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_WATERMARK_FILE);
+				byte[] fileBody = ImageUtil.resizeThumbnails(ret.getBytes(),ret.getType(),accuracy, height, width,
+								WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_WATERMARK_FILE);
+				ret.setBytes(fileBody);
+			} 
 		}
 		return ret;
 	}
+	
 	@Override
-	public byte[] findBytesByFileName(String fileName, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width){
-		byte[] fileBody = null;
-
-		ObjectStorage os = null;
-		os = findObjectStorageByFileName(fileName, (compressed?ImageUtil.IMAGE_COMPRESSED_SUFFIX:""));
-		if (os != null) {
-			if (getThumbnail) {
-				System.err.println("::"+WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_WATERMARK_FILE);
-				fileBody = ImageUtil.resizeThumbnails(os.getBytes(),os.getType(),accuracy, height, width,
-								WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_WATERMARK_FILE);
-			} else {
-				fileBody = os.getBytes();
-			}
-		}
-		
-		return fileBody;
+	public ObjectStorage findObjectStorage(String query) {
+		return findObjectStorage(query, null);
+	}
+	@Override
+	public ObjectStorage findObjectStorage(String query, String ext) {
+		ObjectStorage ret = null;
+		ret = buildObjectStorage(query,ext, false, null,null,null);
+		return ret;
+	}
+	@Override
+	public ObjectStorage findObjectStorage(String query, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width){
+		ObjectStorage ret = null;
+		ret = buildObjectStorage(query, (compressed?ImageUtil.IMAGE_COMPRESSED_SUFFIX:""), getThumbnail, accuracy, height, width);
+		return ret;
 	}
 	
-	private byte[] getBytes(String path, String md5, String ext) {
+	private ObjectStorage buildObjectStorage(String query, String ext, boolean getThumbnail, Double accuracy,Integer height, Integer width) {
+		ObjectStorage ret = null;
+		//\20191211\95f444173ff249589a9051ef33e5c710.png
+		
+		//get info from url
+		ret = ObjectHeaderUtil.url2objectstorage(query);
+		
+		//get info form db
+//		Optional<ObjectHeader> oa = objectHeaderRepository.findOneByUrl(query);
+//		ObjectHeader oh = null;
+//		if (oa.isPresent()) {
+//			oh = oa.get();
+//			ret = new ObjectStorage();
+//			ret.setPath(oh.getObjectBodyPath());
+//			ret.setName(oh.getObjectBodyMd5());
+//			ret.setType(oh.getFileType());
+//		}
+		
+		if (ret!=null) {
+			byte[] bytes = getBytes(ret.getPath(),ret.getName(),ext);
+			if (bytes==null) {
+				return ret;
+			}
+			ret.setBytes(bytes);
+			
+			if (getThumbnail) {
+//				System.err.println("::"+WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_WATERMARK_FILE);
+				byte[] fileBody = ImageUtil.resizeThumbnails(ret.getBytes(),ret.getType(),accuracy, height, width,
+								WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_WATERMARK_FILE);
+				ret.setBytes(fileBody);
+			} 
+		}
+		return ret;
+	}
+	
+	
+	
+	private byte[] getBytes(String path, String name, String ext) {
 		byte[] ret = null;
 		File file = new File(properties.OBJECTSTORAGE_DIR + File.separator 
 				+ path + File.separator 
-				+ md5
+				+ name
 				+ (ext==null?"":ext));
 		if (file.exists()) {
 			LogManager.getLogger().debug("getBytes:"+ext);
 		} else {
 			file = new File(properties.OBJECTSTORAGE_DIR + File.separator 
 							+ path + File.separator 
-							+ md5);
+							+ name);
 		}
 		
 		ret = FileUtil.file2Bytes(file);

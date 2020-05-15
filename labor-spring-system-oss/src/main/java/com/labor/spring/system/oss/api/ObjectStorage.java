@@ -6,6 +6,8 @@ public class ObjectStorage {
 	
 	private String type;
 	
+	private String path;
+	
 	private String name;
 	
 	private long size;
@@ -40,6 +42,14 @@ public class ObjectStorage {
 
 	public void setSize(long size) {
 		this.size = size;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 	
 	

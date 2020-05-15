@@ -25,11 +25,18 @@ public interface ObjectStorageServiceIntf {
 	public Optional<ObjectBody> findBodyByMd5(String md5);
 	
 	public Long countByExample(ObjectBody entity);
-
+	
+	public ObjectStorage findObjectStorageByFileName(String filename);
 	public ObjectStorage findObjectStorageByFileName(String filename, String ext);
-	public byte[] findBytesByFileName(String filename);
-	public byte[] findBytesByFileName(String filename, String ext);
-	public byte[] findBytesByFileName(String fileName, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width);
+	public ObjectStorage findObjectStorageByFileName(String fileName, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width);
+	
+	public ObjectStorage findObjectStorage(String query);
+	public ObjectStorage findObjectStorage(String query, String ext);
+	public ObjectStorage findObjectStorage(String query, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width);
+
+//	public byte[] findBytesByFileName(String filename);
+//	public byte[] findBytesByFileName(String filename, String ext);
+//	public byte[] findBytesByFileName(String fileName, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width);
 
 	
 }

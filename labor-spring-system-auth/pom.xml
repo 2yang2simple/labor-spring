@@ -30,9 +30,9 @@
 	<dependencies>
 		<!-- internal dependencies -->
 		<dependency>
-			<groupId>com.labor.spring.core</groupId>
-			<artifactId>labor-spring-core</artifactId>
-			<version>${labor-spring-core.version}</version>
+			<groupId>com.labor.spring.feign</groupId>
+			<artifactId>labor-spring-feign</artifactId>
+			<version>${labor-spring-feign.version}</version>
 		</dependency>
 		
 	</dependencies>

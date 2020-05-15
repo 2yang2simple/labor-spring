@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
+import com.labor.spring.system.oss.api.ObjectStorage;
 import com.labor.spring.system.oss.api.ObjectStorageServiceIntf;
 import com.labor.spring.system.oss.util.ApplicationProperties;
 
@@ -48,22 +49,34 @@ public class OSSForeignRestController {
 	}
 
 	@RequestMapping(value = { "/files/{filename}" }, method = RequestMethod.GET)
-	public byte[] findFileByFilename(
-					@PathVariable(value="filename") String filename) {
-		return objectStorageService.findBytesByFileName(filename, null);
+	public byte[] findFileByFilename(@PathVariable(value = "filename") String filename) {
+		ObjectStorage ret = null;
+		ret = objectStorageService.findObjectStorageByFileName(filename, null);
+		if (ret == null) {
+			return null;
+		}
+		return ret.getBytes();
 	}
 	
 	@RequestMapping(value = { "/images/{filename}/origin" }, method = RequestMethod.GET)
-	public byte[] findImageOriginByFilename(
-					@PathVariable(value="filename") String filename) {
-		return objectStorageService.findBytesByFileName(filename,false,true,Double.valueOf(1),null,null);
+	public byte[] findImageOriginByFilename(@PathVariable(value = "filename") String filename) {
+		ObjectStorage ret = null;
+		ret = objectStorageService.findObjectStorageByFileName(filename, false, true, Double.valueOf(1), null, null);
+		if (ret == null) {
+			return null;
+		}
+		return ret.getBytes();
 	}
-	
+
 	@RequestMapping(value = { "/images/{filename}" }, method = RequestMethod.GET)
-	public byte[] findImageByFilename(
-					@PathVariable(value="filename") String filename) {
-		//compressed to avoid large file.
-		return objectStorageService.findBytesByFileName(filename,true,true,Double.valueOf(1),null,null);
+	public byte[] findImageByFilename(@PathVariable(value = "filename") String filename) {
+		ObjectStorage ret = null;
+		// compressed to avoid large file.
+		ret = objectStorageService.findObjectStorageByFileName(filename, true, true, Double.valueOf(1), null, null);
+		if (ret == null) {
+			return null;
+		}
+		return ret.getBytes();
 
 	}
 	

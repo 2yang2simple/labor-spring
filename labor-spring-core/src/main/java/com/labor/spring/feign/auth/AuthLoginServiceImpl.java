@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.labor.common.constants.CommonConstants;
+import com.labor.common.exception.PermissionException;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
@@ -132,15 +133,18 @@ public class AuthLoginServiceImpl implements AuthLoginService{
 		}
 		//update local user info;
 		User localuser = localUserRepository.findByUuidIgnoreCase(remoteuser.getUuid());
-		
 		if (localuser!=null){
+			if (!CommonConstants.ACTIVE.equals(localuser.getStatus())){
+				LogManager.getLogger().error("local account status [{}}"+localuser.getStatus());
+				throw new PermissionException("local account is closed.");
+			}
 			remoteuser.setId(localuser.getId());		
 			BeanUtils.copyProperties(remoteuser,localuser,IgnorePropertiesUtil.getNullPropertyNames(remoteuser));
 			LogManager.getLogger().info("updated a local user");
 		} else {		
 			//create a local user;
 			localuser = new User();
-			localuser.setId(null);
+			localuser.setId(remoteuser.getId()); 
 			localuser.setUuid(remoteuser.getUuid());
 			localuser.setSno(remoteuser.getSno());
 			localuser.setName(remoteuser.getName());
