@@ -9,6 +9,8 @@ public class ClientInfo implements Serializable {
 	private String fpType;
 	//token store type, store in cooike, weixin, app, etc
 	private String authType;
+	private String perType;
+	
 	//client secret
 	private String secret;
 	//callback uri after login;
@@ -19,12 +21,14 @@ public class ClientInfo implements Serializable {
 	public ClientInfo(
 				String pFpType,
 				String pAuthType,
+				String pPerType,
 				String pSecret,
 				String pCallback4AccessToken,
 				String pCallback4ClientSecret) {
 		
 		fpType=pFpType;
 		authType=pAuthType;
+		perType=pPerType;
 		secret=pSecret;
 		callback4AccessToken=pCallback4AccessToken;
 		callback4ClientSecret=pCallback4ClientSecret;
@@ -66,6 +70,14 @@ public class ClientInfo implements Serializable {
 
 	public void setCallback4ClientSecret(String callback4ClientSecret) {
 		this.callback4ClientSecret = callback4ClientSecret;
+	}
+
+	public String getPerType() {
+		return perType;
+	}
+
+	public void setPerType(String perType) {
+		this.perType = perType;
 	}
 
 }

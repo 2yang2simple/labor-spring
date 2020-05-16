@@ -3,6 +3,7 @@ package com.labor.spring.feign.auth;
 import com.labor.common.constants.CommonConstants;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
+import com.labor.spring.base.BaseProperties;
 import com.labor.spring.bean.ClientRegisted;
 import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
@@ -49,11 +50,12 @@ import org.springframework.web.client.RestTemplate;
 @CacheConfig(cacheNames = { "cache-auth" })
 public class AuthCacheServiceFeignImpl implements AuthCacheService {
 
-	@Autowired
-	private AuthPermissionService authPermissionService;
+//	@Autowired
+//	private AuthPermissionService authPermissionService;
 	@Autowired
 	private AuthFeignClient authFeignClient;
-
+	@Autowired
+	private BaseProperties baseProperties;
 //	public static final String KEY_PREFIX_USER = "users-";
 //	public static final String KEY_PREFIX_PERMISSIONS = "userpermissions-";
 	
@@ -130,7 +132,18 @@ public class AuthCacheServiceFeignImpl implements AuthCacheService {
 		if (puser==null) {
 			return ret;
 		}
-		ret = authPermissionService.findUserPermissions(puser.getId(),puser.getName());
+		//local
+//		ret = authPermissionService.findUserPermissions(puser.getId(),puser.getName());
+		//remote
+		String pertype = baseProperties.CONTEXT_PATH;
+		if (pertype!=null) {
+			pertype = pertype.replace("/", "");
+		}
+		Result result = authFeignClient.findUserPermissions(pertype,puser.getUuid());
+		if (ResultStatus.SUCCESS.code()==result.getCode()) {
+			ret = ObjectMapperUtil.getObjectMapper()
+					.convertValue(result.getData(),Set.class);
+		}
 		return ret;
 	}
 

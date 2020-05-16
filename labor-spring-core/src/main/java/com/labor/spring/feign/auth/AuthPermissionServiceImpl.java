@@ -28,18 +28,21 @@ public class AuthPermissionServiceImpl implements AuthPermissionService{
 
 		System.err.println("----AuthPermissionServiceImpl--------findUserPermissions--");
 		Set<String> ret = new HashSet<String>();
-		List<Permission> list;
+		List<Permission> list = null;
 		// if login by superuser. return all the permissions
 		boolean issuperuser = false;
 		int size;
 		if (StringUtil.isEqualedTrimLower(WebConstants.USERNAME_SUPER, username)) {
-			list = perService.findListByStatus(CommonConstants.ACTIVE);
+			//return allpass
+			ret.add(WebConstants.PERMISSIONS_ALLPASS);
+			//return all active permissions
+//			list = perService.findListByStatus(CommonConstants.ACTIVE);
 			// if permission is null, then init permission from the package class;
-			if (list != null && list.size() == 0) {
+//			if (list != null && list.size() == 0) {
 //				perService.initialization();	
-				list = perService.findListByStatus(CommonConstants.ACTIVE);
-			}
-			issuperuser = true;
+//				list = perService.findListByStatus(CommonConstants.ACTIVE);
+//			}
+
 		} else {
 			list = perService.findListByUserid(userid);
 		}
@@ -68,4 +71,52 @@ public class AuthPermissionServiceImpl implements AuthPermissionService{
 		return ret;
 	}
 
+
+	
+	public Set<String> findUserPermissions(Integer userid, String username, String type){
+		
+		System.err.println("----AuthPermissionServiceImpl--------findUserPermissions--bytype---");
+		Set<String> ret = new HashSet<String>();
+		List<Permission> list = null;
+		// if login by superuser. return all the permissions
+		boolean issuperuser = false;
+		int size;
+		if (StringUtil.isEqualedTrimLower(WebConstants.USERNAME_SUPER, username)) {
+			//return allpass
+			ret.add(WebConstants.PERMISSIONS_ALLPASS);
+			//return all active permissions
+//			list = perService.findListByStatus(CommonConstants.ACTIVE,type);
+			// if permission is null, then init permission from the package class;
+//			if (list != null && list.size() == 0) {
+//				perService.initialization();	
+//				list = perService.findListByStatus(CommonConstants.ACTIVE,type);
+//			}
+			issuperuser = true;
+		} else {
+			list = perService.findListByUserid(userid,type);
+		}
+		if (list != null) {
+			size = list.size();
+			for (int i = 0; i < size; i++) {
+				Permission p = (Permission) list.get(i);
+				ret.add(p.getCode());
+			}
+		}
+		// if not superuser, add common permissions of common user.
+		if (!issuperuser) {
+			Role r = roleService.findByNameAndStatus(WebConstants.ROLENAME_COMMONUSER, CommonConstants.ACTIVE);
+			if (r != null && r.getId() > 0) {
+				list = perService.findListByRoleid(r.getId(),type);
+				if (list != null) {
+					size = list.size();
+					for (int i = 0; i < size; i++) {
+						Permission p = (Permission) list.get(i);
+						ret.add(p.getCode());
+					}
+				}
+			}
+		}
+		
+		return ret;
+	}
 }

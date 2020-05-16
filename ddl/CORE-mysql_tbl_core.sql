@@ -222,6 +222,7 @@ create table tbl_core_permission
 (
 	per_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	per_code		varchar(100) not null,
+	per_type		varchar(100),
 	parent_id		int,
 	active_status		varchar(1),
 	data_description	varchar(1000),

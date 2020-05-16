@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import com.labor.common.constants.CommonConstants;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
+import com.labor.spring.base.BaseRestController;
 import com.labor.spring.bean.ClientRegisted;
 import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
@@ -46,7 +47,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/rest/feign/auth/logins")
-public class AuthLoginRestController {
+public class AuthLoginRestController extends BaseRestController{
 
 	@Autowired
 	private AuthLoginService authLoginService;
@@ -57,7 +58,7 @@ public class AuthLoginRestController {
 	@ApiOperation("login by cellphone")
 	@RequestMapping(value = {"/cellphone"}, method = RequestMethod.POST)
 	public Result createByCellPhone(
-					@RequestParam(value="client-key", required=true)String clientKey,
+					@RequestParam(value="client-key", required=false)String clientKey,
 					@RequestParam(value="client-uuid", required=true)String clientUuid,
 					@RequestParam(value="name", required=true)String name,
 					@RequestParam(value="code", required=true)String code
@@ -73,6 +74,9 @@ public class AuthLoginRestController {
 		String authCode = null;
 		String accessToken = null;
 		LogManager.getLogger().debug("******create*****");
+		if (StringUtil.isEmpty(clientKey)) {
+			clientKey = baseProperties.getContextName();
+		}
 		String key = authLoginService.create(clientKey, clientUuid, AuthConstants.LOGINTYPE_CELLPHONE, code, name);
 
 		LogManager.getLogger().debug("******create*****[{}]",key);

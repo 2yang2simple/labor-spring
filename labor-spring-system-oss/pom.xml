@@ -8,7 +8,8 @@
 	<groupId>com.labor.spring.system.oss</groupId>
 	<artifactId>labor-spring-system-oss</artifactId>
 	<name>labor-spring-system-oss</name>
-	
+	<packaging>war</packaging>
+		
 	<dependencyManagement>
 		<dependencies>
 
@@ -32,6 +33,112 @@
 		</dependency>
 		
 	</dependencies>
-	
+	<build>
+		<finalName>oss</finalName>
+		<plugins>
+			<!-- ######### WAR START ##########-->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-war-plugin</artifactId>
+			    <configuration>
+					<outputDirectory>${final-file-path}</outputDirectory>
+			        <webResources>
+			            <resource>
+			                <directory>${project.basedir}/build/test</directory>
+			                <targetPath>WEB-INF/classes</targetPath>
+			                <includes>
+			                    <include>*.*</include>
+			                </includes>
+			            </resource>
+			            <!-- 
+			            <resource>
+			                <directory>${project.basedir}/src/main/resources/templates/00.account/sso</directory>
+			                <targetPath>WEB-INF/classes/templates/00.account/</targetPath>
+			                <includes>
+			                    <include>*.html</include>
+			                </includes>
+			            </resource>
+			             -->
+			        </webResources>
+			    </configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<executions>
+				 <execution>
+					<id>prepare-war</id>
+					<phase>prepare-package</phase>
+					<goals>
+					<goal>replace</goal>
+					</goals>
+				 </execution>
+				</executions>
+				<configuration>
+				 <includes>
+				  <include>${project.basedir}\src\main\resources\templates\help.html
+				  </include>
+				 </includes>
+				 <outputFile>${project.basedir}\target\classes\templates\help.html
+				 </outputFile>
+				<replacements>
+				 <replacement>
+				  <token>-version-</token>
+				  <value>${maven.build.timestamp}</value>
+				 </replacement>
+				</replacements>
+				</configuration>
+			</plugin>
+			<!-- ######### WAR END ############-->
+			<!-- ######### JAR START ##########
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-jar-plugin</artifactId>
+			    <configuration>
+			        <webResources>
+			            <resource>
+			                <directory>${project.basedir}/production</directory>
+			                <targetPath>BOOT-INF/classes</targetPath>
+			                <includes>
+			                    <include>*.*</include>
+			                </includes>
+			            </resource>
+			        </webResources>
+			    </configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<executions>
+				 <execution>
+					<id>prepare-jar</id>
+					<phase>prepare-package</phase>
+					<goals>
+					<goal>replace</goal>
+					</goals>
+				 </execution>
+				</executions>
+				<configuration>
+				 <includes>
+				  <include>${project.basedir}\src\main\resources\templates\help.html
+				  </include>
+				 </includes>
+				 <outputFile>${project.basedir}\target\classes\templates\help.html
+				 </outputFile>
+				<replacements>
+				 <replacement>
+				  <token>-version-</token>
+				  <value>${maven.build.timestamp}</value>
+				 </replacement>
+				</replacements>
+				</configuration>
+			</plugin>-->
+			<!-- ######### JAR END ############-->
+		</plugins>
+		
+
+	</build>
 	
 </project>

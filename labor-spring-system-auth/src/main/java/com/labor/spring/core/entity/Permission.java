@@ -23,6 +23,9 @@ public class Permission extends AbstractEntity implements Serializable {
 	@Column(name="per_code")
     private String code;
 	
+	@Column(name="per_type")
+    private String type;
+	
     @Column(name="parent_id")
     private Integer parentid;
     
@@ -48,6 +51,14 @@ public class Permission extends AbstractEntity implements Serializable {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	} 
 	
 	

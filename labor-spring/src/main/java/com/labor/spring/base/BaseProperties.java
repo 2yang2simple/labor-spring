@@ -11,5 +11,16 @@ public class BaseProperties {
 	@Value("${environment}")
 	public String ENVIRONMENT;
 	
-	
+	public String getContextName() {
+		String ret = "";
+		if (CONTEXT_PATH!=null) {
+			ret = CONTEXT_PATH.replace("/", "");
+		}
+		return ret;
+	}
+	public String getContextPath() {
+		String ret = "";
+		ret = CONTEXT_PATH;
+		return ret;
+	}
 }

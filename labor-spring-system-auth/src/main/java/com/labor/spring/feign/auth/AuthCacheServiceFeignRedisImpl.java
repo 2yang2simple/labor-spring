@@ -3,6 +3,7 @@ package com.labor.spring.feign.auth;
 import com.labor.common.constants.CommonConstants;
 import com.labor.common.exception.ServiceException;
 import com.labor.common.util.StringUtil;
+import com.labor.spring.base.BaseProperties;
 import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
@@ -46,9 +47,10 @@ public class AuthCacheServiceFeignRedisImpl implements AuthCacheService {
 	private CacheManager cacheManager;
 	@Autowired
 	private AuthFeignClient authFeignClient;
+//	@Autowired
+//	private AuthPermissionService authPermissionService;
 	@Autowired
-	private AuthPermissionService authPermissionService;
-
+	private BaseProperties baseProperties;
 	
 	@Autowired
     private RedisTemplate redisTemplate;
@@ -150,7 +152,15 @@ public class AuthCacheServiceFeignRedisImpl implements AuthCacheService {
 		if (puser==null) {
 			return ret;
 		}
-		ret = authPermissionService.findUserPermissions(puser.getId(),puser.getName());
+		//local
+//		ret = authPermissionService.findUserPermissions(puser.getId(),puser.getName());
+		//remote
+		String clientKey = baseProperties.getContextName();
+		Result result = authFeignClient.findUserPermissions(clientKey,puser.getUuid());
+		if (ResultStatus.SUCCESS.code()==result.getCode()) {
+			ret = ObjectMapperUtil.getObjectMapper()
+					.convertValue(result.getData(),Set.class);
+		}
 		
 		//use cache;
 		getCache().put(KEY_PREFIX_PERMISSIONS+accessToken, ret);

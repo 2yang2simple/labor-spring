@@ -6,4 +6,6 @@ public interface AuthPermissionService {
 
 	
 	public Set<String> findUserPermissions(Integer userid, String username);
+	
+	public Set<String> findUserPermissions(Integer userid, String username, String type);
 }

@@ -55,7 +55,7 @@ public class LoginForeignRestController {
 		
 		ClientInfo ci = ClientRegisted.getClientInfo(clientKey);
 		if (ci==null) {
-			throw new ParameterException("clientKey error.");
+			throw new ParameterException("client not registed.");
 		}
 
 		FingerprintOnline fo = null;
@@ -93,7 +93,7 @@ public class LoginForeignRestController {
 			
 			//administrator can not login on the app;
 			if (StringUtil.isEqualedTrimLower(WebConstants.USERNAME_SUPER,fo.getUserName())
-					&&StringUtil.isEqualedTrimLower(WebConstants.AUTH_TYPE_SAVEDIN_APP,ci.getAuthType())){
+					&&!StringUtil.isEqualedTrimLower(WebConstants.AUTH_TYPE_SAVEDIN_COOKIES,ci.getAuthType())){
 				loginService.delete(fo.getAuthValue());
 				LogManager.getLogger().trace("Administrator can only be logged on from the WEB client. [{}]",fo.getAuthValue());
 				return Result.failure(ResultStatus.FAILURE_LOGIN_ADMIN_FORBID);

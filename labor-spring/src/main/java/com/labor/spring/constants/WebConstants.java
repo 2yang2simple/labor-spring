@@ -27,6 +27,7 @@ public class WebConstants {
 //	public final static String AUTH_TYPE_SAVEDIN_REQUEST = "request";
 	public final static String AUTH_TYPE_SAVEDIN_APP = "app";
 
+	public final static String PERMISSIONS_ALLPASS = "*allpass*";
 	
 	//create a super user to do everything
 	public final static String USERNAME_SUPER = "administrator";

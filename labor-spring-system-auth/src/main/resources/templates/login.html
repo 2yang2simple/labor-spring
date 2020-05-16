@@ -98,7 +98,7 @@ function doLogin(){
         $("#loginbutton").dequeue(); 
 		return;
 	} 
-	var url = "/rest/feign/auth/logins/cellphone?client-key=auth-web&client-uuid=" + cfmd5 +
+	var url = "/rest/feign/auth/logins/cellphone?&client-uuid=" + cfmd5 +
 				"&code=" + verifycode +
 				"&name=" + name;
 	

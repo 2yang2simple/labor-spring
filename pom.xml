@@ -29,8 +29,7 @@
 		<spring-boot.version>2.1.6.RELEASE</spring-boot.version>
 		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-		<final-file-name>ppp</final-file-name>
-		<final-file-path>D:\output-directory</final-file-path>
+		<final-file-path>D:\02.projects\00.tomcat8\webapps</final-file-path>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 	</properties>
 

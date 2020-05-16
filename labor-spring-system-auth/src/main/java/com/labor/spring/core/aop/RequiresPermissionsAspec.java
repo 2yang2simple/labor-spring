@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.labor.common.util.StringUtil;
+import com.labor.spring.constants.WebConstants;
 import com.labor.spring.feign.auth.AuthLoginService;
 
 @Aspect
@@ -55,6 +56,9 @@ public class RequiresPermissionsAspec {
 		} else {
 			permsHad.append("|");
 			for (String perm:permissions) {
+				if(StringUtil.isEqualedTrimLower(WebConstants.PERMISSIONS_ALLPASS, perm)) {
+					return;
+				}
 				permsHad.append(perm).append("|");
 			}
 		}

@@ -38,22 +38,16 @@
 	</dependencies>
 	
 	<build>
+		<finalName>ppp</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<outputDirectory>${final-file-path}</outputDirectory>
-					<finalName>${final-file-name}</finalName>
-				</configuration>
-			</plugin>
 			<plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-war-plugin</artifactId>
 			    <configuration>
+			    	<outputDirectory>${final-file-path}</outputDirectory>
 			        <webResources>
 			            <resource>
-			                <directory>${project.basedir}/production</directory>
+			                <directory>${project.basedir}/build/test</directory>
 			                <targetPath>WEB-INF/classes</targetPath>
 			                <includes>
 			                    <include>*.*</include>
