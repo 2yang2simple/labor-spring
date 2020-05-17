@@ -22,14 +22,14 @@ public interface OSSFeignClient {
 	@RequestMapping(value = {"/rest/foreign/images"}, method = RequestMethod.POST)
 	public Result createImage(@RequestParam("file") MultipartFile file);
 
-	@RequestMapping(value = {"/rest/foreign/files/{filename}"}, method = RequestMethod.GET)
-	public byte[] findByFilename(@PathVariable(value="filename") String filename);
-	
-	@RequestMapping(value = {"/rest/foreign/images/{filename}/origin"}, method = RequestMethod.GET)
-	public byte[] findImageOriginByFilename(@PathVariable(value="filename") String filename);
-	
-	@RequestMapping(value = {"/rest/foreign/images/{filename}"}, method = RequestMethod.GET)
-	public byte[] findImageByFilename(@PathVariable(value="filename") String filename);
+//	@RequestMapping(value = {"/rest/foreign/files/{filename}"}, method = RequestMethod.GET)
+//	public byte[] findByFilename(@PathVariable(value="filename") String filename);
+//	
+//	@RequestMapping(value = {"/rest/foreign/images/{filename}/origin"}, method = RequestMethod.GET)
+//	public byte[] findImageOriginByFilename(@PathVariable(value="filename") String filename);
+//	
+//	@RequestMapping(value = {"/rest/foreign/images/{filename}"}, method = RequestMethod.GET)
+//	public byte[] findImageByFilename(@PathVariable(value="filename") String filename);
 	
 	
 }

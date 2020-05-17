@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.labor.common.util.FileUtil;
+import com.labor.common.util.ImageUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.bean.Result;
@@ -44,7 +45,7 @@ public class ObjectStorageRestController {
 	    if (file.isEmpty()) {
 	    	return Result.failure(ResultCode.FAILURE_PARAM_NULL, ResultCode.MSG_FAILURE_PARAM_NULL);
 		}
-		return Result.success(objectStorageService.create(file));
+		return Result.success(objectStorageService.create(properties.OBJECTSTORAGE_DIR_FILES,file));
 	}
 	
 	//create a image with entity;
@@ -55,16 +56,17 @@ public class ObjectStorageRestController {
 	    	return Result.failure(ResultCode.FAILURE_PARAM_NULL, ResultCode.MSG_FAILURE_PARAM_NULL);
 		}
 	    // image will be compressed in service;
-		return Result.success(objectStorageService.createImage(file));
+		return Result.success(objectStorageService.createImage(properties.OBJECTSTORAGE_DIR_IMAGES,file));
 	}
 	
 	@RequestMapping(value = {"/files/{query}"}, method = RequestMethod.GET)
 	public void findFile(
 					@PathVariable(value="query") String query) {
-		ObjectStorage os = objectStorageService.findObjectStorage(query, null);
+		ObjectStorage os = objectStorageService.buildObjectStorage(query);
 		if (os == null) {
 			return;
 		}
+		os.setBytes(objectStorageService.getBytes(properties.OBJECTSTORAGE_DIR_FILES, os.getPath(), os.getName(), null));
 		String contentType = "multipart/form-data";
 		String contentDisposition = "attachment;fileName="+System.currentTimeMillis() + "." + os.getType();
 		writeBytes2Response(os.getBytes(),contentType,contentDisposition);
@@ -73,15 +75,19 @@ public class ObjectStorageRestController {
 	@RequestMapping(value = {"/images/{query}/origin"}, method = RequestMethod.GET)
 	public void findImageOrigin(
 					@PathVariable(value="query") String query) {
-		ObjectStorage os = objectStorageService.findObjectStorage(query,false,true,Double.valueOf(1),null,null);
-		if (os == null) {
-			// if not exist or error, return 404.gif;
-			byte[] fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
-			os = new ObjectStorage();
-			os.setBytes(fileBody);
-			os.setName(properties.IMG_404_FILE);
-			os.setType("png");
+		ObjectStorage os = objectStorageService.buildObjectStorage(query);
+		if (os!=null) {
+			byte[] imageBytes = objectStorageService.getBytes(properties.OBJECTSTORAGE_DIR_IMAGES, os.getPath(), os.getName(), null);
+			if (imageBytes!=null) {
+				imageBytes = resizeImage(imageBytes,os.getType(),Double.valueOf(1),null,null);
+				os.setBytes(imageBytes);
+			}
 		}
+		
+		if (os == null || os.getBytes()==null) {
+			os = buildImageNotExistObjectStorage();
+		}
+		
 		String contentType = "image/"+os.getType();
 		writeBytes2Response(os.getBytes(),contentType,null);
 	}
@@ -89,17 +95,38 @@ public class ObjectStorageRestController {
 	@RequestMapping(value = {"/images/{query}"}, method = RequestMethod.GET)
 	public void findImage(
 					@PathVariable(value="query") String query) {
-		ObjectStorage os = objectStorageService.findObjectStorage(query,true,true,Double.valueOf(1),null,null);
-		if (os == null) {
-			// if not exist or error, return 404.gif;
-			byte[] fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_404_FILE);
-			os = new ObjectStorage();
-			os.setBytes(fileBody);
-			os.setName(properties.IMG_404_FILE);
-			os.setType("png");
+		ObjectStorage os = objectStorageService.buildObjectStorage(query);
+		if (os!=null) {
+			byte[] imageBytes = objectStorageService.getBytes(properties.OBJECTSTORAGE_DIR_IMAGES, os.getPath(), os.getName(), ImageUtil.IMAGE_COMPRESSED_SUFFIX);
+			if (imageBytes!=null) {
+				imageBytes = resizeImage(imageBytes,os.getType(),Double.valueOf(1),null,null);
+				os.setBytes(imageBytes);
+			}
 		}
+		
+		if (os == null || os.getBytes()==null) {
+			os = buildImageNotExistObjectStorage();
+		}
+		
 		String contentType = "image/"+os.getType();
 		writeBytes2Response(os.getBytes(),contentType,null);
+	}
+	
+	// if not exist or error, return notexist.gif;
+	private ObjectStorage buildImageNotExistObjectStorage() {
+		ObjectStorage ret = new ObjectStorage();
+		byte[] fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_FILE_NOTEXIST);
+		if (fileBody!=null) {
+			ret.setBytes(fileBody);
+			ret.setName(properties.IMG_FILE_404);
+			ret.setType("gif");
+		}
+		return ret;
+	}
+	private byte[] resizeImage(byte[] imageBytes, String imageType, Double accuracy,Integer height, Integer width) {
+		byte[] ret = ImageUtil.resizeThumbnails(imageBytes, imageType, accuracy, height, width,
+		WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_FILE_WATERMARK);
+		return ret;
 	}
 	
 	private void writeBytes2Response(byte[] bytes, String contentType, String contentDisposition) {

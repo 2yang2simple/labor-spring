@@ -34,7 +34,7 @@ public class OSSForeignRestController {
 	    if (file.isEmpty()) {
 	    	return Result.failure(ResultCode.FAILURE_PARAM_NULL, ResultCode.MSG_FAILURE_PARAM_NULL);
 		}
-		return Result.success(objectStorageService.create(file));
+		return Result.success(objectStorageService.create(properties.OBJECTSTORAGE_DIR_FILES,file));
 	}
 	
 	//create a image with entity;
@@ -45,39 +45,8 @@ public class OSSForeignRestController {
 	    	return Result.failure(ResultCode.FAILURE_PARAM_NULL, ResultCode.MSG_FAILURE_PARAM_NULL);
 		}
 	    // image will be compressed in service;
-		return Result.success(objectStorageService.createImage(file));
+		return Result.success(objectStorageService.createImage(properties.OBJECTSTORAGE_DIR_IMAGES,file));
 	}
 
-	@RequestMapping(value = { "/files/{filename}" }, method = RequestMethod.GET)
-	public byte[] findFileByFilename(@PathVariable(value = "filename") String filename) {
-		ObjectStorage ret = null;
-		ret = objectStorageService.findObjectStorageByFileName(filename, null);
-		if (ret == null) {
-			return null;
-		}
-		return ret.getBytes();
-	}
-	
-	@RequestMapping(value = { "/images/{filename}/origin" }, method = RequestMethod.GET)
-	public byte[] findImageOriginByFilename(@PathVariable(value = "filename") String filename) {
-		ObjectStorage ret = null;
-		ret = objectStorageService.findObjectStorageByFileName(filename, false, true, Double.valueOf(1), null, null);
-		if (ret == null) {
-			return null;
-		}
-		return ret.getBytes();
-	}
-
-	@RequestMapping(value = { "/images/{filename}" }, method = RequestMethod.GET)
-	public byte[] findImageByFilename(@PathVariable(value = "filename") String filename) {
-		ObjectStorage ret = null;
-		// compressed to avoid large file.
-		ret = objectStorageService.findObjectStorageByFileName(filename, true, true, Double.valueOf(1), null, null);
-		if (ret == null) {
-			return null;
-		}
-		return ret.getBytes();
-
-	}
 	
 }

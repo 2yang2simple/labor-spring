@@ -15,10 +15,19 @@
 
 <span id="tips" style="color: red;">&nbsp;</span>
 <br>
-<button class="btn btn-primary prms" type="button" onclick='doCapture();' th:text="capture"></button>
-<div id="capture" style="padding: 10px; background: #f5da55">
-    <h4 style="color: #000; ">Hello world!</h4>
-</div>
+
+
+	<form id="filesForm" >
+	    <input class="form-control" type="file" name="files" id="files" accept="image/*" />
+	</form>
+	<p id="filelist"></p>
+	<br>
+	<button class="btn btn-primary" type="button" th:text="capture"
+			onclick='doCapture();' ></button>
+	<button class="btn btn-warning" type="botton" th:text="submit" id="buttonfilessubmit" 
+			onClick="doSubmitFiles();" ></button> 
+				
+				
 	<ul class="nav nav-tabs">
 		<li><a href="javascript:toTextarea();">HTML</a></li>
 		<li><a href="javascript:toCKEditor();">CKeditor</a></li>
@@ -101,4 +110,45 @@ function doCapture(){
 };
 
 
+function doSubmitFiles(){
+	$("#buttonfilessubmit").button('loading').queue();
+
+	if ($("#files")[0].files.length>0){
+		var formData = new FormData();
+		for (var i=0;i<$("#files")[0].files.length;i++){
+			formData.append("file",$("#files")[0].files[i]);
+		}
+	    $.ajax({
+	        url: l('/files'),
+	        type: 'POST',
+	        data: formData,
+	        dataType: 'json',
+	        contentType: false,
+	        processData: false,
+	        success: function (result) {
+
+	        	handleResultCode(result, function (result) {
+					
+	        		document.getElementById("filesForm").reset();
+			        alert("Submit OK.");
+			        var fileurl = getContextPath() +"/files/"+result.data.url;
+			        var filelisthtml = 	
+						"<a href='"+ fileurl +"'>"+fileurl+"</a><br>";
+			        $("#filelist").append(filelisthtml);
+    					
+    					
+	  	       	});
+	        },
+	        complete:function(){
+	        	$("#buttonfilessubmit").button('reset');
+	            $("#buttonfilessubmit").dequeue(); 
+	        }
+	    });
+	} else {
+		alert("Choose a file first.");
+    	$("#buttonfilessubmit").button('reset');
+        $("#buttonfilessubmit").dequeue(); 
+	}
+
+}
 </script>
