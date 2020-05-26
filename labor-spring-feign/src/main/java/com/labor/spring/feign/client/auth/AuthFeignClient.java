@@ -39,7 +39,7 @@ public interface AuthFeignClient {
 			@RequestParam(value = "code", required = true)String code,
 			@RequestParam(value = "name", required = true)String name);
 	
-	@RequestMapping(value = { "/rest/foreign/permissions/{client-key}" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/rest/foreign/permissions/{client-key}" }, method = RequestMethod.PUT)
 	public Result refreshPermissions(
 			@PathVariable(value="client-key") String clientKey, 
 			@RequestBody Set<String> permissions);

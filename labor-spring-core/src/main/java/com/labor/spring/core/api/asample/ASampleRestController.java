@@ -60,7 +60,7 @@ public class ASampleRestController extends BaseRestController{
 	@RequestMapping(value = {"/aopand"}, method = RequestMethod.GET)
 	public Result aopand() {
 		System.err.println("do aop");
-		return Result.success();
+		return Result.success("yes");
 	}
 	@RequiresPermissions(value= {"user","fingerprint"}, logical=Logical.OR)
 	@RequestMapping(value = {"/aopor"}, method = RequestMethod.GET)
@@ -69,6 +69,11 @@ public class ASampleRestController extends BaseRestController{
 		return Result.success();
 	}
 	
+	@RequestMapping(value = {"/test"}, method = RequestMethod.GET)
+	public Result test() {
+		System.err.println("test");
+		return Result.success("yes");
+	}
 	
 	//create a object
 	@RequestMapping(value = {""}, method = RequestMethod.POST)

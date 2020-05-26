@@ -45,7 +45,7 @@ public class PermissionForeignRestController extends BaseRestController{
 	@ApiImplicitParams({
 	@ApiImplicitParam(name="client-key",value="client name",dataType="String", paramType = "query"),
 	@ApiImplicitParam(name="permissions",value="permissions list",dataType="String", paramType = "query")})
-	@RequestMapping(value = { "/{client-key}" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/{client-key}" }, method = RequestMethod.PUT)
 	public Result refreshPermissions(
 				@PathVariable(value="client-key") String clientKey, 
 				@RequestBody Set<String> permissions) {

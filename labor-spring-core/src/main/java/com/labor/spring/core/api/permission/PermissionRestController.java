@@ -40,7 +40,7 @@ public class PermissionRestController {
 		return Result.success(ret.toString());
 	}
 
-	@RequestMapping(value = {"/init"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/init2auth"}, method = RequestMethod.GET)
 	public Result init() {
 		Set<String> permissions = new HashSet<String>();
 		String clientKey = baseProperties.getContextName();

@@ -175,6 +175,9 @@ public class FileUtil {
 
 	public static boolean writeFile(InputStream is, File file) {
 		boolean ret = false;
+		if (is==null) {
+			return ret;
+		}
 		OutputStream os = null;
 		try {
 			os = new FileOutputStream(file);
@@ -207,6 +210,9 @@ public class FileUtil {
 	
 	public static byte[] stream2Bytes(InputStream is) {
 		byte[] ret = null;
+		if (is==null) {
+			return ret;
+		}
 		ByteArrayOutputStream baos = null;
 		try {
 			baos = new ByteArrayOutputStream();  
@@ -243,8 +249,11 @@ public class FileUtil {
 		return ret;
 	}
 	public static byte[] bufferedImage2Bytes(BufferedImage image, String format) {
-		ByteArrayOutputStream out = null;
 		byte[] ret = null;
+		if (image==null) {
+			return ret;
+		}
+		ByteArrayOutputStream out = null;
 		try {
 			out = new ByteArrayOutputStream();
 			ImageIO.write(image, format, out);
@@ -265,6 +274,9 @@ public class FileUtil {
 
 	public static BufferedImage bytes2BufferedImage(byte[] bytes) {
 		BufferedImage ret = null;
+		if (bytes==null) {
+			return ret;
+		}
 		ByteArrayInputStream is = null;
 		try {
 			is = new ByteArrayInputStream(bytes); 
