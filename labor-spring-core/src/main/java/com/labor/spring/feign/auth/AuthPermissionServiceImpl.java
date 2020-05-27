@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import com.labor.common.constants.CommonConstants;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.constants.WebConstants;
-import com.labor.spring.core.api.permission.PermissionServiceIntf;
-import com.labor.spring.core.api.role.RoleServiceIntf;
-import com.labor.spring.core.api.user.UserServiceIntf;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Role;
+import com.labor.spring.core.service.PermissionServiceIntf;
+import com.labor.spring.core.service.RoleServiceIntf;
+import com.labor.spring.core.service.UserServiceIntf;
 
 @Service
 public class AuthPermissionServiceImpl implements AuthPermissionService{

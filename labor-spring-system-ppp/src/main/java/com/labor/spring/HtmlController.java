@@ -36,11 +36,6 @@ public class HtmlController extends AbstractCoreController{
 	private static String PROJ_PREFIX = "01.ppp/02.";
 	private static String PROF_PREFIX = "01.ppp/03.";
 	
-	@RequestMapping(value = { "/asample/{page}" }, method = RequestMethod.GET)
-	public String toAsamplePages(ModelMap map,@PathVariable(value="page") String page) {	
-		map.addAttribute("message","");
-		return "asample/"+page;
-	}
 	
 	//url rewrite;
 	@RequestMapping(value = { "/rt/uuid/{uuid}.html" }, method = RequestMethod.GET)

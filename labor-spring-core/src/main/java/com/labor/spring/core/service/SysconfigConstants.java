@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.sysconfig;
+package com.labor.spring.core.service;
 
 import com.labor.common.constants.CommonConstants;
 

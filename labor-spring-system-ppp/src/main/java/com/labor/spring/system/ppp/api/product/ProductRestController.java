@@ -34,7 +34,7 @@ import com.labor.common.util.FileUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
+import com.labor.spring.core.service.SysconfigConstants;
 import com.labor.spring.system.ppp.api.document.DocumentDto;
 import com.labor.spring.system.ppp.api.document.DocumentServiceIntf;
 import com.labor.spring.system.ppp.api.document.DocumentStatus;

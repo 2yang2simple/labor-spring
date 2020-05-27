@@ -1,4 +1,4 @@
-package com.labor.spring.auth.api.sso;
+package com.labor.spring.auth.controller.local;
 
 import java.util.HashMap;
 
@@ -34,9 +34,9 @@ import com.labor.spring.constants.WebConstants;
 import com.labor.spring.util.WebUtil;
 import com.labor.spring.core.entity.FingerprintOnline;
 import com.labor.spring.core.entity.User;
-import com.labor.spring.core.api.fingerprint.FingerprintServiceIntf;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
-import com.labor.spring.core.api.user.UserServiceIntf;
+import com.labor.spring.core.service.FingerprintServiceIntf;
+import com.labor.spring.core.service.SysconfigConstants;
+import com.labor.spring.core.service.UserServiceIntf;
 
 @RestController
 public class AccessBaseRestController extends BaseRestController{

@@ -1,0 +1,96 @@
+<html layout:decorator="00.core/asample/layout-labor-2">
+<div layout:fragment="content">
+<div id="app">
+  <h1>Vue Router</h1>
+  <p>
+    <!-- use router-link component for navigation. -->
+    <!-- specify the link by passing the `to` prop. -->
+    <!-- `<router-link>` will be rendered as an `<a>` tag by default -->
+    <router-link to="/foo">Go to Foo</router-link>
+    <br>
+    <router-link to="/bar">Go to Bar</router-link>
+  </p>
+  <!-- route outlet -->
+  <!-- component matched by the route will render here -->
+  <router-view></router-view>
+</div>
+
+<script type="text/x-template" id="grid-template">
+<table class="gridtable">
+	<thead>
+      	<tr class="">
+        	<th v-for="key in columns" class="gridth" @click="sortBy(key)" :class="{ active: sortKey == key }">
+          		{{ columnsdisplay[key] | capitalize }}
+				<span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'"></span>
+        	</th>			
+			<th class="gridtd" permission="user"><button type="botton" class="btn btn-primary btn-xs" @click="doAdd();">+</button></th>
+      	</tr>
+    </thead>
+    <tbody>
+      	<tr v-for="entry in filteredContent" class="">
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}">{{entry['id']}}</td>
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}">              
+			<select v-model="entry.parentid" onChange="javascript:colorBackground(this)">
+				<Option v-for="item in groups" v-bind:value="item.id" v-bind:key="item.id">
+					{{item.name }}
+				</Option>
+			</select>
+		</td>
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}" width="10%">{{entry['code']}}</td>
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}"> <input class='form-control' onClick="javascript:colorBackground(this)" v-model="entry['name']"></td>
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}"> <input class='form-control' onClick="javascript:colorBackground(this)" v-model="entry['value1']"></td>
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}" width="8%"> <input class='form-control' onClick="javascript:colorBackground(this)" v-model="entry['order']"></td>
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}">{{entry['lastUpdateDate']}}</td>
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}" width="3%">
+			<div v-if="entry['status'] == '1'"> 
+				<button class="btn btn-warning btn-xs" type="button" @click="doStatus(entry,'0')">close</button>
+    		</div>
+			<div v-else-if="entry['status'] == '0'">
+        		<button class="btn btn-default btn-xs" type="button" @click="doStatus(entry,'1')">OPEN</button>
+    		</div>
+		</td>
+		<td class="gridtd" v-bind:class="{submitted: submitedids.indexOf(','+entry['id']+',')>0?true:false}"><button class="btn btn-primary btn-sm" type="button" @click="doSubmit(entry)">SUBMIT</button></td>
+      	</tr>
+    </tbody>
+</table>
+</script>
+
+<!-- content end  -->
+</div></html>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script type="text/javascript">
+//0. If using a module system (e.g. via vue-cli), import Vue and VueRouter
+//and then call `Vue.use(VueRouter)`.
+
+//1. Define route components.
+//These can be imported from other files
+const Foo = () => import('@/ppp/prod/list')
+const Bar = { template: '<div>bar</div>' }
+
+//2. Define some routes
+//Each route should map to a component. The "component" can
+//either be an actual component constructor created via
+//`Vue.extend()`, or just a component options object.
+//We'll talk about nested routes later.
+const routes = [
+{ path: '/foo', component: Foo },
+{ path: '/bar', component: Bar }
+]
+
+//3. Create the router instance and pass the `routes` option
+//You can pass in additional options here, but let's
+//keep it simple for now.
+const router = new VueRouter({
+routes // short for `routes: routes`
+})
+
+//4. Create and mount the root instance.
+//Make sure to inject the router with the router option to make the
+//whole app router-aware.
+const app = new Vue({
+router
+}).$mount('#app')
+
+//Now the app has started!
+</script>

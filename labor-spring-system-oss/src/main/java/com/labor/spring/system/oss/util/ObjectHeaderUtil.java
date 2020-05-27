@@ -6,7 +6,7 @@ import java.util.Date;
 
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
-import com.labor.spring.system.oss.api.ObjectStorage;
+import com.labor.spring.system.oss.controller.vo.ObjectStorageVO;
 
 public class ObjectHeaderUtil {
 	
@@ -57,8 +57,8 @@ public class ObjectHeaderUtil {
 		return ret;
 		
 	}
-	public static ObjectStorage url2objectstorage(String url) {
-		ObjectStorage ret = null;
+	public static ObjectStorageVO url2objectstorage(String url) {
+		ObjectStorageVO ret = null;
 		if (StringUtil.isEmpty(url)) {
 			return ret;
 		}
@@ -75,7 +75,7 @@ public class ObjectHeaderUtil {
 					||!type.matches(regex)) {
 			return ret;
 		}
-		ret = new ObjectStorage();
+		ret = new ObjectStorageVO();
 		ret.setPath(path);
 		ret.setName(name);
 		ret.setType(type);

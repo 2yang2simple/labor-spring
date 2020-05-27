@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import com.labor.spring.constants.WebConstants;
-import com.labor.spring.core.api.fingerprint.FingerprintServiceIntf;
+import com.labor.spring.core.service.FingerprintServiceIntf;
 import com.labor.spring.util.WebUtil;
 
 

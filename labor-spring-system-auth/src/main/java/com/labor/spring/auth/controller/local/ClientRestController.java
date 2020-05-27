@@ -1,4 +1,4 @@
-package com.labor.spring.auth.api.client;
+package com.labor.spring.auth.controller.local;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

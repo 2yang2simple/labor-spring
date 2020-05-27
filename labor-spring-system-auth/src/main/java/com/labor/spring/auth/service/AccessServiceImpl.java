@@ -19,8 +19,8 @@ import com.labor.spring.core.entity.Fingerprint;
 import com.labor.spring.core.entity.FingerprintOnline;
 import com.labor.spring.core.entity.User;
 import com.labor.spring.core.entity.UserFingerprint;
-import com.labor.spring.core.api.fingerprint.FingerprintServiceIntf;
-import com.labor.spring.core.api.user.UserServiceIntf;
+import com.labor.spring.core.service.FingerprintServiceIntf;
+import com.labor.spring.core.service.UserServiceIntf;
 
 @Service
 public class AccessServiceImpl implements AccessService {

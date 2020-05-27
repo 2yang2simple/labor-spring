@@ -1,6 +1,8 @@
-package com.labor.spring.system.oss.api;
+package com.labor.spring.system.oss.controller.vo;
 
-public class ObjectStorage {
+import com.labor.spring.base.AbstractVO;
+
+public class ObjectStorageVO extends AbstractVO{
 	
 	private byte[] bytes;
 	

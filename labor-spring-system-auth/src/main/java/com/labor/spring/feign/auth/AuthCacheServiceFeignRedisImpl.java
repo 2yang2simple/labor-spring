@@ -8,14 +8,14 @@ import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
 import com.labor.spring.constants.WebConstants;
-import com.labor.spring.core.api.fingerprint.FingerprintServiceIntf;
-import com.labor.spring.core.api.permission.PermissionServiceIntf;
-import com.labor.spring.core.api.role.RoleServiceIntf;
-import com.labor.spring.core.api.user.UserRepository;
-import com.labor.spring.core.api.user.UserServiceIntf;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Role;
 import com.labor.spring.core.entity.User;
+import com.labor.spring.core.service.FingerprintServiceIntf;
+import com.labor.spring.core.service.PermissionServiceIntf;
+import com.labor.spring.core.service.RoleServiceIntf;
+import com.labor.spring.core.service.UserRepository;
+import com.labor.spring.core.service.UserServiceIntf;
 import com.labor.spring.feign.client.auth.AuthFeignClient;
 import com.labor.spring.feign.util.ObjectMapperUtil;
 
@@ -156,7 +156,7 @@ public class AuthCacheServiceFeignRedisImpl implements AuthCacheService {
 //		ret = authPermissionService.findUserPermissions(puser.getId(),puser.getName());
 		//remote
 		String clientKey = baseProperties.getContextName();
-		Result result = authFeignClient.findUserPermissions(clientKey,puser.getUuid());
+		Result result = authFeignClient.fetchUserPermissions(clientKey,puser.getUuid());
 		if (ResultStatus.SUCCESS.code()==result.getCode()) {
 			ret = ObjectMapperUtil.getObjectMapper()
 					.convertValue(result.getData(),Set.class);

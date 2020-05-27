@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.role;
+package com.labor.spring.core.service;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.labor.common.constants.CommonConstants;
 import com.labor.common.util.ClassUtil;
-import com.labor.spring.core.api.permission.PermissionRepository;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
-import com.labor.spring.core.api.user.UserRoleRepository;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Role;
 import com.labor.spring.core.entity.RolePermission;

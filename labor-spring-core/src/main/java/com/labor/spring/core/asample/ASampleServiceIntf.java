@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.asample;
+package com.labor.spring.core.asample;
 
 import java.util.List;
 import java.util.Optional;

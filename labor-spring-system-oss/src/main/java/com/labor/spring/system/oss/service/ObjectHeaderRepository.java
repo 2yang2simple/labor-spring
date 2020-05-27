@@ -1,4 +1,4 @@
-package com.labor.spring.system.oss.api;
+package com.labor.spring.system.oss.service;
 
 import java.util.List;
 import java.util.Optional;

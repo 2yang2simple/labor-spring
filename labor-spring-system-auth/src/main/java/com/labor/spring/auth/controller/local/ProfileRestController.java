@@ -1,4 +1,4 @@
-package com.labor.spring.auth.api.profile;
+package com.labor.spring.auth.controller.local;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,7 +23,6 @@ import com.labor.common.util.GoogleAuthenticator;
 import com.labor.common.util.QRCodeUtil;
 import com.labor.common.util.RSAUtil;
 import com.labor.common.util.StringUtil;
-import com.labor.spring.auth.api.sso.AccessBaseRestController;
 import com.labor.spring.auth.service.AccessService;
 import com.labor.spring.auth.service.LoginService;
 import com.labor.spring.bean.Result;

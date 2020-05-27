@@ -1,4 +1,4 @@
-package com.labor.spring.system.oss.api;
+package com.labor.spring.system.oss.service;
 
 import java.io.File;
 
@@ -217,32 +217,32 @@ public class ObjectStorageServiceImpl implements ObjectStorageServiceIntf{
 //	}
 	
 	
-	/**
-	 * build a objectsotrage with null bytes
-	 * @param query
-	 * @return
-	 */
-	@Override
-	public ObjectStorage buildObjectStorage(String query) {
-		ObjectStorage ret = null;
-		//\20191211\95f444173ff249589a9051ef33e5c710.png
-		
-		//get info from url
-		ret = ObjectHeaderUtil.url2objectstorage(query);
-		
-		//get info form db
-//		Optional<ObjectHeader> oa = objectHeaderRepository.findOneByUrl(query);
-//		ObjectHeader oh = null;
-//		if (oa.isPresent()) {
-//			oh = oa.get();
-//			ret = new ObjectStorage();
-//			ret.setPath(oh.getObjectBodyPath());
-//			ret.setName(oh.getObjectBodyMd5());
-//			ret.setType(oh.getFileType());
-//		}
-		
-		return ret;
-	}
+//	/**
+//	 * build a objectsotrage with null bytes
+//	 * @param query
+//	 * @return
+//	 */
+//	@Override
+//	public ObjectStorage buildObjectStorage(String query) {
+//		ObjectStorage ret = null;
+//		//\20191211\95f444173ff249589a9051ef33e5c710.png
+//		
+//		//get info from url
+//		ret = ObjectHeaderUtil.url2objectstorage(query);
+//		
+//		//get info form db
+////		Optional<ObjectHeader> oa = objectHeaderRepository.findOneByUrl(query);
+////		ObjectHeader oh = null;
+////		if (oa.isPresent()) {
+////			oh = oa.get();
+////			ret = new ObjectStorage();
+////			ret.setPath(oh.getObjectBodyPath());
+////			ret.setName(oh.getObjectBodyMd5());
+////			ret.setType(oh.getFileType());
+////		}
+//		
+//		return ret;
+//	}
 	
 
 //	public byte[] resizeImage(byte[] imageBytes, String imageType, Double accuracy,Integer height, Integer width) {

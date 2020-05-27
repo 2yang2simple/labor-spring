@@ -1,4 +1,4 @@
-package com.labor.spring.auth.api.foreign;
+package com.labor.spring.auth.controller.foreign;
 
 import java.util.Set;
 
@@ -17,10 +17,10 @@ import com.labor.spring.base.BaseRestController;
 import com.labor.spring.bean.ClientRegisted;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
-import com.labor.spring.core.api.permission.PermissionServiceIntf;
-import com.labor.spring.core.api.sysconfig.SysconfigServiceIntf;
-import com.labor.spring.core.api.user.UserServiceIntf;
 import com.labor.spring.core.entity.User;
+import com.labor.spring.core.service.PermissionServiceIntf;
+import com.labor.spring.core.service.SysconfigServiceIntf;
+import com.labor.spring.core.service.UserServiceIntf;
 import com.labor.spring.feign.auth.AuthPermissionService;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -55,7 +55,7 @@ public class PermissionForeignRestController extends BaseRestController{
 		}
 		
 //		String perType = sysconfigService.findValueByKey(PREFIX_PERMISSION_TYPE+type);
-		String perType = ClientRegisted.getPerType(clientKey);
+		String perType = ClientRegisted.getName(clientKey);
 		if (StringUtil.isEmpty(perType)) {
 			return Result.failure(ResultStatus.FAILURE_PARAM_NULL.code(),"permission type not exist");
 		}
@@ -69,12 +69,12 @@ public class PermissionForeignRestController extends BaseRestController{
 		return Result.success();
 	}
 	
-	@ApiOperation("find permissions")
+	@ApiOperation("fetch user permissions")
 	@ApiImplicitParams({
 	@ApiImplicitParam(name="client-key",value="client name",dataType="String", paramType = "query"),
 	@ApiImplicitParam(name="uuid",value="user uuid",dataType="String", paramType = "query")})
 	@RequestMapping(value = { "/{client-key}/{uuid}" }, method = RequestMethod.GET)
-	public Result findUserPermissions(
+	public Result fetchUserPermissions(
 				@PathVariable(value="client-key") String clientKey, 
 				@PathVariable(value="uuid") String uuid) {
 		
@@ -83,7 +83,7 @@ public class PermissionForeignRestController extends BaseRestController{
 		}
 		
 //		String perType = sysconfigService.findValueByKey(PREFIX_PERMISSION_TYPE+type);
-		String perType = ClientRegisted.getPerType(clientKey);
+		String perType = ClientRegisted.getName(clientKey);
 		if (StringUtil.isEmpty(perType)) {
 			return Result.failure(ResultStatus.FAILURE_PARAM_NULL.code(),"permission type not exist");
 		}

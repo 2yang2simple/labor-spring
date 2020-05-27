@@ -45,7 +45,7 @@ import com.labor.spring.base.BaseRestController;
 import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
+import com.labor.spring.core.service.SysconfigConstants;
 import com.labor.spring.core.entity.User;
 import com.labor.spring.feign.auth.AuthLoginService;
 import com.labor.spring.system.ppp.api.oss.AttachmentServiceIntf;

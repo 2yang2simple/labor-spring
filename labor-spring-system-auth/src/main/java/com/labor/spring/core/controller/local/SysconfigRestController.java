@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.sysconfig;
+package com.labor.spring.core.controller.local;
 
 import java.util.List;
 
@@ -19,6 +19,7 @@ import com.labor.common.constants.CommonConstants;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
 import com.labor.spring.core.entity.Sysconfig;
+import com.labor.spring.core.service.SysconfigServiceIntf;
 
 @RestController
 @RequestMapping("/rest/core/sysconfigs")

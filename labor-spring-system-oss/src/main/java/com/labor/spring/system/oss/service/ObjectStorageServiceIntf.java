@@ -1,4 +1,4 @@
-package com.labor.spring.system.oss.api;
+package com.labor.spring.system.oss.service;
 
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public interface ObjectStorageServiceIntf {
 //	public byte[] findBytesByFileName(String filename, String ext);
 //	public byte[] findBytesByFileName(String fileName, boolean compressed, boolean getThumbnail, Double accuracy,Integer height, Integer width);
 
-	public ObjectStorage buildObjectStorage(String query);
+//	public ObjectStorage buildObjectStorage(String query);
 	
 
 	public byte[] getBytes(String ossPath, String path, String name, String ext);

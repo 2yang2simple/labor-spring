@@ -45,7 +45,7 @@ public interface AuthFeignClient {
 			@RequestBody Set<String> permissions);
 	
 	@RequestMapping(value = { "/rest/foreign/permissions/{client-key}/{uuid}" }, method = RequestMethod.GET)
-	public Result findUserPermissions(
+	public Result fetchUserPermissions(
 			@PathVariable(value="client-key") String clientKey, 
 			@PathVariable(value="uuid") String uuid);
 

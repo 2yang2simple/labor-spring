@@ -20,7 +20,7 @@ import com.labor.common.exception.ServiceException;
 
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
+import com.labor.spring.core.service.SysconfigConstants;
 import com.labor.spring.system.ppp.api.document.DocumentDto;
 import com.labor.spring.system.ppp.api.document.DocumentServiceIntf;
 import com.labor.spring.system.ppp.api.gallery.GalleryServiceIntf;

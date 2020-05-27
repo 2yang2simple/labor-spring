@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.user;
+package com.labor.spring.core.controller.local;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,14 +31,15 @@ import com.labor.common.util.StringUtil;
 import com.labor.spring.base.BaseRestController;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
-import com.labor.spring.core.api.permission.PermissionServiceIntf;
-import com.labor.spring.core.api.role.RoleServiceIntf;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
-import com.labor.spring.core.api.sysconfig.SysconfigServiceIntf;
 import com.labor.spring.core.entity.Role;
 import com.labor.spring.core.entity.RolePermission;
 import com.labor.spring.core.entity.User;
 import com.labor.spring.core.entity.UserRole;
+import com.labor.spring.core.service.PermissionServiceIntf;
+import com.labor.spring.core.service.RoleServiceIntf;
+import com.labor.spring.core.service.SysconfigConstants;
+import com.labor.spring.core.service.SysconfigServiceIntf;
+import com.labor.spring.core.service.UserServiceImpl;
 import com.labor.spring.feign.auth.AuthLoginService;
 import com.labor.spring.util.WebUtil;
 

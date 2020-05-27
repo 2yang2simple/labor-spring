@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.fingerprint;
+package com.labor.spring.core.controller.local;
 
 import java.util.List;
 
@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
 import com.labor.spring.core.entity.Fingerprint;
 import com.labor.spring.core.entity.FingerprintOnline;
+import com.labor.spring.core.service.FingerprintServiceIntf;
+import com.labor.spring.core.service.SysconfigConstants;
 
 @RestController
 @RequestMapping("/rest/core/fingerprints")

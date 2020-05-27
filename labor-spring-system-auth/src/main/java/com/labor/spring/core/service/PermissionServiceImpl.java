@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.permission;
+package com.labor.spring.core.service;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -21,7 +21,6 @@ import com.labor.common.util.StringUtil;
 import com.labor.spring.base.BaseProperties;
 import com.labor.spring.constants.WebConstants;
 import com.labor.spring.core.aop.AnnotationUtil;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Sysconfig;
 import com.labor.spring.util.IgnorePropertiesUtil;

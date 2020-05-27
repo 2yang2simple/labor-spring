@@ -23,12 +23,12 @@ import com.labor.common.util.TokenUtil;
 import com.labor.spring.base.BaseProperties;
 import com.labor.spring.constants.WebConstants;
 import com.labor.spring.core.aop.AnnotationUtil;
-import com.labor.spring.core.api.fingerprint.FingerprintServiceIntf;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
-import com.labor.spring.core.api.sysconfig.SysconfigServiceIntf;
-import com.labor.spring.core.api.user.UserServiceIntf;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.User;
+import com.labor.spring.core.service.FingerprintServiceIntf;
+import com.labor.spring.core.service.SysconfigConstants;
+import com.labor.spring.core.service.SysconfigServiceIntf;
+import com.labor.spring.core.service.UserServiceIntf;
 import com.labor.spring.feign.client.auth.AuthFeignClient;
 import com.labor.spring.util.WebUtil;
 

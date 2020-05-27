@@ -1,4 +1,4 @@
-package com.labor.spring.auth.api.foreign;
+package com.labor.spring.auth.controller.foreign;
 
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,7 @@ import com.labor.spring.bean.ResultStatus;
 import com.labor.spring.constants.WebConstants;
 import com.labor.spring.core.entity.FingerprintOnline;
 import com.labor.spring.core.entity.User;
+import com.labor.spring.core.service.SysconfigServiceIntf;
 import com.labor.spring.feign.auth.AuthConstants;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,7 +33,8 @@ public class LoginForeignRestController {
 
 	@Autowired
 	protected LoginService loginService;	
-
+	@Autowired
+	private SysconfigServiceIntf sysconfigService;
 	
 	@ApiOperation("Login a user")
 	@ApiImplicitParams({
@@ -54,6 +56,10 @@ public class LoginForeignRestController {
 		String ret = null;
 		
 		ClientInfo ci = ClientRegisted.getClientInfo(clientKey);
+		if (ci==null) {
+			String clientinfo = sysconfigService.findValueByKey(ClientRegisted.getPrefix()+clientKey);
+			ci = ClientRegisted.putClientInfo(clientinfo);
+		}
 		if (ci==null) {
 			throw new ParameterException("client not registed.");
 		}

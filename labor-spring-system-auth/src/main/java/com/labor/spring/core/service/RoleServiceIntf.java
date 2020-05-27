@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.role;
+package com.labor.spring.core.service;
 
 import java.util.List;
 

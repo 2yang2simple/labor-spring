@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.permission;
+package com.labor.spring.core.controller.local;
 
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +19,7 @@ import com.labor.spring.bean.Result;
 import com.labor.spring.constants.WebConstants;
 import com.labor.spring.core.aop.AnnotationUtil;
 import com.labor.spring.core.entity.Permission;
+import com.labor.spring.core.service.PermissionServiceIntf;
 import com.labor.spring.feign.client.auth.AuthFeignClient;
 
 
@@ -40,8 +41,8 @@ public class PermissionRestController {
 		return Result.success(ret.toString());
 	}
 
-	@RequestMapping(value = {"/init"}, method = RequestMethod.GET)
-	public Result init() {
+	@RequestMapping(value = {"/init2auth"}, method = RequestMethod.GET)
+	public Result init2auth() {
 		Set<String> permissions = new HashSet<String>();
 		String clientKey = baseProperties.getContextName();
 		if (!StringUtil.isEmpty(clientKey)) {

@@ -36,18 +36,18 @@ import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
 import com.labor.spring.constants.WebConstants;
-import com.labor.spring.core.api.fingerprint.FingerprintServiceIntf;
-import com.labor.spring.core.api.permission.PermissionServiceIntf;
-import com.labor.spring.core.api.role.RoleServiceIntf;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
-import com.labor.spring.core.api.sysconfig.SysconfigServiceIntf;
-import com.labor.spring.core.api.user.UserServiceIntf;
 import com.labor.spring.core.entity.Fingerprint;
 import com.labor.spring.core.entity.FingerprintOnline;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Role;
 import com.labor.spring.core.entity.User;
 import com.labor.spring.core.entity.UserFingerprint;
+import com.labor.spring.core.service.FingerprintServiceIntf;
+import com.labor.spring.core.service.PermissionServiceIntf;
+import com.labor.spring.core.service.RoleServiceIntf;
+import com.labor.spring.core.service.SysconfigConstants;
+import com.labor.spring.core.service.SysconfigServiceIntf;
+import com.labor.spring.core.service.UserServiceIntf;
 import com.labor.spring.feign.auth.AuthLoginService;
 import com.labor.spring.util.WebUtil;
 
@@ -290,7 +290,7 @@ public class AuthRestController extends BaseRestController {
 					@RequestParam(value="t", required=true) String t
 								) {
 		
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return "-1";
 		}
 		
@@ -339,7 +339,7 @@ public class AuthRestController extends BaseRestController {
 					@RequestParam(value="t", required=true) String t
 								) {
 
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return Result.failure();
 		}
 		User ret = new User();
@@ -362,7 +362,7 @@ public class AuthRestController extends BaseRestController {
 					@RequestParam(value="t", required=true) String t
 								) {
 
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return Result.failure();
 		}
 		String ret = userService.createPasswordSaltByAccount(account);
@@ -377,7 +377,7 @@ public class AuthRestController extends BaseRestController {
 			@RequestParam(value="g", required=true) String g,
 			@RequestParam(value="t", required=true) String t) {
 		User ret = null;
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return null;
 		}
 		if(WebUtil.getSessionAttribute(WebConstants.KEY_USER)!=null){
@@ -392,7 +392,7 @@ public class AuthRestController extends BaseRestController {
 			@RequestParam(value="g", required=true) String g,
 			@RequestParam(value="t", required=true) String t) {
 		Set<String> ret = new HashSet<String>();
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return null;
 		}
 //		ret = authLoginService.findUserPermissionsCurrent();
@@ -414,7 +414,7 @@ public class AuthRestController extends BaseRestController {
 	public String updateUser(@RequestBody User user,
 			@RequestParam(value="g", required=true) String g,
 			@RequestParam(value="t", required=true) String t) {
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return "-1";
 		}
 		String ret = userService.checkExisted(user);
@@ -433,7 +433,7 @@ public class AuthRestController extends BaseRestController {
 						@RequestParam(value="g", required=true) String g,
 						@RequestParam(value="t", required=true) String t) {
 		
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return "-1";
 		}
 
@@ -495,7 +495,7 @@ public class AuthRestController extends BaseRestController {
 						@RequestParam(value="g", required=true) String g,
 						@RequestParam(value="t", required=true) String t) {
 		
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return "-1";
 		}
 
@@ -601,7 +601,7 @@ public class AuthRestController extends BaseRestController {
 						@RequestParam(value="g", required=true) String g,
 						@RequestParam(value="t", required=true) String t) {
 		
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return "-1";
 		}
 
@@ -643,7 +643,7 @@ public class AuthRestController extends BaseRestController {
 	public Result findSignupAuthInfo(
 						@RequestParam(value="g", required=true) String g,
 						@RequestParam(value="t", required=true) String t) {
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return Result.failure(ResultStatus.FAILURE_PERMISSION_NOACCESS);
 		}
 		HashMap<String, String> hm = new HashMap<String, String>();
@@ -671,7 +671,7 @@ public class AuthRestController extends BaseRestController {
 						@RequestParam(value="t", required=true) String t) {
 		
 		User ret = null;
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return Result.failure(ResultStatus.FAILURE_PERMISSION_NOACCESS);
 		}
 		String name = (String)hm.get("name");
@@ -716,7 +716,7 @@ public class AuthRestController extends BaseRestController {
 						@RequestParam(value="g", required=true) String g,
 						@RequestParam(value="t", required=true) String t) {
 		
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return "-1";
 		}
 		String pwdmodify = (String)hm.get("pwdmodify");
@@ -747,7 +747,7 @@ public class AuthRestController extends BaseRestController {
 						@RequestParam(value="g", required=true) String g,
 						@RequestParam(value="t", required=true) String t) {
 		
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(null))) {
+		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
 			return Result.failure(ResultStatus.FAILURE_PERMISSION_NOACCESS);
 		}
 		User dbuser = userService.findByPwdmodify(pwdmodify);

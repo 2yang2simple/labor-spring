@@ -1,0 +1,42 @@
+<html layout:decorator="00.core/asample/layout-labor-2">
+
+<div layout:fragment="content">
+<Strong>A Sample - CKEditor 5 – Document editor</Strong>
+<div style ="float: right; ">
+	<a class="nav" href="https://ckeditor.com/">https://ckeditor.com/</a>&nbsp;
+</div>
+<br><br>
+<style type="text/css">
+.error{
+	color: blue;
+}
+</style>
+	<div id="toolbar-container"></div>
+   	<div id="editor" style=" border: 1px solid black;"></div>
+</html>
+<script type="text/javascript" th:src="@{/js/ckeditor5-doc.js}"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	 DecoupledEditor
+	     .create( document.querySelector( '#editor' ) )
+	     .then( editor => {
+	         const toolbarContainer = document.querySelector( '#toolbar-container' );
+	         toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	         
+	         editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+	        	// Configure the URL in /js/ckeditor5-doc.js
+	        	return new LaborUploadAdapter(loader,getContextPath(),"","");
+	         };
+	     } )
+	     .catch( error => {
+	         console.error( error );
+	     } );
+});
+
+function doAfterUpload(result){
+	 if ( result!=null && result.code==1 ) {
+		console.log("|||"+result.msg);
+	 }
+}
+</script>

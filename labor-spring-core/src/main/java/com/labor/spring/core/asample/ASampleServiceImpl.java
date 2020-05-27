@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.asample;
+package com.labor.spring.core.asample;
 
 import java.io.IOException;
 import java.util.HashMap;

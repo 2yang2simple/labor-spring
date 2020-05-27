@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.fingerprint;
+package com.labor.spring.core.service;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.labor.common.constants.CommonConstants;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.constants.WebConstants;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
 import com.labor.spring.core.entity.Fingerprint;
 import com.labor.spring.core.entity.FingerprintOnline;
 import com.labor.spring.core.entity.User;

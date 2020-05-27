@@ -73,6 +73,12 @@ public abstract class AbstractCoreController extends BaseController {
 		map.addAttribute("message","");
 		return CORE_PREFIX + "core/settings";
 	}
+
+	@RequestMapping(value = { "/core/asample/{page}" }, method = RequestMethod.GET)
+	public String toAsamplePages(ModelMap map,@PathVariable(value="page") String page) {	
+		map.addAttribute("message","");
+		return CORE_PREFIX + "core/asample/"+page;
+	}
 	
 	@RequestMapping(value = { "/core/user/{page}" }, method = RequestMethod.GET)
 	public String toCoreUserPages(ModelMap map,@PathVariable(value="page") String page) {	

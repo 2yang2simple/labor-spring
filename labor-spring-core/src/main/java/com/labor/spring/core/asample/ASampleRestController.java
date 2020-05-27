@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.asample;
+package com.labor.spring.core.asample;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -33,14 +33,15 @@ import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
 import com.labor.spring.bean.ResultStatus;
 import com.labor.spring.core.GlobalInfo;
-import com.labor.spring.core.api.role.RoleServiceIntf;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
-import com.labor.spring.core.api.sysconfig.SysconfigServiceIntf;
 import com.labor.spring.core.entity.Fingerprint;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Role;
 import com.labor.spring.core.entity.Sysconfig;
 import com.labor.spring.core.entity.User;
+import com.labor.spring.core.service.RoleServiceIntf;
+import com.labor.spring.core.service.SysconfigConstants;
+import com.labor.spring.core.service.SysconfigServiceIntf;
+import com.labor.spring.util.PropertyMapperUtil;
 
 /**
  * use samples not sample;
@@ -55,6 +56,21 @@ public class ASampleRestController extends BaseRestController{
 	@Autowired
 	private ASampleServiceIntf asampleService;
 	
+	public static void main(String[] args) {
+		try {
+			ASample as = new ASample();
+			as.setId(1);
+			as.setName("test");
+			ASampleVO asvo = new ASampleVO();
+//			PropertyMapperUtil.entryAndDtoMapper(as, asvo);
+			PropertyMapperUtil.copyProperties(as, asvo);
+			LogManager.getLogger().debug("{},{}", as.getName(),as.getId());
+			LogManager.getLogger().debug("{},{}", asvo.getDisplayName(),asvo.getId());
+		} catch (Exception e) {
+			LogManager.getLogger().error(e);
+		}
+		
+    }
 	
 	@RequiresPermissions(value= {"user","fingerprint"}, logical=Logical.AND)
 	@RequestMapping(value = {"/aopand"}, method = RequestMethod.GET)

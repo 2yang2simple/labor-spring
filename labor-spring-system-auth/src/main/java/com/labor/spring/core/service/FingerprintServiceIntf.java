@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.fingerprint;
+package com.labor.spring.core.service;
 
 import java.util.List;
 

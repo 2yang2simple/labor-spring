@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.user;
+package com.labor.spring.core.service;
 
 import java.util.List;
 

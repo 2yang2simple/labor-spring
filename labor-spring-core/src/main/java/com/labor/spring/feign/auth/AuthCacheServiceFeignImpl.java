@@ -10,17 +10,17 @@ import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
 import com.labor.spring.bean.ResultStatus;
 import com.labor.spring.constants.WebConstants;
-import com.labor.spring.core.api.fingerprint.FingerprintOnlineRepository;
-import com.labor.spring.core.api.fingerprint.FingerprintRepository;
-import com.labor.spring.core.api.fingerprint.FingerprintServiceIntf;
-import com.labor.spring.core.api.permission.PermissionServiceIntf;
-import com.labor.spring.core.api.role.RoleServiceIntf;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
-import com.labor.spring.core.api.user.UserServiceIntf;
 import com.labor.spring.core.entity.FingerprintOnline;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Role;
 import com.labor.spring.core.entity.User;
+import com.labor.spring.core.service.FingerprintOnlineRepository;
+import com.labor.spring.core.service.FingerprintRepository;
+import com.labor.spring.core.service.FingerprintServiceIntf;
+import com.labor.spring.core.service.PermissionServiceIntf;
+import com.labor.spring.core.service.RoleServiceIntf;
+import com.labor.spring.core.service.SysconfigConstants;
+import com.labor.spring.core.service.UserServiceIntf;
 import com.labor.spring.feign.client.auth.AuthFeignClient;
 import com.labor.spring.feign.util.ObjectMapperUtil;
 import com.labor.spring.util.WebUtil;
@@ -139,7 +139,7 @@ public class AuthCacheServiceFeignImpl implements AuthCacheService {
 		if (pertype!=null) {
 			pertype = pertype.replace("/", "");
 		}
-		Result result = authFeignClient.findUserPermissions(pertype,puser.getUuid());
+		Result result = authFeignClient.fetchUserPermissions(pertype,puser.getUuid());
 		if (ResultStatus.SUCCESS.code()==result.getCode()) {
 			ret = ObjectMapperUtil.getObjectMapper()
 					.convertValue(result.getData(),Set.class);

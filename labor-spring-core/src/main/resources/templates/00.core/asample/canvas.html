@@ -1,0 +1,138 @@
+<html layout:decorator="00.core/asample/layout-labor-2">
+<!-- /* Content of this page will be decorated by the elements of layout.html (fragment/layout) */ -->
+<head>
+	<style type="text/css">	
+		h1{text-decoration: none;}
+	</style>
+</head>
+<div layout:fragment="content">
+<Strong>HTML5 Canvas Fingerprinting</Strong>
+<br>
+<canvas id="canvas"></canvas>
+<br>
+Fingerprint:&nbsp;&nbsp;<span id="canvasmd5"></span>
+<br>
+Fingerprint2:&nbsp;&nbsp;<span id="canvasmd52"></span>
+<br>
+<br>
+<a href="https://www.google.cn/chrome/index.html">Download Chrome</a>
+<br>
+<br>
+
+<script type="text/javascript" th:src="@{/js/xss.js}"></script>
+<script type="text/javascript">
+//使用函数名 filterXSS，用法一样
+var html = filterXSS('<script>alert("xss");</scr' + 'ipt>');
+
+
+document.write("显示宽度:" + window.innerWidth + "<br>")
+document.write("显示高度:" + window.innerHeight + "<br>")
+document.write("屏幕宽度:" + window.screen.width + "<br>")
+document.write("屏幕高度:" + window.screen.height + "<br>")
+document.write("设备像素比:" + window.devicePixelRatio + "<br>")
+//    document.write("颜色深度:" + window.screen.colorDepth + "<br>")
+
+var canvas = document.createElement("canvas");
+var gl = canvas.getContext("experimental-webgl");
+var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+
+document.write("OpenGL 版本：" + gl.getParameter(gl.VERSION) + "<br>");
+document.write("显卡渲染器:" + gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) + "<br>");
+document.write("厂商:" + gl.getParameter(gl.VENDOR) + "<br>");
+document.write("OpenGL shading language版本：" + gl.getParameter(gl.SHADING_LANGUAGE_VERSION) + "<br>");
+document.write("最大字体限制:" + gl.getParameter(gl.MAX_TEXTURE_SIZE) + "<br>");
+document.write("显卡供应商：" + gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + "<br>");
+document.write("时间:" + new Date().getTime() + "<br>");
+
+
+//
+//
+var languages = navigator.languages     // 非 IE 浏览器，语言列表
+|| navigator.language      // 非 IE 浏览器，首选语言
+|| navigator.userLanguage; // IE 浏览器，首选语言
+document.write("语言列表:" + languages.toString() + "<br>");
+var ua = navigator.userAgent;
+document.write("userAgent:" + ua + "<br>");
+
+//        var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
+//
+//        if (battery) {
+//            // 显示一些有用属性值
+//            console.warn("电池充电状态: ", battery.charging); // true
+//            console.warn("电量水平: ", battery.level); // 0.58
+//            console.warn("电池使用时间: ", battery.dischargingTime);
+//        }
+
+var type = navigator.connection.type
+//|| bluetooth || cellular || ethernet || none || wifi || wimax || other || unknown
+document.write("网络类型:" + type + "<br>");
+
+document.write("/////////////////////////////////////////////////////<br>")
+
+n = {
+    sw: "" + ( window.screen.width || 0),
+    sh: "" + (window.screen.height || 0),
+    sp: window.devicePixelRatio,
+    gv: gl.getParameter(gl.VERSION) || "",
+    gr: gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || "",
+    time: new Date().getTime()
+};
+
+for (var i in n) {
+    document.write(i + ":" + n[i] + "<br>")
+}
+document.write("/////////////////////////////////////////////////////<br>")
+</script>
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/fingerprint2.min.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	if (window.requestIdleCallback) {
+	    requestIdleCallback(function () {
+	        Fingerprint2.get(function (components) {
+	          console.log(components) // an array of components: {key: ..., value: ...}
+	        })
+	    })
+	} else {
+	    setTimeout(function () {
+	        Fingerprint2.get(function (components) {
+	          console.log(components) // an array of components: {key: ..., value: ...}
+	        })  
+	    }, 500)
+	}
+
+});
+
+
+	//var canvas = document.createElement('canvas');
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+	var txt = "labor-spring,com <canvas> 1.0";
+	ctx.textBaseline = "top";
+	// The most common type
+	ctx.font = "14px 'Arial'";
+	ctx.textBaseline = "alphabetic";
+	ctx.fillStyle = "#f60";
+	ctx.fillRect(110,1,62,20);
+	// Some tricks for color mixing to increase the difference in rendering
+	ctx.fillStyle = "#069";
+	ctx.fillText(txt, 2, 15);
+	ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+	ctx.fillText(txt, 4, 17);
+  	//var b64 = canvas.toDataURL().replace("data:image/png;base64,","");
+  	var b64 = canvas.toDataURL();
+
+  	document.getElementById("canvasmd5").innerText=md5(b64);
+
+   //t420 chrome:7517106dc96f24ca65978114835a79b5 ; IE:cb522118ca762dd0a97876f4fab3c005 
+	//7517106dc96f24ca65978114835a79b5 125,1,62,20
+	//09a8846d65fb475497b8f7d93e73cf00 
+	//354e11f1f5da04efa21a4ab2031506b1 
+	//8e390fa4e9f571ee7c7478ee13716267
+	
+	//https://fpjs.io/demo
+	//MOctqs2GcHAnw62Tm92u  //lixian chrome
+	
+	
+</script>

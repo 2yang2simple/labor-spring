@@ -1,4 +1,4 @@
-package com.labor.spring.auth.api.sso;
+package com.labor.spring.auth.controller.local;
 
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;

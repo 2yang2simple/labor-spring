@@ -45,7 +45,7 @@ create table tbl_core_sysconfig
 (
 	sc_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	sc_key			varchar(100) not null,
-	sc_value		varchar(300),
+	sc_value		varchar(1000),
 	active_status		varchar(1),
 	data_description	varchar(1000),
 	data_uuid			varchar(100),

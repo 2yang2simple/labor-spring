@@ -1,4 +1,4 @@
-package com.labor.spring.core.api.role;
+package com.labor.spring.core.controller.local;
 
 import java.util.List;
 
@@ -19,12 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.labor.common.constants.CommonConstants;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
-import com.labor.spring.core.api.permission.PermissionServiceIntf;
-import com.labor.spring.core.api.sysconfig.SysconfigConstants;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Role;
 import com.labor.spring.core.entity.RolePermission;
 import com.labor.spring.core.entity.Sysconfig;
+import com.labor.spring.core.service.PermissionServiceIntf;
+import com.labor.spring.core.service.RoleServiceIntf;
+import com.labor.spring.core.service.SysconfigConstants;
 
 
 

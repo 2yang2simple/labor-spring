@@ -1,4 +1,4 @@
-package com.labor.spring.system.oss.api.foreign;
+package com.labor.spring.system.oss.controller.foreign;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
-import com.labor.spring.system.oss.api.ObjectStorage;
-import com.labor.spring.system.oss.api.ObjectStorageServiceIntf;
+import com.labor.spring.system.oss.service.ObjectStorageServiceIntf;
 import com.labor.spring.system.oss.util.ApplicationProperties;
 
 

@@ -1,4 +1,4 @@
-package com.labor.spring.system.oss.api;
+package com.labor.spring.system.oss.controller.local;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,10 @@ import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
+import com.labor.spring.system.oss.controller.vo.ObjectStorageVO;
+import com.labor.spring.system.oss.service.ObjectStorageServiceIntf;
 import com.labor.spring.system.oss.util.ApplicationProperties;
+import com.labor.spring.system.oss.util.ObjectHeaderUtil;
 import com.labor.spring.util.WebUtil;
 
 
@@ -62,7 +65,7 @@ public class ObjectStorageRestController {
 	@RequestMapping(value = {"/files/{query}"}, method = RequestMethod.GET)
 	public void findFile(
 					@PathVariable(value="query") String query) {
-		ObjectStorage os = objectStorageService.buildObjectStorage(query);
+		ObjectStorageVO os = buildObjectStorage(query);
 		if (os == null) {
 			return;
 		}
@@ -75,7 +78,7 @@ public class ObjectStorageRestController {
 	@RequestMapping(value = {"/images/{query}/origin"}, method = RequestMethod.GET)
 	public void findImageOrigin(
 					@PathVariable(value="query") String query) {
-		ObjectStorage os = objectStorageService.buildObjectStorage(query);
+		ObjectStorageVO os = buildObjectStorage(query);
 		if (os!=null) {
 			byte[] imageBytes = objectStorageService.getBytes(properties.OBJECTSTORAGE_DIR_IMAGES, os.getPath(), os.getName(), null);
 			if (imageBytes!=null) {
@@ -95,7 +98,7 @@ public class ObjectStorageRestController {
 	@RequestMapping(value = {"/images/{query}"}, method = RequestMethod.GET)
 	public void findImage(
 					@PathVariable(value="query") String query) {
-		ObjectStorage os = objectStorageService.buildObjectStorage(query);
+		ObjectStorageVO os = buildObjectStorage(query);
 		if (os!=null) {
 			byte[] imageBytes = objectStorageService.getBytes(properties.OBJECTSTORAGE_DIR_IMAGES, os.getPath(), os.getName(), ImageUtil.IMAGE_COMPRESSED_SUFFIX);
 			if (imageBytes!=null) {
@@ -113,8 +116,8 @@ public class ObjectStorageRestController {
 	}
 	
 	// if not exist or error, return notexist.gif;
-	private ObjectStorage buildImageNotExistObjectStorage() {
-		ObjectStorage ret = new ObjectStorage();
+	private ObjectStorageVO buildImageNotExistObjectStorage() {
+		ObjectStorageVO ret = new ObjectStorageVO();
 		byte[] fileBody = FileUtil.file2Bytes(WebUtil.getClassPath() + properties.IMG_DIR + File.separator + properties.IMG_FILE_NOTEXIST);
 		if (fileBody!=null) {
 			ret.setBytes(fileBody);
@@ -153,6 +156,19 @@ public class ObjectStorageRestController {
 				}
 			}
 		}
+	}
+	/**
+	 * build a objectsotrage with null bytes
+	 * @param query
+	 * @return
+	 */
+	private ObjectStorageVO buildObjectStorage(String query) {
+		ObjectStorageVO ret = null;
+		//\20191211\95f444173ff249589a9051ef33e5c710.png
+		
+		//get info from url
+		ret = ObjectHeaderUtil.url2objectstorage(query);
+		return ret;
 	}
 	
 //	private ResponseEntity<byte[]> createResponseEntity(byte[] fileBody, String fileName){
