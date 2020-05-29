@@ -13,7 +13,7 @@ public interface UserFingerprintRepository extends JpaRepository<UserFingerprint
 
 	public UserFingerprint findFirstByValueAndTypeOrderByLastUpdateDateDesc(String value, String type);
 
-	public UserFingerprint findFirstByFpidAndUseridOrderByIdDesc(Integer fpid,Integer userid);
+	public UserFingerprint findFirstByFpidAndUseridOrderByIdDesc(Long fpid,Long userid);
 	
 	@Modifying
 	@Query(value = "UPDATE tbl_core_userfingerprint t1 SET uf_rememberme=?1 WHERE t1.fp_value=?2 and t1.fp_type=?3 ", nativeQuery = true)
@@ -22,5 +22,5 @@ public interface UserFingerprintRepository extends JpaRepository<UserFingerprint
 
 	@Modifying
 	@Query(value = "UPDATE tbl_core_userfingerprint t1 SET uf_rememberme=?1 WHERE t1.user_id=?2 ", nativeQuery = true)
-	public int updateRemembermeByUserid(String rememberme, Integer userid);
+	public int updateRemembermeByUserid(String rememberme, Long userid);
 }

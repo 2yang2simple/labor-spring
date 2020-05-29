@@ -57,7 +57,7 @@ public class UserRestController extends BaseRestController {
 	@RequiresPermissions("user")
 	@RequestMapping(value = {"/{id}/roles" }, method = RequestMethod.POST)
 	public Result createRoles(
-				@PathVariable(value="id") Integer id,
+				@PathVariable(value="id") Long id,
 				@RequestBody List<UserRole> list) {
 		if (id==null||id<=0) {
 	    	return Result.failure(ResultStatus.FAILURE_PARAM_INVALID.code(), "the id is null."); 
@@ -69,7 +69,7 @@ public class UserRestController extends BaseRestController {
 	@RequiresPermissions("user")
 	@RequestMapping(value = { "/{id}" }, method = RequestMethod.PUT)
 	public Result update(
-				@PathVariable(value="id") Integer id, 
+				@PathVariable(value="id") Long id, 
 				@RequestBody @Valid User user, 
 				BindingResult bindingResult) {
 
@@ -122,7 +122,7 @@ public class UserRestController extends BaseRestController {
 	@RequiresPermissions("user")
 	@RequestMapping(value = {"/{id}/roles" }, method = RequestMethod.GET)
 	public Result findRoleList(
-				@PathVariable(value="id") Integer id) {
+				@PathVariable(value="id") Long id) {
 		return Result.success(roleService.findListByUserid(id));
 	}
 

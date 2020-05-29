@@ -10,7 +10,7 @@ public interface AccessService {
 	public User validateNameAndPassword(
 					String name, String saltpwdmd5, String cfmd5, String rememberme, String timestamp);
 	public FingerprintOnline createOnline(
-					Integer userId, 
+					Long userId, 
 					String userName, 
 					String authValue, 
 					String authType, 

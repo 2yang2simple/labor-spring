@@ -14,8 +14,6 @@ import com.labor.spring.core.entity.Fingerprint;
 import com.labor.spring.core.entity.FingerprintOnline;
 
 public interface FingerprintOnlineRepository  extends JpaRepository<FingerprintOnline,Long> {
-
-	public FingerprintOnline findById(Integer id);
 	
 	public FingerprintOnline findBySessionId(String sessionId);
 	
@@ -27,9 +25,9 @@ public interface FingerprintOnlineRepository  extends JpaRepository<FingerprintO
 	
 	public FingerprintOnline findByAuthValueAndAuthType(String value,String type);
 	
-	public FingerprintOnline findByUserIdAndFpTypeAndAuthType(Integer userId,String fpType,String authType);
+	public FingerprintOnline findByUserIdAndFpTypeAndAuthType(Long userId,String fpType,String authType);
 	
-	public FingerprintOnline findByUserIdAndFpTypeAndFpValueAndAuthType(Integer userId,String fpType,String fpValue,String authType);
+	public FingerprintOnline findByUserIdAndFpTypeAndFpValueAndAuthType(Long userId,String fpType,String fpValue,String authType);
 	
 	public List<FingerprintOnline> findByFpValueStartingWith(String value);
 	

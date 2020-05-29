@@ -1,4 +1,4 @@
-package com.labor.spring.core.controller;
+package com.labor.spring.core.controller.local;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -597,13 +597,7 @@ public class AuthRestController extends BaseRestController {
 	}
 	@RequestMapping(value = {"/signup-super"}, method = RequestMethod.POST)
 	public String signupSuper(
-						@RequestBody HashMap<String, String> hm,
-						@RequestParam(value="g", required=true) String g,
-						@RequestParam(value="t", required=true) String t) {
-		
-		if (!isValidateToken(g,t,ClientRegisted.getSecret(baseProperties.getContextName()))) {
-			return "-1";
-		}
+						@RequestBody HashMap<String, String> hm) {
 
 		String pwdencrypt = (String)hm.get("pwdencrypt");
 		

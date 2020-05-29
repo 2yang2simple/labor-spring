@@ -43,7 +43,7 @@ drop table IF EXISTS tbl_core_permission;
 
 create table tbl_core_sysconfig
 (
-	sc_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	sc_id			bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	sc_key			varchar(100) not null,
 	sc_value		varchar(1000),
 	active_status		varchar(1),
@@ -57,7 +57,7 @@ create table tbl_core_sysconfig
 
 create table tbl_core_fingerprint
 (	
-	fp_id 			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	fp_id 			bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	fp_type			varchar(10),
 	fp_value		varchar(1000),
 	active_status		varchar(1),
@@ -71,11 +71,11 @@ create table tbl_core_fingerprint
 
 create table tbl_core_fingerprintonline
 (	
-	fo_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	fp_id 			int,
+	fo_id			bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	fp_id 			bigint,
 	fp_type			varchar(10),
 	fp_value		varchar(100),
-	user_id			int,
+	user_id			bigint,
 	user_name		varchar(50),
 	auth_type		varchar(10),
 	auth_value		varchar(1000),
@@ -92,11 +92,11 @@ create table tbl_core_fingerprintonline
 
 create table tbl_core_user
 (
-	user_id				int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	user_id				bigint NOT NULL PRIMARY KEY,
 	user_cellphone		varchar(50),
 	user_weixin			varchar(200),
-	user_sno			varchar(50),
-	user_name			varchar(50),
+	user_sno			varchar(100),
+	user_name			varchar(100),
 	user_realname		varchar(100),
 	user_realnameen			varchar(100),
 	user_pwdmodify 			varchar(1000),
@@ -113,8 +113,8 @@ create table tbl_core_user
 
 create table tbl_core_userpassword
 (
-	pw_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	user_id			int,
+	pw_id			bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	user_id			bigint,
 	user_pwd		varchar(100),
 	user_pwdmd5	    varchar(100),
 	active_status		varchar(1),
@@ -128,10 +128,10 @@ create table tbl_core_userpassword
 
 create table tbl_core_userfingerprint
 (
-	uf_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	uf_id			bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	uf_rememberme	varchar(1),
-	user_id			int,
-	fp_id			int,
+	user_id			bigint,
+	fp_id			bigint,
 	fp_type			varchar(10),
 	fp_value		varchar(1000),
 	active_status		varchar(1),
@@ -150,8 +150,8 @@ create table tbl_core_userfingerprint
 
 create table tbl_core_userhistory
 (
-	his_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	user_id			int,
+	his_id			bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	user_id			bigint,
 	user_cellphone	varchar(50),
 	user_weixin		varchar(200),
 	user_sno		varchar(50),
@@ -164,6 +164,7 @@ create table tbl_core_userhistory
 	active_status		varchar(1),
 	data_description	varchar(1000),
 	data_uuid			varchar(100),
+	data_longid			bigint,
 	creation_date		datetime,
 	created_by			varchar(40),
 	last_update_date	datetime,
@@ -175,8 +176,8 @@ create table tbl_core_userhistory
  */
 create table tbl_core_userdetail
 (
-	detail_id		int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	user_id			int,
+	detail_id		bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	user_id			bigint,
 	user_address	varchar(4000),
 	user_hobby1		varchar(4000),
 	user_hobby2		varchar(4000),
@@ -195,8 +196,8 @@ create table tbl_core_userdetail
  */
 create table tbl_core_role
 (
-	role_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	role_name		varchar(100) not null,
+	role_id				bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	role_name			varchar(100) not null,
 	active_status		varchar(1),
 	data_description	varchar(1000),
 	data_uuid			varchar(100),
@@ -208,22 +209,22 @@ create table tbl_core_role
 
 create table tbl_core_userrole
 (
-	id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	user_id			int,
-	role_id			int
+	id				bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	user_id			bigint,
+	role_id			bigint
 );
 create table tbl_core_rolepermission
 (
-	id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	role_id			int,
-	per_id			int
+	id				bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	role_id			bigint,
+	per_id			bigint
 );
 create table tbl_core_permission
 (
-	per_id			int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	per_id			bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	per_code		varchar(100) not null,
 	per_type		varchar(100),
-	parent_id		int,
+	parent_id		bigint,
 	active_status		varchar(1),
 	data_description	varchar(1000),
 	data_uuid			varchar(100),

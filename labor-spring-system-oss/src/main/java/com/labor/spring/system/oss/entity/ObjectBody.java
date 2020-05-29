@@ -18,7 +18,7 @@ public class ObjectBody extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="ob_id")
-    private Integer id;
+    private Long id;
 	
 	@Column(name="ob_path")
     private String path;
@@ -26,11 +26,11 @@ public class ObjectBody extends AbstractEntity implements Serializable {
 	@Column(name="ob_md5")
     private String md5;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

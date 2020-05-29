@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import com.labor.common.constants.CommonConstants;
 import com.labor.common.exception.ServiceException;
 import com.labor.common.util.GoogleAuthenticator;
+import com.labor.common.util.SnowflakeIdWorker;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.bean.Result;
@@ -47,11 +48,19 @@ public class UserServiceImpl implements UserServiceIntf{
 	
 	@Override
 	@Transactional
+	public User save(User user) {	
+		//do nothing for auth system.
+		//auth should use update or create to modify user data;
+		//client system could use for saving local user data;
+	    return user;
+	}
+	@Override
+	@Transactional
 	public User update(User user) {	
 		User ret = new User();
 		// only for update
 		if(user!=null&&user.getId()>0) {
-			ret = userRepository.findById(user.getId());
+			ret = userRepository.findById(user.getId()).orElse(null);
 			if (ret!=null) {	
 				String checkmsg = checkExisted(user);
 				if ("none".equals(checkmsg)) {			
@@ -84,9 +93,9 @@ public class UserServiceImpl implements UserServiceIntf{
 	}
     @Override
 	@Transactional
-    public User updatePasswordModifyCode(Integer userid, String pwdmodify) {
+    public User updatePasswordModifyCode(Long userid, String pwdmodify) {
     	User ret = null;
-    	User user = userRepository.findById(userid);
+    	User user = userRepository.findById(userid).orElse(null);
     	if (user!=null) {
     		user.setPwdmodify(pwdmodify);
     		ret = userRepository.save(user);
@@ -156,7 +165,8 @@ public class UserServiceImpl implements UserServiceIntf{
     	if (ret!=null&&ret.getId()>0){
     		return null;
     	}
-    	
+    	//create long id
+    	newuser.setId(TokenUtil.generateLongID());
 		newuser.setName(name);
 		newuser.setSno(sno);
 		//e50ad1f2da5443f988af5f43d90f50c6
@@ -188,8 +198,8 @@ public class UserServiceImpl implements UserServiceIntf{
     //create a new password by md5(original);
     @Override
 	@Transactional
-    public boolean createPassword(Integer userid, String pwd) {
-		User user = userRepository.findById(userid);
+    public boolean createPassword(Long userid, String pwd) {
+		User user = userRepository.findById(userid).orElse(null);
 		if (user==null||pwd==null) {
 			LogManager.getLogger().error("pwd is null");
 			return false;
@@ -254,7 +264,7 @@ public class UserServiceImpl implements UserServiceIntf{
 
     @Override
 	@Transactional
-    public String createUserRoles(Integer userId, List<UserRole> list) {
+    public String createUserRoles(Long userId, List<UserRole> list) {
     	String ret = null;
     	int count = 0;
 		if (list!=null&&list.size()>0){
@@ -271,8 +281,8 @@ public class UserServiceImpl implements UserServiceIntf{
     }
     @Override
 	@Transactional
-    public UserFingerprint createUserFingerprint(String value, String type, Integer fpid, 
-    											Integer userid, String rememberMe) {
+    public UserFingerprint createUserFingerprint(String value, String type, Long fpid, 
+    											Long userid, String rememberMe) {
     	UserFingerprint ret = null;
     	ret = userFingerprintRepository.findFirstByFpidAndUseridOrderByIdDesc(fpid,userid);
     	rememberMe = (rememberMe==null)?CommonConstants.INACTIVE:rememberMe;
@@ -338,8 +348,8 @@ public class UserServiceImpl implements UserServiceIntf{
 	}
 	
 	@Override
-	public User findById(Integer id) {
-		return userRepository.findById(id);
+	public User findById(Long id) {
+		return userRepository.findById(id).orElse(null);
 	}
 	@Override
 	public User findByUuid(String uuid) {
@@ -376,7 +386,7 @@ public class UserServiceImpl implements UserServiceIntf{
 		UserFingerprint userFingerprint 
 			= userFingerprintRepository.findFirstByValueAndTypeOrderByLastUpdateDateDesc(value,type);
 		if (userFingerprint!=null) {
-			ret = userRepository.findById(userFingerprint.getUserid());
+			ret = userRepository.findById(userFingerprint.getUserid()).orElse(null);
 			if (ret!=null) {
 				if(CommonConstants.ACTIVE.equals(userFingerprint.getRememberMe())) {
 					ret.setDescription("|remembermechecked");
@@ -388,7 +398,7 @@ public class UserServiceImpl implements UserServiceIntf{
 		return ret;
 	}
     @Override
-    public String findPwdmd5(Integer userid) {
+    public String findPwdmd5(Long userid) {
     	String ret = "";
     	UserPassword up = userPasswordRepository.findFirstByUseridOrderByIdDesc(userid);
     	if (up!=null) {
@@ -418,7 +428,7 @@ public class UserServiceImpl implements UserServiceIntf{
 	}
 
 	@Override
-    public boolean validateUserPassword(Integer userid, String salt, String saltpwdmd5) {
+    public boolean validateUserPassword(Long userid, String salt, String saltpwdmd5) {
 		String pwdmd5 = findPwdmd5(userid);
 		if (!StringUtil.isEmpty(pwdmd5)) {
 			if(TokenUtil.isValidatedDateSaltingToken(salt,saltpwdmd5,pwdmd5)) {
@@ -443,7 +453,7 @@ public class UserServiceImpl implements UserServiceIntf{
     	
     }
 	@Override
-	public boolean validateUserRememberme(Integer userid, String fpValue, String fpType, String rememberMe) {
+	public boolean validateUserRememberme(Long userid, String fpValue, String fpType, String rememberMe) {
 		UserFingerprint ufp = userFingerprintRepository.findFirstByValueAndTypeOrderByLastUpdateDateDesc(fpValue, fpType);
 		if ( ufp!= null) {
 			if (CommonConstants.ACTIVE.equals(rememberMe)) {

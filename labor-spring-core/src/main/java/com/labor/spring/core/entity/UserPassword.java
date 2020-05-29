@@ -20,10 +20,10 @@ public class UserPassword  extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="pw_id")
-    private Integer id;
+    private Long id;
 	
     @Column(name="user_id")
-    private Integer userid; 
+    private Long userid; 
     
     @Column(name="user_pwd")
     private String pwd;
@@ -31,16 +31,16 @@ public class UserPassword  extends AbstractEntity implements Serializable {
     @Column(name="user_pwdmd5")
     private String pwdmd5;
     
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-	public Integer getUserid() {
+	public Long getUserid() {
 		return userid;
 	}
-	public void setUserid(Integer userid) {
+	public void setUserid(Long userid) {
 		this.userid = userid;
 	}
 	public String getPwd() {

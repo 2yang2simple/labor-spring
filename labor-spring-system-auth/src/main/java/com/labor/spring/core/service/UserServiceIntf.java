@@ -15,7 +15,7 @@ import com.labor.spring.core.entity.UserRole;
 public interface UserServiceIntf {
 
 
-    public User findById(Integer id);
+    public User findById(Long id);
     public User findByUuid(String uuid);
     public User findByName(String name);
     public User findBySno(String sno);
@@ -34,25 +34,26 @@ public interface UserServiceIntf {
     public User findFirstByValueAndType(String value, String type);
     
     public String checkExisted (User user);
-    public String findPwdmd5(Integer userid);
+    public String findPwdmd5(Long userid);
     public String findMaxSno();
     public String findSecretKey(String uuid);
     
+    public User save(User user);
     public User update(User user);
     public User updateStatusByUuid(String uuid, String status);
-    public User updatePasswordModifyCode(Integer userid, String pwdmodify);
+    public User updatePasswordModifyCode(Long userid, String pwdmodify);
     public User create(String name, String sno, String googleSecretKey, String cellPhone, String weixin, String email, String pwdmd5, String uuid, String status);
     
     public String createPasswordModifyCode(String uuid);
     public String createPasswordSalt(String saltseed);
     public String createPasswordSaltByAccount(String account);
-    public boolean createPassword(Integer userid, String pwdmd5);
-    public UserFingerprint createUserFingerprint(String value, String type,  Integer fpid, 
-    												Integer userid, String rememberMe);
+    public boolean createPassword(Long userid, String pwdmd5);
+    public UserFingerprint createUserFingerprint(String value, String type,  Long fpid, 
+    												Long userid, String rememberMe);
     
-    public String createUserRoles(Integer id, List<UserRole> list);
+    public String createUserRoles(Long id, List<UserRole> list);
     
-    public boolean validateUserPassword(Integer userid, String salt, String saltpwdmd5);
+    public boolean validateUserPassword(Long userid, String salt, String saltpwdmd5);
     public boolean validateUserAuthcode(String uuid, String authcode);
-    public boolean validateUserRememberme(Integer userid, String fpValue, String fpType, String rememberMe);
+    public boolean validateUserRememberme(Long userid, String fpValue, String fpType, String rememberMe);
 }

@@ -22,6 +22,7 @@ import com.labor.spring.core.entity.User;
 import com.labor.spring.core.service.SysconfigServiceIntf;
 import com.labor.spring.feign.auth.AuthConstants;
 
+import cn.hutool.core.lang.Validator;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -65,15 +66,21 @@ public class LoginForeignRestController {
 		}
 
 		FingerprintOnline fo = null;
-		if (StringUtil.isEqualedTrimLower(type, AuthConstants.LOGINTYPE_CELLPHONE)) {
+
+		//administrator login
+		if (StringUtil.isEqualedTrimLower(WebConstants.USERNAME_SUPER, name)) {
+			
+			fo = loginService.create(ci.getFpType(), clientUuid, ci.getAuthType(), TokenUtil.generateUUID(), AuthConstants.LOGINTYPE_NAME, name);
+			
+		} else if (StringUtil.isEqualedTrimLower(type, AuthConstants.LOGINTYPE_CELLPHONE)) {
 			//name is the cellphone number
 			//code is the number sent to cellphone, also stored in db;
 			//validate the code and name
-			if(!StringUtil.isNumeric(name)){
+			if(!Validator.isMobile(name)){
 				return Result.failure(ResultStatus.FAILURE_PARAM_INVALID);
 			}
 			//create a account by cellphone
-			fo = loginService.create(ci.getFpType(), clientUuid, ci.getAuthType(), TokenUtil.generateUUID(), "cellphone", name);
+			fo = loginService.create(ci.getFpType(), clientUuid, ci.getAuthType(), TokenUtil.generateUUID(), type, name);
 		
 			
 			
@@ -83,12 +90,15 @@ public class LoginForeignRestController {
     		//code is the sessionkey, openid etc something weixin returned
     		
     		//validate the code and name
-    	}  else if (StringUtil.isEqualedTrimLower(type, AuthConstants.LOGINTYPE_EMAIL)) {
+    	} else if (StringUtil.isEqualedTrimLower(type, AuthConstants.LOGINTYPE_EMAIL)) {
     		//name is the email
     		
     		//code is the code received by email
     		
     		//validate the code and name
+    		if(!Validator.isEmail(name)){
+				return Result.failure(ResultStatus.FAILURE_PARAM_INVALID);
+			}
     	} else {
     		return Result.failure(ResultStatus.FAILURE_PARAM_INVALID.code(),"type error.");
     	}

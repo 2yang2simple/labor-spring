@@ -20,10 +20,10 @@ public class FingerprintOnline extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="fo_id")
-    private Integer id;
+    private Long id;
 	
     @Column(name="fp_id")
-    private Integer fpId;
+    private Long fpId;
 	
     @Column(name="fp_value")
     private String fpValue; 
@@ -32,7 +32,7 @@ public class FingerprintOnline extends AbstractEntity implements Serializable {
     private String fpType;
 
     @Column(name="user_id")
-    private Integer userId;
+    private Long userId;
 
     @Column(name="user_name")
     private String userName;
@@ -50,19 +50,19 @@ public class FingerprintOnline extends AbstractEntity implements Serializable {
     @Column(name="session_id")
     private String sessionId;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public Integer getFpId() {
+	public Long getFpId() {
 		return fpId;
 	}
 
-	public void setFpId(Integer fpId) {
+	public void setFpId(Long fpId) {
 		this.fpId = fpId;
 	}
 
@@ -82,11 +82,11 @@ public class FingerprintOnline extends AbstractEntity implements Serializable {
 		this.fpType = fpType;
 	}
 
-	public Integer getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Integer userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

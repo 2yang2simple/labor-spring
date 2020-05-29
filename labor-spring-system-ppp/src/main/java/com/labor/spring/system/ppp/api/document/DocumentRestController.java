@@ -290,7 +290,7 @@ public class DocumentRestController {
 			ret.getDocument().setFilePath(hidepath+"hasdownload|");
 		}
 		User creator = ret.getCreator();
-		Integer creatorid = 0;
+		Long creatorid = 0L;
 		if (creator!=null) {
 			creatorid = creator.getId();
 		}

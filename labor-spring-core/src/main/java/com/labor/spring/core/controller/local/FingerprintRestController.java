@@ -32,7 +32,7 @@ public class FingerprintRestController {
 	@RequiresPermissions("fingerprint")
 	@RequestMapping(value = {"/{id}/status/{status}"}, method = RequestMethod.PATCH)
 	public Result updateStatus(
-				@PathVariable(value="id") Integer id, 
+				@PathVariable(value="id") Long id, 
 				@PathVariable(value="status") String status) {
 		Fingerprint fingerprint = new Fingerprint();
 	    if (id!=null&&id>0) {
@@ -118,7 +118,7 @@ public class FingerprintRestController {
 	@RequiresPermissions("fingerprint")
 	@RequestMapping(value = {"/online/{foid}"}, method = RequestMethod.DELETE)
 	public Result deleteOnline(
-				@PathVariable(value="foid") Integer foid) {
+				@PathVariable(value="foid") Long foid) {
 		fpService.deleteOnlineById(foid);
 		return Result.success();
 	}

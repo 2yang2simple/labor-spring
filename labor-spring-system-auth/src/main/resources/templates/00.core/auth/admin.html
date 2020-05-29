@@ -53,6 +53,7 @@ $(document).ready(function(){
 });
 
 function doSignUp(){
+
 	$("#submitbutton").button('loading').queue();
 	document.getElementById("tips").innerText="\n";
 
@@ -67,7 +68,6 @@ function doSignUp(){
 	crypt.setPublicKey(publickey512);
 	var pwdencrypt=crypt.encrypt(pwd);
 	var postdata = {"pwdencrypt": pwdencrypt};
-	
 	$.ajax({
 		type: "POST",
 		url: l("/rest/core/auth/signup-super"),
@@ -75,6 +75,7 @@ function doSignUp(){
 		data: JSON.stringify(postdata),
 		dataType: "text",
 		success:function (message) {
+			
 			if (message=="1") {
          		window.location.href = getContextPath()+"/public/success";
   	       	} else if (message=="-2"){

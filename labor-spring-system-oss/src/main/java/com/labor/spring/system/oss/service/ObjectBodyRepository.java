@@ -14,8 +14,6 @@ import com.labor.spring.system.oss.entity.ObjectBody;
 
 public interface ObjectBodyRepository extends JpaRepository<ObjectBody,Long> {
 
-	public Optional<ObjectBody> findOneById(Integer id);
-
 	public Optional<ObjectBody> findOneByMd5(String md5);
 
 }

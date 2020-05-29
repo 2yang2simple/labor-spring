@@ -22,7 +22,7 @@ public class Fingerprint extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="fp_id")
-    private Integer id;
+    private Long id;
 	
     @Column(name="fp_value")
     private String value; 
@@ -31,10 +31,10 @@ public class Fingerprint extends AbstractEntity implements Serializable {
     private String type;
     
     
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getValue() {

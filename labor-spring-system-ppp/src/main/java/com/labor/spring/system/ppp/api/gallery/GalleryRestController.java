@@ -105,7 +105,7 @@ public class GalleryRestController {
 					@RequestParam(value="files", required=false) MultipartFile[] files,
 					@RequestParam(value="startOrder", defaultValue="0") Integer startOrder) {
 		Gallery ga = galleryService.findById(id).orElse(null);
-		if (!authLoginService.isCurrentUserOrSuperUser(Integer.valueOf(ga.getCreatedBy()),null)) {
+		if (!authLoginService.isCurrentUserOrSuperUser(Long.valueOf(ga.getCreatedBy()),null)) {
 	    	return Result.failure(ResultCode.FAILURE_PERMISSION_NOACCESS, ResultCode.MSG_FAILURE_PERMISSION_NOACCESS);
 	    }
 		startOrder = (startOrder==null)?0:startOrder;
@@ -149,7 +149,7 @@ public class GalleryRestController {
 	        return Result.failure(ResultCode.FAILURE_PARAM_INVALID,message);
 	    }
 		Gallery ga = galleryService.findById(id).orElse(null);
-		if (!authLoginService.isCurrentUserOrSuperUser(Integer.valueOf(ga.getCreatedBy()),null)) {
+		if (!authLoginService.isCurrentUserOrSuperUser(Long.valueOf(ga.getCreatedBy()),null)) {
 	    	return Result.failure(ResultCode.FAILURE_PERMISSION_NOACCESS, ResultCode.MSG_FAILURE_PERMISSION_NOACCESS);
 	    }
 		galleryImage.setGaId(id);
@@ -186,7 +186,7 @@ public class GalleryRestController {
 		List<GalleryImage> ret = galleryService.findImageListByUuidAndStatusAndCaptionLike(uuid,status,capion);
 		if(ret!=null&&ret.size()>0) {
 			GalleryImage gi = ret.get(0);
-			if (authLoginService.isCurrentUserOrSuperUser(Integer.valueOf(gi.getCreatedBy()),null)) {
+			if (authLoginService.isCurrentUserOrSuperUser(Long.valueOf(gi.getCreatedBy()),null)) {
 				
 			}
 		}
@@ -205,7 +205,7 @@ public class GalleryRestController {
 		Page<GalleryImage> ret = galleryService.findImageListByUuidAndStatusAndCaptionLike(uuid,status,capion,pageable);
 		if(ret!=null&&ret.getContent()!=null&&ret.getContent().size()>0) {
 			GalleryImage gi = ret.getContent().get(0);
-			if (authLoginService.isCurrentUserOrSuperUser(Integer.valueOf(gi.getCreatedBy()),null)) {
+			if (authLoginService.isCurrentUserOrSuperUser(Long.valueOf(gi.getCreatedBy()),null)) {
 				
 			}
 		}

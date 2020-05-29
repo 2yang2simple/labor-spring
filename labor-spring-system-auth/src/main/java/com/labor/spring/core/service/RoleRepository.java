@@ -11,10 +11,6 @@ import com.labor.spring.core.entity.Role;
 
 
 public interface RoleRepository extends JpaRepository<Role,Long> {
-
-	public Role findById(Integer id);
-	
-//	public List<Role> findAll(Sort sort);
 	
 	public List<Role> findByStatus(String status);
 	
@@ -28,5 +24,5 @@ public interface RoleRepository extends JpaRepository<Role,Long> {
 			"tbl_core_userrole t2\r\n" + 
 			"WHERE t1.role_id = t2.role_id\r\n" + 
 			"AND t2.user_id = ?1", nativeQuery = true)
-	public List<Role> findByUserid(Integer userid);
+	public List<Role> findByUserid(Long userid);
 }

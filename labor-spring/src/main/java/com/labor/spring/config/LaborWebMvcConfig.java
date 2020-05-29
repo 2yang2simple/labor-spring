@@ -1,27 +1,36 @@
 package com.labor.spring.config;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.labor.spring.interceptor.FingerprintInterceptor;
 import com.labor.spring.interceptor.LoggerInterceptor;
 import com.labor.spring.interceptor.LoginInterceptor;
 import com.labor.spring.interceptor.TimestampTokenInterceptor;
 
 @Configuration
-public class LaborWebMvcConfig implements WebMvcConfigurer {
+public class LaborWebMvcConfig implements WebMvcConfigurer, InitializingBean  {
 	
 	@Bean
 	public LoginInterceptor loginInterceptor() {
@@ -111,8 +120,31 @@ public class LaborWebMvcConfig implements WebMvcConfigurer {
         slr.setDefaultLocale(Locale.SIMPLIFIED_CHINESE);
         return slr;
     }
+    
+    
+    
+    @Autowired(required = false)
+    private ObjectMapper obj;
 
+    private SimpleModule getSimpleModule() {
+        /**
+         * convert long to string to avoid losing the accuracy in json
+         */
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
 
+        simpleModule.addSerializer(Double.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Double.TYPE, ToStringSerializer.instance);
+        return simpleModule;
+    }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (obj != null) {
+            SimpleModule simpleModule = getSimpleModule();
+            obj.registerModule(simpleModule);
+        }
+    }
 
 }

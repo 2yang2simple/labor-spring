@@ -39,7 +39,7 @@ public class RoleServiceImpl implements RoleServiceIntf{
 	
 	@Override
 	@Transactional
-	public String saveRolePermission(Integer roleId, List<RolePermission> list) {
+	public String saveRolePermission(Long roleId, List<RolePermission> list) {
 		String ret = null;
     	int count = 0;
     	if (list!=null&&list.size()>0){
@@ -56,8 +56,8 @@ public class RoleServiceImpl implements RoleServiceIntf{
 	}
 	
 	@Override
-	public Role findById(Integer id) {
-		return roleRepository.findById(id);
+	public Role findById(Long id) {
+		return roleRepository.findById(id).orElse(null);
 	}
 	@Override
 	public Role findByNameAndStatus(String name, String status) {
@@ -73,7 +73,7 @@ public class RoleServiceImpl implements RoleServiceIntf{
 		return roleRepository.findByStatus(status);
 	}
 	@Override
-	public List<Role> findListByUserid(Integer userid){
+	public List<Role> findListByUserid(Long userid){
 		return roleRepository.findByUserid(userid);
 	}
 	@Override

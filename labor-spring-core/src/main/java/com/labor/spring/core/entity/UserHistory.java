@@ -11,22 +11,22 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.logging.log4j.LogManager;
 
-import com.labor.spring.base.AbstractEntity;
+import com.labor.spring.base.AbstractEntityLongId;
 
 @Entity
 @Table(name = "tbl_core_userhistory")
 
-public class UserHistory extends AbstractEntity implements Serializable {
+public class UserHistory extends AbstractEntityLongId implements Serializable {
 
 	private static final long serialVersionUID = -2134326618804138834L;
 	
 	@Id
     @GeneratedValue 
     @Column(name="his_id")
-    private Integer id;
+    private Long id;
 	
     @Column(name="user_id")
-    private Integer userid;
+    private Long userid;
 
 	@Column(name="user_cellphone")
     private String cellPhone; 
@@ -71,19 +71,19 @@ public class UserHistory extends AbstractEntity implements Serializable {
 		this.realNameEn = realNameEn;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public Integer getUserid() {
+	public Long getUserid() {
 		return userid;
 	}
 
-	public void setUserid(Integer userid) {
+	public void setUserid(Long userid) {
 		this.userid = userid;
 	}
 

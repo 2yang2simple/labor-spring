@@ -56,7 +56,7 @@ public class RoleRestController {
 	@RequiresPermissions("role")
 	@RequestMapping(value = {"/{id}/permissions" }, method = RequestMethod.POST)
 	public Result createPermissions(
-					@PathVariable(value="id") Integer id, 
+					@PathVariable(value="id") Long id, 
 					@RequestBody List<RolePermission> list) {
 		if (id==null||id<=0) {
 	    	return Result.failure(ResultStatus.FAILURE_PARAM_INVALID.code(), "the id is null."); 
@@ -67,7 +67,7 @@ public class RoleRestController {
 	@RequiresPermissions("role")
 	@RequestMapping(value = { "/{id}" }, method = RequestMethod.PUT)
 	public Result update(
-					@PathVariable(value="id") Integer id, 
+					@PathVariable(value="id") Long id, 
 					@RequestBody Role role,
 					BindingResult bindingResult) {
 		if (id!=null&&id>0) {
@@ -85,7 +85,7 @@ public class RoleRestController {
 	@RequiresPermissions("role")
 	@RequestMapping(value = { "/{id}"}, method = RequestMethod.GET)
 	public Result findById(
-					@PathVariable(value="id") Integer id) {
+					@PathVariable(value="id") Long id) {
 		return Result.success(roleService.findById(id));
 	}
 	
@@ -113,7 +113,7 @@ public class RoleRestController {
 	@RequiresPermissions("role")
 	@RequestMapping(value = {"/{id}/permissions" }, method = RequestMethod.GET)
 	public Result findPermissionListByRoleid(
-					@PathVariable(value="id") Integer id) {
+					@PathVariable(value="id") Long id) {
 		return Result.success(perService.findListByRoleid(id));		
 	}
 	

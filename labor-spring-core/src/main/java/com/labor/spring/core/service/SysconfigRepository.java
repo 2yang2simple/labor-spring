@@ -9,8 +9,6 @@ import com.labor.spring.core.entity.Sysconfig;
 
 public interface SysconfigRepository  extends JpaRepository<Sysconfig,Long> {
 
-	public Sysconfig findById(Integer id);
-	
 	public List<Sysconfig> findAll(Sort sort);
 	
 	public Sysconfig findByKeyAndStatusIgnoreCase(String key,String status);

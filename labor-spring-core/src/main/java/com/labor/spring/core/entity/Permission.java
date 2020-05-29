@@ -18,7 +18,7 @@ public class Permission extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="per_id")
-    private Integer id;
+    private Long id;
 	
 	@Column(name="per_code")
     private String code;
@@ -27,21 +27,21 @@ public class Permission extends AbstractEntity implements Serializable {
     private String type;
 	
     @Column(name="parent_id")
-    private Integer parentid;
+    private Long parentid;
     
-	public Integer getParentid() {
+	public Long getParentid() {
 		return parentid;
 	}
 
-	public void setParentid(Integer parentid) {
+	public void setParentid(Long parentid) {
 		this.parentid = parentid;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

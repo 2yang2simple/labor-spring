@@ -8,6 +8,8 @@ import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.system.oss.controller.vo.ObjectStorageVO;
 
+import cn.hutool.core.util.RandomUtil;
+
 public class ObjectHeaderUtil {
 	
 	public static String generateUrl() {
@@ -52,8 +54,8 @@ public class ObjectHeaderUtil {
 			return ret;
 		}
 		
-		ret = TokenUtil.generateUUID()+"-"+path+"-"+name+"-"+type;
-		
+//		ret = TokenUtil.generateUUID()+"-"+path+"-"+name+"-"+type;
+		ret = RandomUtil.randomInt(10)+"-"+path+"-"+name+"-"+type;
 		return ret;
 		
 	}

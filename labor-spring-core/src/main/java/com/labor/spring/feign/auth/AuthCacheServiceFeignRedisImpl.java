@@ -14,7 +14,6 @@ import com.labor.spring.core.entity.User;
 import com.labor.spring.core.service.FingerprintServiceIntf;
 import com.labor.spring.core.service.PermissionServiceIntf;
 import com.labor.spring.core.service.RoleServiceIntf;
-import com.labor.spring.core.service.UserRepository;
 import com.labor.spring.core.service.UserServiceIntf;
 import com.labor.spring.feign.client.auth.AuthFeignClient;
 import com.labor.spring.feign.util.ObjectMapperUtil;

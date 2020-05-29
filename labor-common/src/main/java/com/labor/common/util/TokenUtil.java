@@ -17,6 +17,11 @@ import org.apache.logging.log4j.LogManager;
 
 import com.labor.common.constants.CommonConstants;
 
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
+
 public class TokenUtil {
 
     public static String md5(String text) {
@@ -152,12 +157,6 @@ public class TokenUtil {
     	return md5(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
     }
     
-    public static String generateUUID() {
-    	UUID uuid = UUID.randomUUID();
-        return uuid.toString().replace("-","");
-    }
-
-    
     public static String generateUUID(String puuid) {
     	if(!StringUtil.isEmpty(puuid)
     			&&puuid.length()>=32) {
@@ -165,6 +164,67 @@ public class TokenUtil {
     	}
     	return generateUUID();
     }
+    
+    public static String generateUUID() {
+    	UUID uuid = UUID.randomUUID();
+        return uuid.toString().replace("-","");
+    }
+    
+    public static long generateLongID(long longid) {
+    	long ret = generateLongID();
+    	if (Long.toString(longid).length()
+    			==Long.toString(ret).length()) {
+    		ret = longid;
+    	}
+    	return ret;
+    }
+    
+    public static long generateLongID() {
+		long ret = 0;
+		long workid = 0;
+		long datacenterid = 0;
+		String hostname = NetUtil.getLocalhost().getHostName();
+		String hostaddress = NetUtil.getLocalhost().getHostAddress();
+		byte[] nbs = null;
+		byte[] abs = null;
+		int hostnamenum = 0;
+		int hostaddressnum = 0;
+		if (!StrUtil.isEmpty(hostname)) {
+			nbs = hostname.getBytes();
+		}
+		if (!StrUtil.isEmpty(hostaddress)) {
+			abs = hostaddress.getBytes();
+		}
+
+		if (nbs!=null&&nbs.length>0) {
+			for (byte b : nbs) {
+				hostnamenum = hostnamenum + b;
+			}
+		}
+		if (abs!=null&&nbs.length>0) {
+			for (byte b : abs) {
+				hostaddressnum = hostaddressnum + b;
+			}
+		}
+		if (hostnamenum==0) {
+			workid = RandomUtil.randomInt(31);
+		} else {
+			workid = hostnamenum%31;
+		}
+
+		if (hostaddressnum==0) {
+			datacenterid = RandomUtil.randomInt(31);
+		} else {
+			datacenterid = hostaddressnum%31;
+		}
+		/***************************
+		 * use HUTOOL snowflake
+		 */
+		Snowflake sf = new Snowflake(workid,datacenterid);
+		ret = sf.nextId();
+//		System.err.println(ret+"-"+workid+"-"+datacenterid);
+		return ret;
+	}
     
     
     public static volatile int Guid=100; 
@@ -293,8 +353,13 @@ public class TokenUtil {
 //    	
 //    	System.out.println(TokenUtil.generateDateNum());
 //    	System.out.println(TokenUtil.generateUUID());
-    	String uuid = TokenUtil.generateUUID("40f5db89b30c467ebb8a5377e77e9847");
-    	System.out.println(uuid);
+//    	String uuid = TokenUtil.generateUUID("40f5db89b30c467ebb8a5377e77e9847");
+//    	System.out.println(uuid);
+
+    	long longid = TokenUtil.generateLongID();
+    	System.out.println(longid);
+    	long longid2 = TokenUtil.generateLongID(longid);
+    	System.out.println(longid2);
     	
 //    	String token = "20190803232509"+AuthorizationCode;
 //    	

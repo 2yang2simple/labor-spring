@@ -12,14 +12,14 @@ import com.labor.spring.core.entity.Sysconfig;
 public interface RoleServiceIntf {
 	
 	public Role save(Role role);
-	public String saveRolePermission(Integer roleId, List<RolePermission> list);
+	public String saveRolePermission(Long roleId, List<RolePermission> list);
 	
-	public Role findById(Integer id);
+	public Role findById(Long id);
 	public Role findByNameAndStatus(String name, String status);
 	
 	public List<Role> findList(Sort sort);
 	public List<Role> findListByNameStartingWith(String name);
 	public List<Role> findListByStatus(String status);
-	public List<Role> findListByUserid(Integer userid);
+	public List<Role> findListByUserid(Long userid);
 	
 }

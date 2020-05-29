@@ -16,35 +16,35 @@ public class RolePermission implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="id")
-    private Integer id;
+    private Long id;
 	
     @Column(name="role_id")
-    private Integer roleid;
+    private Long roleid;
     
     @Column(name="per_id")
-    private Integer perid;
+    private Long perid;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public Integer getRoleid() {
+	public Long getRoleid() {
 		return roleid;
 	}
 
-	public void setRoleid(Integer roleid) {
+	public void setRoleid(Long roleid) {
 		this.roleid = roleid;
 	}
 
-	public Integer getPerid() {
+	public Long getPerid() {
 		return perid;
 	}
 
-	public void setPerid(Integer perid) {
+	public void setPerid(Long perid) {
 		this.perid = perid;
 	}
 

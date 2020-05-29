@@ -20,16 +20,16 @@ public class UserFingerprint extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="uf_id")
-    private Integer id;
+    private Long id;
 
 	@Column(name="uf_rememberme")
     private String rememberMe; 
 	
     @Column(name="user_id")
-    private Integer userid; 
+    private Long userid; 
     
     @Column(name="fp_id")
-    private Integer fpid;
+    private Long fpid;
     
     @Column(name="fp_value")
     private String value;
@@ -37,27 +37,27 @@ public class UserFingerprint extends AbstractEntity implements Serializable {
 	@Column(name="fp_type")
     private String type;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public Integer getUserid() {
+	public Long getUserid() {
 		return userid;
 	}
 
-	public void setUserid(Integer userid) {
+	public void setUserid(Long userid) {
 		this.userid = userid;
 	}
 
-	public Integer getFpid() {
+	public Long getFpid() {
 		return fpid;
 	}
 
-	public void setFpid(Integer fpid) {
+	public void setFpid(Long fpid) {
 		this.fpid = fpid;
 	}
 

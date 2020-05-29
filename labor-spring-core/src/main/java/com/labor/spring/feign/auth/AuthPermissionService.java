@@ -5,7 +5,7 @@ import java.util.Set;
 public interface AuthPermissionService {
 
 	
-	public Set<String> findUserPermissions(Integer userid, String username);
+	public Set<String> findUserPermissions(Long userid, String username);
 	
-	public Set<String> findUserPermissions(Integer userid, String username, String type);
+	public Set<String> findUserPermissions(Long userid, String username, String type);
 }

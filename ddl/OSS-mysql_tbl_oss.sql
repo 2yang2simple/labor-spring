@@ -1,19 +1,23 @@
+DROP TABLE IF EXISTS `hibernate_sequence`;
+
+CREATE TABLE `hibernate_sequence` (
+  `next_val` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+INSERT INTO `hibernate_sequence` (`next_val`) VALUES('10000');
 
 drop table IF EXISTS tbl_oss_objectheader;
 drop table IF EXISTS tbl_oss_objectbody;
 
-
-
 create table tbl_oss_objectheader
 (
-	oh_id				int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	oh_url				varchar(200),
+	oh_id				bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	oh_url				varchar(500),
 	oh_name				varchar(200),
 	oh_filepath			varchar(100),
 	oh_filename			varchar(100),
 	oh_filetype			varchar(10),
-	oh_filesize			int,
-	ob_id				int,
+	oh_filesize			bigint,
+	ob_id				bigint,
 	ob_path				varchar(200),
 	ob_md5				varchar(100),
 	active_status		varchar(1),
@@ -26,7 +30,7 @@ create table tbl_oss_objectheader
 );
 create table tbl_oss_objectbody
 (
-	ob_id				int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	ob_id				bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	ob_path				varchar(200),
 	ob_md5				varchar(100),
 	active_status		varchar(1),

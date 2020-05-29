@@ -17,6 +17,7 @@ import com.labor.spring.core.entity.FingerprintOnline;
 import com.labor.spring.core.entity.User;
 import com.labor.spring.core.service.FingerprintServiceIntf;
 import com.labor.spring.core.service.UserServiceIntf;
+import com.labor.spring.feign.auth.AuthConstants;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -57,18 +58,25 @@ public class LoginServiceImpl implements LoginService {
 		String cellPhone=null;
 		String weixin=null;
 		String email=null;
+		String name=null;
 		User user = null;
-		if (StringUtil.isEqualedTrimLower("cellPhone", accountType)) {
+
+		if (StringUtil.isEqualedTrimLower(AuthConstants.LOGINTYPE_NAME, accountType)) {
+			name = accountValue;
+			user = userService.findByName(name);
+			LogManager.getLogger().debug("--createOnline--name");
+			
+		} else if (StringUtil.isEqualedTrimLower(AuthConstants.LOGINTYPE_CELLPHONE, accountType)) {
 			cellPhone = accountValue;
 			user = userService.findByCellPhone(cellPhone);
 			LogManager.getLogger().debug("--createOnline--cellPhone");
 			
-		} else if (StringUtil.isEqualedTrimLower("weixin", accountType)) {
+		} else if (StringUtil.isEqualedTrimLower(AuthConstants.LOGINTYPE_WEIXIN, accountType)) {
 			weixin = accountValue;
 			user = userService.findByWeixin(weixin);
 			LogManager.getLogger().debug("--createOnline--weixin");
 			
-		} else if (StringUtil.isEqualedTrimLower("email", accountType)) {
+		} else if (StringUtil.isEqualedTrimLower(AuthConstants.LOGINTYPE_EMAIL, accountType)) {
 			email = accountValue;
 			user = userService.findByEmail(email);
 			LogManager.getLogger().debug("--createOnline--email");
@@ -79,8 +87,9 @@ public class LoginServiceImpl implements LoginService {
 		
 		LogManager.getLogger().debug("--createOnline--"+2);
 		
-		if (ObjectUtil.isEmpty(user)) {
-			user = userService.create(null, null, null, cellPhone, weixin, email, null, null, CommonConstants.ACTIVE);
+		//cannot create a administrator
+		if (ObjectUtil.isEmpty(user)&&!StringUtil.isEqualedTrimLower(WebConstants.USERNAME_SUPER, name)) {
+			user = userService.create(name, null, null, cellPhone, weixin, email, null, null, CommonConstants.ACTIVE);
 			LogManager.getLogger().debug("--createOnline--xxx");
 		}	
 		if (ObjectUtil.isEmpty(user)) {

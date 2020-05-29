@@ -19,7 +19,6 @@ import com.labor.spring.core.entity.User;
 import com.labor.spring.core.service.FingerprintServiceIntf;
 import com.labor.spring.core.service.PermissionServiceIntf;
 import com.labor.spring.core.service.RoleServiceIntf;
-import com.labor.spring.core.service.UserRepository;
 import com.labor.spring.core.service.UserServiceIntf;
 import com.labor.spring.util.IgnorePropertiesUtil;
 import com.labor.spring.util.WebUtil;
@@ -32,8 +31,8 @@ public class AuthLoginServiceImpl implements AuthLoginService{
 	@Autowired
 	private AuthCacheService authCacheService;	
 	@Autowired
-	private UserRepository localUserRepository;
-
+	private UserServiceIntf userService;
+	
 	@Override
 	public LoginCache findLoginCache(String accessToken){
 		LoginCache ret = null;
@@ -117,7 +116,7 @@ public class AuthLoginServiceImpl implements AuthLoginService{
 		if (lc==null) {
 			return null;
 		}
-		return localUserRepository.findByUuidIgnoreCase(lc.getUserUuid());
+		return userService.findByUuid(lc.getUserUuid());
 	}
 	
 	//fetch user and refresh local user;
@@ -131,7 +130,7 @@ public class AuthLoginServiceImpl implements AuthLoginService{
 			return null;
 		}
 		//update local user info;
-		User localuser = localUserRepository.findByUuidIgnoreCase(remoteuser.getUuid());
+		User localuser = userService.findByUuid(remoteuser.getUuid());
 		
 		if (localuser!=null){
 			remoteuser.setId(localuser.getId());		
@@ -157,7 +156,7 @@ public class AuthLoginServiceImpl implements AuthLoginService{
 			LogManager.getLogger().info("created a local user");
 		}
 		//local user no need to be unique; save directly
-		ret = localUserRepository.save(localuser);
+		ret = userService.save(localuser);
 		return ret;
 	}
 	
@@ -220,7 +219,7 @@ public class AuthLoginServiceImpl implements AuthLoginService{
 	}
 
 	@Override
-	public boolean isCurrentUserOrSuperUser(Integer userid, String useruuid) {
+	public boolean isCurrentUserOrSuperUser(Long userid, String useruuid) {
 		if (userid==null&&useruuid==null) {
 			return false;
 		}

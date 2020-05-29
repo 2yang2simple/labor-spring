@@ -39,9 +39,9 @@ public class FingerprintServiceImpl implements FingerprintServiceIntf{
 
 	@Override
 	@Transactional
-	public Fingerprint update(Integer id, Fingerprint entity, boolean ignoreNullProperties) {
+	public Fingerprint update(Long id, Fingerprint entity, boolean ignoreNullProperties) {
 		Fingerprint newEntity = entity;
-		Fingerprint fp = fingerprintRepository.findById(id);
+		Fingerprint fp = fingerprintRepository.findById(id).orElse(null);
 		if (fp!=null){
 			if (ignoreNullProperties) {
 				newEntity = fp;
@@ -74,14 +74,14 @@ public class FingerprintServiceImpl implements FingerprintServiceIntf{
 
 //	@Override
 //	@Transactional
-//	public FingerprintOnline updateOnline(Integer foId, FingerprintOnline fingerprintOnline) {
+//	public FingerprintOnline updateOnline(Long foId, FingerprintOnline fingerprintOnline) {
 //		fingerprintOnline.setId(foId);
 //		return fingerprintOnlineRepository.save(fingerprintOnline);
 //	}
 
 	@Override
 	@Transactional
-	public FingerprintOnline saveOnline(Integer userId,
+	public FingerprintOnline saveOnline(Long userId,
 										String fpType,
 										String fpValue,
 										String authType,
@@ -161,7 +161,7 @@ public class FingerprintServiceImpl implements FingerprintServiceIntf{
 
 	@Override
 	@Transactional
-	public void deleteOnlineById(Integer id) {
+	public void deleteOnlineById(Long id) {
 		fingerprintOnlineRepository.deleteById(id);
 	}
 	
@@ -194,8 +194,8 @@ public class FingerprintServiceImpl implements FingerprintServiceIntf{
 	}
 	
 	@Override
-	public Fingerprint findById(Integer id) {
-		return fingerprintRepository.findById(id);
+	public Fingerprint findById(Long id) {
+		return fingerprintRepository.findById(id).orElse(null);
 	}
 	@Override
 	public Fingerprint findByValueAndType(String value, String type){

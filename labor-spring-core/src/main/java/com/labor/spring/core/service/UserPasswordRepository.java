@@ -7,5 +7,5 @@ import com.labor.spring.core.entity.UserPassword;
 
 public interface UserPasswordRepository  extends JpaRepository<UserPassword,Long> {
 
-	public UserPassword findFirstByUseridOrderByIdDesc(Integer userid);
+	public UserPassword findFirstByUseridOrderByIdDesc(Long userid);
 }

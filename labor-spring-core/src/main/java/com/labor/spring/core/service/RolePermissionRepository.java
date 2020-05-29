@@ -12,5 +12,5 @@ public interface RolePermissionRepository extends JpaRepository<RolePermission,L
     @Transactional
     @Modifying
 	@Query(value = "delete from tbl_core_rolepermission where role_id = ?1", nativeQuery = true)
-	public void deleteByRoleid(Integer roleid);
+	public void deleteByRoleid(Long roleid);
 }

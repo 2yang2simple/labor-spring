@@ -96,7 +96,7 @@ public class AccessServiceImpl implements AccessService {
 	}
 	@Override
 	@Transactional
-	public FingerprintOnline createOnline(Integer userId, 
+	public FingerprintOnline createOnline(Long userId, 
 									String userName, 
 									String authValue, 
 									String authType, 

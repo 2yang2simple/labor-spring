@@ -12,14 +12,14 @@ import com.labor.spring.core.entity.FingerprintOnline;
 public interface FingerprintServiceIntf {
 		
 	public Fingerprint save(Fingerprint fingerprint);
-	public Fingerprint update(Integer id, Fingerprint entity, boolean ignoreNullProperties);
+	public Fingerprint update(Long id, Fingerprint entity, boolean ignoreNullProperties);
 	public Fingerprint create(String value, String type);
 	
 //	public FingerprintOnline createOnline(FingerprintOnline fingerprintOnline);
 //	public FingerprintOnline updateOnline(Integer foId, FingerprintOnline fingerprintOnline);
 	public FingerprintOnline saveOnlineBySeesionId(String sessionId, FingerprintOnline fingerprintOnline, boolean ignoreNullProperties);
 //	public FingerprintOnline saveOnlineByAuthValueAndAuthType(String authValue, String authType, FingerprintOnline entity, boolean ignoreNullProperties); 
-	public FingerprintOnline saveOnline(Integer userId,
+	public FingerprintOnline saveOnline(Long userId,
 										String fpType,
 										String fpValue,
 										String authType,
@@ -28,14 +28,14 @@ public interface FingerprintServiceIntf {
 										boolean ignoreNullProperties);
 
 	
-	public void deleteOnlineById(Integer id);
+	public void deleteOnlineById(Long id);
 	public void deleteOnline(String sessionId);
 //	public void deleteOnline();
 	public void deleteOnlineSession();
 	public void deleteOnlineByAuthValue(String authValue);
 	public void deleteOnlineByAuthValueAndAuthType(String authValue,String authType);
 	
-	public Fingerprint findById(Integer id);
+	public Fingerprint findById(Long id);
 	public Fingerprint findByValueAndType(String value, String type);
 
 	public List<Fingerprint> findList(Sort sort);

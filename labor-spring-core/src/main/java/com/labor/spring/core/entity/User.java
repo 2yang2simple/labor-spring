@@ -26,11 +26,10 @@ import com.labor.spring.base.AbstractEntity;
 public class User extends AbstractEntity implements Serializable {
 	
 	private static final long serialVersionUID = -8326446655561277937L;
-
+	
 	@Id
-//    @GeneratedValue 
     @Column(name="user_id")
-    private Integer id;
+    private Long id;
 	
     @Column(name="user_cellphone")
     private String cellPhone; 
@@ -70,10 +69,10 @@ public class User extends AbstractEntity implements Serializable {
 	public void setGoogleSecretKey(String googleSecretKey) {
 		this.googleSecretKey = googleSecretKey;
 	}
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCellPhone() {

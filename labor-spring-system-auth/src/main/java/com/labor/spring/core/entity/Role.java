@@ -18,17 +18,17 @@ public class Role extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="role_id")
-    private Integer id;
+    private Long id;
     
 	@NotBlank(message = "the name is empty.")
 	@Column(name="role_name")
     private String name; 
 
-    public Integer getId() {
+    public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

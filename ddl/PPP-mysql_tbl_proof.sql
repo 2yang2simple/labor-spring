@@ -118,7 +118,7 @@ create table tbl_doc_user
 (
 	dusr_id				int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	doc_id				int,
-	user_id				int,
+	user_id				bigint,
 	user_name			varchar(100),
 	active_status		varchar(1),
 	data_description	varchar(1000),

@@ -41,14 +41,14 @@ public class PermissionServiceImpl implements PermissionServiceIntf {
 	}
 	
 	@Override
-	public List<Permission> findListByRoleid(Integer roleid) {
+	public List<Permission> findListByRoleid(Long roleid) {
 		List<Permission> ret = null;
 		ret = permissionRepository.findByRoleid(roleid);
 		return ret;
 	}
 	
 	@Override
-	public List<Permission> findListByUserid(Integer userid) {
+	public List<Permission> findListByUserid(Long userid) {
 		List<Permission> ret = null;
 		ret = permissionRepository.findByUserid(userid);
 		return ret;
@@ -62,14 +62,14 @@ public class PermissionServiceImpl implements PermissionServiceIntf {
 	}
 	
 	@Override
-	public List<Permission> findListByRoleid(Integer roleid, String type) {
+	public List<Permission> findListByRoleid(Long roleid, String type) {
 		List<Permission> ret = null;
 		ret = permissionRepository.findByRoleidAndType(roleid, type);
 		return ret;
 	}
 	
 	@Override
-	public List<Permission> findListByUserid(Integer userid, String type) {
+	public List<Permission> findListByUserid(Long userid, String type) {
 		List<Permission> ret = null;
 		ret = permissionRepository.findByUseridAndType(userid, type);
 		return ret;

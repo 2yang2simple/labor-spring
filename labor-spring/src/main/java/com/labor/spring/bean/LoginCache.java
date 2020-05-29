@@ -6,7 +6,7 @@ public class LoginCache implements Serializable {
 
 	private static final long serialVersionUID = 6399183203898874627L;
 
-	private Integer userId;
+	private Long userId;
 	private String userName; 
 	private String userRealName; 
 	private String userUuid;
@@ -19,10 +19,10 @@ public class LoginCache implements Serializable {
 		this.userRealName = userRealName;
 	}
 	
-	public Integer getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
-	public void setUserId(Integer userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 	public String getUserName() {

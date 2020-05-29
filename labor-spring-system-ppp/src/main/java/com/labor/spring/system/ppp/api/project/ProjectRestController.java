@@ -293,7 +293,7 @@ public class ProjectRestController {
 		}
 		
 		User creator = ret.getCreator();
-		Integer creatorid = 0;
+		Long creatorid = 0L;
 		if (creator!=null) {
 			creatorid = creator.getId();
 		}

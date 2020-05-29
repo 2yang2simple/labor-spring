@@ -12,7 +12,7 @@ public interface SysconfigServiceIntf {
 	public String createDefaultSysconfig();
 	public String initialization();
 	
-	public Sysconfig findById(Integer id);
+	public Sysconfig findById(Long id);
 
 	public List<Sysconfig> findList(Sort sort);
 	public List<Sysconfig> findListByKeyStartingWith(String key);

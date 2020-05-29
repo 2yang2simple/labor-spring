@@ -19,7 +19,7 @@ public class ObjectHeader extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="oh_id")
-    private Integer id;
+    private Long id;
 	
 	@Column(name="oh_url",updatable = false)
     private String url;
@@ -40,7 +40,7 @@ public class ObjectHeader extends AbstractEntity implements Serializable {
     private Long fileSize;
     
     @Column(name="ob_id")
-    private Integer objectBodyId;
+    private Long objectBodyId;
 	
     @Column(name="ob_path")
     private String objectBodyPath;
@@ -48,11 +48,11 @@ public class ObjectHeader extends AbstractEntity implements Serializable {
     @Column(name="ob_md5")
     private String objectBodyMd5;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -104,11 +104,11 @@ public class ObjectHeader extends AbstractEntity implements Serializable {
 		this.fileSize = fileSize;
 	}
 
-	public Integer getObjectBodyId() {
+	public Long getObjectBodyId() {
 		return objectBodyId;
 	}
 
-	public void setObjectBodyId(Integer objectBodyId) {
+	public void setObjectBodyId(Long objectBodyId) {
 		this.objectBodyId = objectBodyId;
 	}
 

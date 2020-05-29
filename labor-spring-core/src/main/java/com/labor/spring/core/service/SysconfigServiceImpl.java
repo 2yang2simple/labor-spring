@@ -92,8 +92,8 @@ public class SysconfigServiceImpl implements SysconfigServiceIntf{
 	}
 	
 	@Override
-	public Sysconfig findById(Integer id) {
-		return sysconfigRepository.findById(id);
+	public Sysconfig findById(Long id) {
+		return sysconfigRepository.findById(id).orElse(null);
 	}
 	@Override
 	public List<Sysconfig> findList(Sort sort){

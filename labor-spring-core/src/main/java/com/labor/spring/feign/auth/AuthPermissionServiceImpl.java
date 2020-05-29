@@ -24,7 +24,7 @@ public class AuthPermissionServiceImpl implements AuthPermissionService{
 	@Autowired
 	private RoleServiceIntf roleService;
 	
-	public Set<String> findUserPermissions(Integer userid, String username){
+	public Set<String> findUserPermissions(Long userid, String username){
 
 		System.err.println("----AuthPermissionServiceImpl--------findUserPermissions--");
 		Set<String> ret = new HashSet<String>();
@@ -73,7 +73,7 @@ public class AuthPermissionServiceImpl implements AuthPermissionService{
 
 
 	
-	public Set<String> findUserPermissions(Integer userid, String username, String type){
+	public Set<String> findUserPermissions(Long userid, String username, String type){
 		
 		System.err.println("----AuthPermissionServiceImpl--------findUserPermissions--bytype---");
 		Set<String> ret = new HashSet<String>();

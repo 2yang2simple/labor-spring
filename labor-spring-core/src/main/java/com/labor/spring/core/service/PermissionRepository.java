@@ -21,7 +21,7 @@ public interface PermissionRepository extends JpaRepository<Permission,Long> {
 			"WHERE t1.per_id = t2.per_id\r\n" + 
 			"AND t2.role_id = t3.role_id\r\n" + 
 			"AND t3.user_id = ?1", nativeQuery = true)
-	public List<Permission> findByUserid(Integer userid);
+	public List<Permission> findByUserid(Long userid);
 	
 	@Query(value = "SELECT t1.* FROM\r\n" + 
 			"tbl_core_permission t1\r\n" + 
@@ -29,7 +29,7 @@ public interface PermissionRepository extends JpaRepository<Permission,Long> {
 			"tbl_core_rolepermission t2\r\n" + 
 			"WHERE t1.per_id = t2.per_id\r\n" + 
 			"AND t2.role_id = ?1", nativeQuery = true)
-	public List<Permission> findByRoleid(Integer roleid);
+	public List<Permission> findByRoleid(Long roleid);
 	
 	@Query(value = "SELECT t1.* FROM\r\n" + 
 			"tbl_core_permission t1\r\n" + 
@@ -41,7 +41,7 @@ public interface PermissionRepository extends JpaRepository<Permission,Long> {
 			"AND t2.role_id = t3.role_id\r\n" + 
 			"AND t3.user_id = ?1\r\n" + 
 			"AND t1.per_type = ?2", nativeQuery = true)
-	public List<Permission> findByUseridAndType(Integer userid,String type);
+	public List<Permission> findByUseridAndType(Long userid,String type);
 	
 	@Query(value = "SELECT t1.* FROM\r\n" + 
 			"tbl_core_permission t1\r\n" + 
@@ -50,7 +50,7 @@ public interface PermissionRepository extends JpaRepository<Permission,Long> {
 			"WHERE t1.per_id = t2.per_id\r\n" + 
 			"AND t2.role_id = ?1\r\n" + 
 			"AND t1.per_type = ?2", nativeQuery = true)
-	public List<Permission> findByRoleidAndType(Integer roleid,String type);
+	public List<Permission> findByRoleidAndType(Long roleid,String type);
 
     
     public List<Permission> findByStatusAndTypeOrderByTypeAsc(String status, String type);
@@ -58,8 +58,6 @@ public interface PermissionRepository extends JpaRepository<Permission,Long> {
 //    public List<Permission> findAll(Sort sort);
     
     public List<Permission> findByStatusOrderByTypeAsc(String status);
-    
-    public Permission findById(Integer id);
 
     public Permission findByCode(String code);
 

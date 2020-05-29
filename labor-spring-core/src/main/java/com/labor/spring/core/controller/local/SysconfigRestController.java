@@ -45,7 +45,7 @@ public class SysconfigRestController {
 	@RequiresPermissions("sysconfig")
 	@RequestMapping(value = { "/{id}" }, method = RequestMethod.PUT)
 	public Result update(
-					@PathVariable(value="id") Integer id, 
+					@PathVariable(value="id") Long id, 
 					@RequestBody @Valid Sysconfig sysconfig, 
 					BindingResult bindingResult) {
 	    if (id!=null&&id>0) {

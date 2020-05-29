@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface ASampleRepository extends JpaRepository<ASample,Long> {
+public interface ASampleRepository extends JpaRepository<ASample,Integer> {
 /**
  * Keyword	Sample	JPQL snippet
 And	findByLastnameAndFirstname	… where x.lastname = ?1 and x.firstname = ?2

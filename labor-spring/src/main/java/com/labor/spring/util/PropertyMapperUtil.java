@@ -23,16 +23,16 @@ public class PropertyMapperUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Object entryAndDtoMapper(Object entity, Object dto) throws Exception {
+	private static Object entryAndDtoMapper(Object entity, Object dto) {
 		return EnAndDtoMapper(entity, dto, true);
 	}
 
-	public static Object entryAndDtoMapper(Object entity, Object dto, boolean enToDto) throws Exception {
+	private static Object entryAndDtoMapper(Object entity, Object dto, boolean enToDto) {
 		return EnAndDtoMapper(entity, dto, false);
 	}
 
 	// last version
-	public static Object EnAndDtoMapper(Object entry, Object dto, boolean enToDto) throws Exception {
+	private static Object EnAndDtoMapper(Object entry, Object dto, boolean enToDto) {
 		if (enToDto == true ? entry == null : dto == null) {
 			return null;
 		}
@@ -80,119 +80,16 @@ public class PropertyMapperUtil {
 				if (dtoFieldName != null && !dtoFieldName.equals("null")) {
 					for (Method md : (enToDto ? entrys : dtos)) {
 						if (md.getName().toUpperCase().equals("GET" + dtoFieldName.toUpperCase())) {
-							dtoFieldName = null;
-							if (md.invoke(enToDto ? entry : dto) == null) {
-								break;
-							} // 去空操作
-								// Entity类field 与Dto类field类型不一致通过TypeProcessor处理转换
-							value = (entFieldType.equals(dtoFieldType)) ? md.invoke(enToDto ? entry : dto)
-									: TypeProcessor(entFieldType, dtoFieldType, md.invoke(enToDto ? entry : dto),
-											enToDto ? true : false);
-							m.invoke(enToDto ? dto : entry, value); // 得到field的值 通过invoke()赋值给要转换类的对应属性
-							value = null;
-							break;
-						}
-					}
-				}
-			}
-		}
-		return enToDto ? dto : entry;
-	}
-
-	// 类型转换处理
-	public static Object TypeProcessor(String entFieldType, String dtoFieldType, Object obj, boolean enToDto) {
-		if (entFieldType.equals(dtoFieldType))
-			return obj;
-
-		if (!entFieldType.equals(dtoFieldType)) {
-			switch (entFieldType) {
-			case "Date":
-//				return (enToDto) ? TypeConverter.dateToString((Date) obj) : TypeConverter.stringToDate(obj.toString());
-//			case "Timestamp":
-//				return TypeConverter.timestampToTimestampString((Timestamp) obj);
-			case "Integer":
-				return (enToDto) ? obj.toString() : Integer.parseInt((String) obj);
-			}
-		}
-		return obj;
-	}
-
-	private static Object processObj(String fromType, String toType, Object obj) {
-		if (fromType.equals(toType))
-			return obj;
-
-		if (!fromType.equals(toType)) {
-			switch (toType) {
-			case "Date":
-				return Convert.toDate(obj);
-			case "Integer":
-				return Convert.toInt(obj);
-			}
-		}
-		return obj;
-	}
-
-	public static Object copyProperties(Object fromObj, Object toObj)  {
-		if (fromObj == null || toObj == null) {
-			return null;
-		}
-		Class<? extends Object> fromClazz = fromObj.getClass(); // 获取entity类
-		Class<? extends Object> toClazz = toObj.getClass(); // 获取dto类
-		boolean toExistAnno = toClazz.isAnnotationPresent(PropertyMapper.class); // 判断类上面是否有自定义注解
-		Field[] fromFields = fromClazz.getDeclaredFields(); 
-		Field[] toFields = toClazz.getDeclaredFields(); 
-		Method fromMethods[] = fromClazz.getDeclaredMethods(); // entity methods
-		Method toMethods[] = toClazz.getDeclaredMethods(); // dto methods
-		
-		String mName, fieldName, fromFieldType = null, toFieldType = null, toMapName = null, toFieldName = null;
-		Object value = null;
-		for (Method m : toMethods) { // 当 enToDto=true 此时是Entity转为Dto，遍历dto的属性
-			if ((mName = m.getName()).startsWith("set")) { // 只进set方法
-				fieldName = mName.toLowerCase().charAt(3) + mName.substring(4, mName.length()); // 通过set方法获得dto的属性名
-				tohere: for (Field fd : toFields) {
-					fd.setAccessible(true); // setAccessible是启用和禁用访问安全检查的开关
-					if (fd.isAnnotationPresent(PropertyMapper.class) || toExistAnno) {
-						// 判断field上注解或类上面注解是否存在
-						// 获取与Entity属性相匹配的映射值
-						//(两种情况：
-						//1.该field上注解的value值(Entity的field name 和Dto 的field name不同) 
-						//2.该field本身(本身则是Entity的field name 和Dto 的field name 相同))
-						toMapName = fd.isAnnotationPresent(PropertyMapper.class)
-								? (fd.getAnnotation(PropertyMapper.class).value().toString().equals("")
-										? fd.getName().toString()
-										: fd.getAnnotation(PropertyMapper.class).value().toString())
-								: fd.getName().toString();
-						if ((fd.getName()).toString().equals(fieldName)) {
-							toFieldType = fd.getGenericType().toString()
-									.substring(fd.getGenericType().toString().lastIndexOf(".") + 1); 
-							// 获取dto属性的类型(如
-							// private
-							// String field
-							// 结果 = String)
-							for (Field fe : fromFields) {
-								fe.setAccessible(true);
-								if (fe.getName().toString().equals(toMapName)) {// 遍历Entity类的属性与dto属性注解中的value值匹配
-									fromFieldType = fe.getGenericType().toString()
-											.substring(fe.getGenericType().toString().lastIndexOf(".") + 1); // 获取Entity类属性类型
-									toFieldName = toMapName;
-									break tohere;
-								}
-							}
-						}
-					}
-				}
-				if (toFieldName != null && !toFieldName.equals("null")) {
-					for (Method md : fromMethods) {
-						if (md.getName().toUpperCase().equals("GET" + toFieldName.toUpperCase())) {
-							toFieldName = null;
 							try {
-								if (md.invoke(fromObj) == null) {
+								dtoFieldName = null;
+								if (md.invoke(enToDto ? entry : dto) == null) {
 									break;
-								} 
-								// 去空操作
-								// Entity类field 与Dto类field类型不一致通过TypeProcessor处理转换
-								value = processObj(fromFieldType, toFieldType, md.invoke(fromObj));
-								m.invoke(toObj, value); // 得到field的值 通过invoke()赋值给要转换类的对应属性
+								} // 去空操作
+									// Entity类field 与Dto类field类型不一致通过TypeProcessor处理转换
+								value = (entFieldType.equals(dtoFieldType)) ? md.invoke(enToDto ? entry : dto)
+										: TypeProcessor(entFieldType, dtoFieldType, md.invoke(enToDto ? entry : dto),
+												enToDto ? true : false);
+								m.invoke(enToDto ? dto : entry, value); // 得到field的值 通过invoke()赋值给要转换类的对应属性
 								value = null;
 								break;
 							} catch (IllegalArgumentException ilae) {
@@ -210,6 +107,32 @@ public class PropertyMapperUtil {
 				}
 			}
 		}
-		return toObj;
+		return enToDto ? dto : entry;
+	}
+
+	// 类型转换处理
+	private static Object TypeProcessor(String entFieldType, String dtoFieldType, Object obj, boolean enToDto) {
+		if (entFieldType.equals(dtoFieldType))
+			return obj;
+
+		if (!entFieldType.equals(dtoFieldType)) {
+			switch (entFieldType) {
+			case "Date":
+//				return (enToDto) ? TypeConverter.dateToString((Date) obj) : TypeConverter.stringToDate(obj.toString());
+//			case "Timestamp":
+//				return TypeConverter.timestampToTimestampString((Timestamp) obj);
+			case "Integer":
+				return (enToDto) ? obj.toString() : Integer.parseInt((String) obj);
+			}
+		}
+		return obj;
+	}
+
+
+	public static Object copyProperties(Object object, Object propertyMapperObject, boolean copyFromObject)  {
+		if (object == null || propertyMapperObject == null) {
+			return null;
+		}
+		return EnAndDtoMapper(object,propertyMapperObject,copyFromObject);
 	}
 }

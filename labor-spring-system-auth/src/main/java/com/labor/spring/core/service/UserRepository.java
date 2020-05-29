@@ -26,8 +26,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     public List<User> findAll(Sort sort);
     
     public Page<User> findAll(Pageable pageable);
-
-    public User findById(Integer id);
     
     public User findByUuidIgnoreCase(String uuid);
     

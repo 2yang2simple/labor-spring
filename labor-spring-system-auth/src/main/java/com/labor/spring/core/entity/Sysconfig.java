@@ -22,7 +22,7 @@ public class Sysconfig extends AbstractEntity implements Serializable {
 	@Id
     @GeneratedValue 
     @Column(name="sc_id")
-    private Integer id;
+    private Long id;
 	
 	@NotBlank(message = "the Key is empty.")
     @Column(name="sc_key")
@@ -32,11 +32,11 @@ public class Sysconfig extends AbstractEntity implements Serializable {
     @Column(name="sc_value")
     private String value;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

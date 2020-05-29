@@ -59,13 +59,24 @@ public class ASampleRestController extends BaseRestController{
 	public static void main(String[] args) {
 		try {
 			ASample as = new ASample();
+			ASampleVO asvo = new ASampleVO();
+			
 			as.setId(1);
 			as.setName("test");
-			ASampleVO asvo = new ASampleVO();
-//			PropertyMapperUtil.entryAndDtoMapper(as, asvo);
-			PropertyMapperUtil.copyProperties(as, asvo);
+			asvo.setId(2);
+			asvo.setDisplayName("test2");
+			PropertyMapperUtil.copyProperties(as, asvo, true);
 			LogManager.getLogger().debug("{},{}", as.getName(),as.getId());
 			LogManager.getLogger().debug("{},{}", asvo.getDisplayName(),asvo.getId());
+
+			as.setId(1);
+			as.setName("test");
+			asvo.setId(2);
+			asvo.setDisplayName("test2");
+			PropertyMapperUtil.copyProperties(as, asvo, false);
+			LogManager.getLogger().debug("{},{}", as.getName(),as.getId());
+			LogManager.getLogger().debug("{},{}", asvo.getDisplayName(),asvo.getId());
+			
 		} catch (Exception e) {
 			LogManager.getLogger().error(e);
 		}
