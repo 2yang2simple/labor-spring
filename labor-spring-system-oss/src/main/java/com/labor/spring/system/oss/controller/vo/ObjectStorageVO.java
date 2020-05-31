@@ -6,6 +6,8 @@ public class ObjectStorageVO extends AbstractVO{
 	
 	private byte[] bytes;
 	
+	private ObjectStorageType osType;
+	
 	private String type;
 	
 	private String path;
@@ -52,6 +54,14 @@ public class ObjectStorageVO extends AbstractVO{
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public ObjectStorageType getOsType() {
+		return osType;
+	}
+
+	public void setOsType(ObjectStorageType osType) {
+		this.osType = osType;
 	}
 	
 	

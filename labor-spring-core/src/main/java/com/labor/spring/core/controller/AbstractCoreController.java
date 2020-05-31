@@ -32,30 +32,30 @@ public abstract class AbstractCoreController extends BaseController {
 		return "logout";
 	}
 	
-	/******************
-	 * public
-	 */
-	
-	@RequestMapping(value = { "/public/{page}" }, method = RequestMethod.GET)
-	public String toCorePublicPages(ModelMap map,@PathVariable(value="page") String page) {	
-		map.addAttribute("message","");
-		return CORE_PREFIX + "core/public/"+page;
-	}
-	@RequestMapping(value = { "/public/noprivilege/{type}" }, method = RequestMethod.GET)
-	public String toCorePublicNoPrivilegePages(ModelMap map,@PathVariable(value="type") String type) {	
-		String message = "";
-		if("0".equals(type)) {
-			message = "Bad request.";
-		}
-		if("1".equals(type)) {
-			message = "The client is not open, ask the admin to open it;";
-		}
-		if("2".equals(type)) {
-			message = "This is only for superuser.";
-		}
-		map.addAttribute("message",message);
-		return CORE_PREFIX+ "core/public/noprivilege";
-	}
+//	/******************
+//	 * public
+//	 */
+//	
+//	@RequestMapping(value = { "/public/{page}" }, method = RequestMethod.GET)
+//	public String toCorePublicPages(ModelMap map,@PathVariable(value="page") String page) {	
+//		map.addAttribute("message","");
+//		return CORE_PREFIX + "core/public/"+page;
+//	}
+//	@RequestMapping(value = { "/public/noprivilege/{type}" }, method = RequestMethod.GET)
+//	public String toCorePublicNoPrivilegePages(ModelMap map,@PathVariable(value="type") String type) {	
+//		String message = "";
+//		if("0".equals(type)) {
+//			message = "Bad request.";
+//		}
+//		if("1".equals(type)) {
+//			message = "The client is not open, ask the admin to open it;";
+//		}
+//		if("2".equals(type)) {
+//			message = "This is only for superuser.";
+//		}
+//		map.addAttribute("message",message);
+//		return CORE_PREFIX+ "core/public/noprivilege";
+//	}
 
 	/******************
 	 * core

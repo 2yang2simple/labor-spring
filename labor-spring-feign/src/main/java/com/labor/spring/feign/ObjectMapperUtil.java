@@ -1,4 +1,4 @@
-package com.labor.spring.feign.util;
+package com.labor.spring.feign;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

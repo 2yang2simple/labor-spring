@@ -14,14 +14,14 @@ public class ApplicationProperties extends BaseProperties {
 //	@Value("${documents.dir}")
 //	public String DOCUMENTS_DIR;
 	
-//	@Value("${objectstorage.dir}")
-//	public String OBJECTSTORAGE_DIR;
+	@Value("${objectstorage.dir}")
+	public String OBJECTSTORAGE_DIR;
 	
-	@Value("${objectstorage.dir.images}")
-	public String OBJECTSTORAGE_DIR_IMAGES;
-	
-	@Value("${objectstorage.dir.files}")
-	public String OBJECTSTORAGE_DIR_FILES;
+//	@Value("${objectstorage.dir.images}")
+//	public String OBJECTSTORAGE_DIR_IMAGES;
+//	
+//	@Value("${objectstorage.dir.files}")
+//	public String OBJECTSTORAGE_DIR_FILES;
 	
 	@Value("${img.dir}")
 	public String IMG_DIR;

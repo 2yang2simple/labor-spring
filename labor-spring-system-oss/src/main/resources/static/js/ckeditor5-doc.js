@@ -15,10 +15,10 @@ class LaborUploadAdapter {
         this.loader = loader;
         //config post and get url here.
         if(toposturl==null||toposturl==""||toposturl==undefined){
-        	toposturl = '/images';
+        	toposturl = '/rest/images';
         } 
         if(togeturl==null||togeturl==""||togeturl==undefined){
-        	togeturl =  '/images/';
+        	togeturl =  '/';
         } 
 
         this.posturl = contextpath+toposturl;

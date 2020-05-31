@@ -1,20 +1,17 @@
 package com.labor.spring.system.oss.service;
 
-import java.util.Optional;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.labor.spring.system.oss.entity.ObjectBody;
+import com.labor.spring.system.oss.controller.vo.ObjectStorageType;
 import com.labor.spring.system.oss.entity.ObjectHeader;
 
-public interface ObjectStorageServiceIntf {
+public interface ObjectStorageService {
 	
 
-	public ObjectHeader create(String ossPath, MultipartFile file);
-	public ObjectHeader create(String ossPath, byte[] fileBytes, String fileOriginalName);
-	public ObjectHeader createImage(String ossPath, MultipartFile file);
-	public ObjectHeader createImage(String ossPath, byte[] fileBytes, String fileOriginalName);
+	public ObjectHeader createFile(ObjectStorageType ot, MultipartFile file);
+	public ObjectHeader createFile(ObjectStorageType ot, byte[] fileBytes, String fileOriginalName);
+	public ObjectHeader createImage(ObjectStorageType ot, MultipartFile file);
+	public ObjectHeader createImage(ObjectStorageType ot, byte[] fileBytes, String fileOriginalName);
 	
 //	public ObjectHeader createHeader(ObjectHeader entity);
 	
@@ -42,5 +39,6 @@ public interface ObjectStorageServiceIntf {
 //	public ObjectStorage buildObjectStorage(String query);
 	
 
-	public byte[] getBytes(String ossPath, String path, String name, String ext);
+//	public byte[] getFileBytes(String path, String name, String ext);
+//	public byte[] getImageBytes(String path, String name, String ext);
 }

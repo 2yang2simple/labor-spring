@@ -21,8 +21,8 @@ import com.labor.spring.core.service.PermissionServiceIntf;
 import com.labor.spring.core.service.RoleServiceIntf;
 import com.labor.spring.core.service.SysconfigConstants;
 import com.labor.spring.core.service.UserServiceIntf;
+import com.labor.spring.feign.ObjectMapperUtil;
 import com.labor.spring.feign.client.auth.AuthFeignClient;
-import com.labor.spring.feign.util.ObjectMapperUtil;
 import com.labor.spring.util.WebUtil;
 
 import java.util.HashMap;
