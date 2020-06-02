@@ -15,7 +15,7 @@ class LaborUploadAdapter {
         this.loader = loader;
         //config post and get url here.
         if(toposturl==null||toposturl==""||toposturl==undefined){
-        	toposturl = '/rest/images';
+        	toposturl = '/rest/feign/oss/images';
         } 
         if(togeturl==null||togeturl==""||togeturl==undefined){
         	togeturl =  '/';

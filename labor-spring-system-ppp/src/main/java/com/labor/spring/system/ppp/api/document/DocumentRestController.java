@@ -42,12 +42,12 @@ import com.labor.common.util.FileUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.base.BaseRestController;
-import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
 import com.labor.spring.core.service.SysconfigConstants;
-import com.labor.spring.core.entity.User;
-import com.labor.spring.feign.auth.AuthLoginService;
+import com.labor.spring.feign.api.auth.AuthLoginService;
+import com.labor.spring.feign.api.auth.UserVO;
+import com.labor.spring.system.ppp.ApplicationProperties;
 import com.labor.spring.system.ppp.api.oss.AttachmentServiceIntf;
 import com.labor.spring.system.ppp.api.oss.ObjectStorageServiceIntf;
 import com.labor.spring.system.ppp.api.tag.TagServiceIntf;
@@ -56,10 +56,10 @@ import com.labor.spring.system.ppp.entity.document.Document;
 import com.labor.spring.system.ppp.entity.document.DocumentComment;
 import com.labor.spring.system.ppp.entity.document.DocumentContent;
 import com.labor.spring.system.ppp.entity.document.DocumentTag;
+import com.labor.spring.system.ppp.entity.document.DocumentUser;
 import com.labor.spring.system.ppp.entity.oss.Attachment;
 import com.labor.spring.system.ppp.entity.oss.ObjectHeader;
 import com.labor.spring.system.ppp.entity.tag.Tag;
-import com.labor.spring.system.ppp.util.ApplicationProperties;
 import com.labor.spring.util.WebUtil;
 
 @RestController
@@ -113,8 +113,8 @@ public class DocumentRestController {
 	        String message = bindingResult.getFieldError().getDefaultMessage();
 	        return Result.failure(ResultCode.FAILURE_PARAM_INVALID,message);
 	    }
-		User creator = documentService.findCreator(id).orElse(null);
-	    if (!authLoginService.isCurrentUserOrSuperUser(creator.getId(),null)) {
+		UserVO creator = documentService.findCreator(id);
+	    if (!authLoginService.isCurrentUserOrSuperUser(creator.getUserId(),null)) {
 	    	return Result.failure(ResultCode.FAILURE_PERMISSION_NOACCESS, ResultCode.MSG_FAILURE_PERMISSION_NOACCESS);
 	    }
 	    //save some which will not be updated.
@@ -143,8 +143,8 @@ public class DocumentRestController {
 	        String message = bindingResult.getFieldError().getDefaultMessage();
 	        return Result.failure(ResultCode.FAILURE_PARAM_INVALID,message);
 	    }
-		User creator = documentService.findCreator(id).orElse(null);
-		if (!authLoginService.isCurrentUserOrSuperUser(creator.getId(),null)) {
+		UserVO creator = documentService.findCreator(id);
+		if (!authLoginService.isCurrentUserOrSuperUser(creator.getUserId(),null)) {
 	    	return Result.failure(ResultCode.FAILURE_PERMISSION_NOACCESS, ResultCode.MSG_FAILURE_PERMISSION_NOACCESS);
 	    }
 	    DocumentContent ret = documentService.createContent(id,content);
@@ -164,8 +164,8 @@ public class DocumentRestController {
 	        String message = bindingResult.getFieldError().getDefaultMessage();
 	        return Result.failure(ResultCode.FAILURE_PARAM_INVALID,message);
 	    }
-		User creator = documentService.findCreator(id).orElse(null);
-		if (!authLoginService.isCurrentUserOrSuperUser(creator.getId(),null)) {
+		UserVO creator = documentService.findCreator(id);
+		if (!authLoginService.isCurrentUserOrSuperUser(creator.getUserId(),null)) {
 	    	return Result.failure(ResultCode.FAILURE_PERMISSION_NOACCESS, ResultCode.MSG_FAILURE_PERMISSION_NOACCESS);
 	    }
 		content.setId(contentid);
@@ -211,7 +211,7 @@ public class DocumentRestController {
 	        return Result.failure(ResultCode.FAILURE_PARAM_INVALID,message);
 	    }
 	    if (comment!=null) {
-	    	LoginCache currentuser = authLoginService.findLoginCacheCurrent();
+	    	UserVO currentuser = authLoginService.findLoginCacheCurrent();
 	    	if (currentuser!=null) {
 		    	comment.setCreator(currentuser.getUserName()+" "+currentuser.getUserRealName());
 	    	}
@@ -224,8 +224,8 @@ public class DocumentRestController {
 	@RequestMapping(value = {"/{id}/users/list"}, method = RequestMethod.POST)
 	public Result updateUserList(
 					@PathVariable(value="id") Integer id, 
-					@RequestBody List<User> userList) {
-		List<User> ret = documentService.updateUserList(id,userList);
+					@RequestBody List<DocumentUser> userList) {
+		List<DocumentUser> ret = documentService.updateUserList(id,userList);
 		return Result.success(ret);
 	}
 
@@ -289,10 +289,10 @@ public class DocumentRestController {
 			}
 			ret.getDocument().setFilePath(hidepath+"hasdownload|");
 		}
-		User creator = ret.getCreator();
+		UserVO creator = ret.getCreator();
 		Long creatorid = 0L;
 		if (creator!=null) {
-			creatorid = creator.getId();
+			creatorid = creator.getUserId();
 		}
 		if(!authLoginService.isCurrentUserOrSuperUser(creatorid,null)) {
 			ret.setContentList(null);
@@ -338,7 +338,7 @@ public class DocumentRestController {
 					@RequestParam(value="page", defaultValue="0") Integer page) {
 		Sort sort = new Sort(Sort.Direction.DESC, sortby);
 		Pageable pageable = PageRequest.of(page, SysconfigConstants.DEFAULT_PAGE_SIZE, sort);
-    	LoginCache currentuser = authLoginService.findLoginCacheCurrent();
+    	UserVO currentuser = authLoginService.findLoginCacheCurrent();
 		String userid= "0";
 		if (currentuser!=null) {
 			userid = StringUtil.safeToString(currentuser.getUserId());

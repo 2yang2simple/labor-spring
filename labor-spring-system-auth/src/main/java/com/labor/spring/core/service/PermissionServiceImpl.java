@@ -20,10 +20,10 @@ import com.labor.common.util.ClassUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.base.BaseProperties;
 import com.labor.spring.constants.WebConstants;
-import com.labor.spring.core.aop.AnnotationUtil;
 import com.labor.spring.core.entity.Permission;
 import com.labor.spring.core.entity.Sysconfig;
 import com.labor.spring.util.IgnorePropertiesUtil;
+import com.labor.spring.util.RequiresPermissionsUtil;
 
 @Service
 public class PermissionServiceImpl implements PermissionServiceIntf {
@@ -127,7 +127,7 @@ public class PermissionServiceImpl implements PermissionServiceIntf {
 			List<String> list = WebConstants.RESTCONTROLLER_PAKAGES;
 			for (int i=0;i<list.size();i++) {
 				String packagename = list.get(i);
-				Set<String> perms = AnnotationUtil.scanRequiresPermissionsValueFromRestController(packagename);
+				Set<String> perms = RequiresPermissionsUtil.scanRequiresPermissionsValueFromRestController(packagename);
 				if (perms!=null&&perms.size()>0) {
 					allperms.addAll(perms);
 				}

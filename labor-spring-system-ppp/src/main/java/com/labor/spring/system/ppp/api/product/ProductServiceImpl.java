@@ -21,6 +21,7 @@ import com.labor.common.exception.ServiceException;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.core.service.SysconfigConstants;
+import com.labor.spring.system.ppp.HanLPExtractor;
 import com.labor.spring.system.ppp.api.document.DocumentDto;
 import com.labor.spring.system.ppp.api.document.DocumentServiceIntf;
 import com.labor.spring.system.ppp.api.gallery.GalleryServiceIntf;
@@ -33,7 +34,6 @@ import com.labor.spring.system.ppp.entity.gallery.Gallery;
 import com.labor.spring.system.ppp.entity.product.Product;
 import com.labor.spring.system.ppp.entity.product.ProductDocument;
 import com.labor.spring.system.ppp.entity.product.ProductGallery;
-import com.labor.spring.system.ppp.util.HanLPExtractor;
 import com.labor.spring.util.IgnorePropertiesUtil;
 
 @Service

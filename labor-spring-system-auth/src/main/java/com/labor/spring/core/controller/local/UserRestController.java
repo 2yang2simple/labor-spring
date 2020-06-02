@@ -40,7 +40,7 @@ import com.labor.spring.core.service.RoleServiceIntf;
 import com.labor.spring.core.service.SysconfigConstants;
 import com.labor.spring.core.service.SysconfigServiceIntf;
 import com.labor.spring.core.service.UserServiceImpl;
-import com.labor.spring.feign.auth.AuthLoginService;
+import com.labor.spring.feign.api.auth.AuthLoginService;
 import com.labor.spring.util.WebUtil;
 
 @RestController

@@ -26,7 +26,7 @@ public class DocumentUser extends AbstractEntity implements Serializable {
     private Long userId;
     
     @Column(name="user_name")
-    private String name; 
+    private String userName; 
 
 	public Integer getId() {
 		return id;
@@ -52,14 +52,14 @@ public class DocumentUser extends AbstractEntity implements Serializable {
 		this.userId = userId;
 	}
 
-	public String getName() {
-		return name;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-    
+
     
     
 }

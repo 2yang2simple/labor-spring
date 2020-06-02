@@ -15,8 +15,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
-import com.labor.spring.bean.LoginCache;
-import com.labor.spring.constants.WebConstants;
 
 public class WebUtil {
 	
@@ -113,22 +111,6 @@ public class WebUtil {
 		}
 		return ret;
 	}
-	
-	public static void doLoginShiro(String user) {
-//		Subject subject = SecurityUtils.getSubject();
-//		if (subject!=null) {
-//			UsernamePasswordToken token = new UsernamePasswordToken(user, "hidden");
-//			subject.login(token);
-//			LogManager.getLogger().debug("getPrincipal: [{}]", subject.getPrincipal());
-//		}
-	}
-	
-	public static void doLogoutShiro() {
-//		Subject subject = SecurityUtils.getSubject();
-//		if (subject!=null) {
-//			subject.logout();
-//		}
-	}
 
 //	public static String getSessionIdCreatedIfNotExist() {
 //		String ret = null;
@@ -152,26 +134,7 @@ public class WebUtil {
 //		}
 //		return ret;
 //	}
-	
-	public static boolean isLoginBySuper(LoginCache currentuser) {
-		boolean ret = false;
-    	if (currentuser!=null&&StringUtil.isEqualedTrimLower(WebConstants.USERNAME_SUPER,currentuser.getUserName())){
-    		ret = true;
-    	}
-        return ret;
-	}
-	
-	public static boolean isLoginBySuperOrIsCurrentUser(LoginCache user,LoginCache currentuser) {
-		if (user!=null&&currentuser!=null) {
-			if(StringUtil.isEqualedTrimLower(WebConstants.USERNAME_SUPER,currentuser.getUserName())){
-				return true;
-			}
-			if(currentuser.getUserId().equals(user.getUserId())) {
-				return true;
-			}
-		}
-		return false;
-	}
+
 	
 //	public static String getClassPath() {
 //		return CLASS_PATH;
@@ -183,7 +146,6 @@ public class WebUtil {
 //		}
 //		return ret;
 //	}
-	
 
 	public static String getIpAddress(HttpServletRequest request) {
 		String Xip = request.getHeader("X-Real-IP");

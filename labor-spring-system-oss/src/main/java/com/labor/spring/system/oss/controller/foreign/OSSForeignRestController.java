@@ -7,14 +7,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
+import com.labor.spring.system.oss.ApplicationProperties;
 import com.labor.spring.system.oss.controller.vo.ObjectStorageType;
 import com.labor.spring.system.oss.service.ObjectStorageService;
-import com.labor.spring.system.oss.util.ApplicationProperties;
 
 
 @RestController
@@ -39,12 +40,12 @@ public class OSSForeignRestController {
 	//create a image with entity;
 	@RequestMapping(value = {"/images"}, method = RequestMethod.POST)
 	public Result createImage(
-					@RequestParam("file") MultipartFile file) {
+					@RequestPart("file") MultipartFile file) {
 	    if (file.isEmpty()) {
 	    	return Result.failure(ResultCode.FAILURE_PARAM_NULL, ResultCode.MSG_FAILURE_PARAM_NULL);
 		}
 	    // image will be compressed in service;
-		return Result.success(objectStorageService.createImage(ObjectStorageType.NAS_IMAGE,file));
+		return Result.success(objectStorageService.createImage(ObjectStorageType.ALIYUN_OSS_IMAGE,file));
 	}
 
 	@RequestMapping(value = { "/test" }, method = RequestMethod.GET)

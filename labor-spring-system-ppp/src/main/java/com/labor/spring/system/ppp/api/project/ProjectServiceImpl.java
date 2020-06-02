@@ -18,6 +18,7 @@ import com.labor.common.exception.ServiceException;
 
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
+import com.labor.spring.system.ppp.HanLPExtractor;
 import com.labor.spring.system.ppp.api.document.DocumentDto;
 import com.labor.spring.system.ppp.api.document.DocumentServiceIntf;
 import com.labor.spring.system.ppp.api.gallery.GalleryServiceIntf;
@@ -30,7 +31,6 @@ import com.labor.spring.system.ppp.entity.gallery.Gallery;
 import com.labor.spring.system.ppp.entity.project.Project;
 import com.labor.spring.system.ppp.entity.project.ProjectDocument;
 import com.labor.spring.system.ppp.entity.project.ProjectGallery;
-import com.labor.spring.system.ppp.util.HanLPExtractor;
 import com.labor.spring.util.IgnorePropertiesUtil;
 
 @Service

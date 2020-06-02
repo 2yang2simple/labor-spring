@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.labor.common.constants.CommonConstants;
 
 import com.labor.common.util.StringUtil;
+import com.labor.spring.system.ppp.HanLPExtractor;
 import com.labor.spring.system.ppp.entity.tag.Tag;
-import com.labor.spring.system.ppp.util.HanLPExtractor;
 
 
 @Service

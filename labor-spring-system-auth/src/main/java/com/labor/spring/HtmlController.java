@@ -20,12 +20,11 @@ import com.labor.common.constants.CommonConstants;
 import com.labor.common.exception.ServiceException;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.base.BaseController;
-
-
+import com.labor.spring.core.controller.AbstractCoreController;
 
 
 @Controller
-public class HtmlController extends BaseController{
+public class HtmlController extends AbstractCoreController{
 	
 	private final String PROFILE_PREFIX = "01.";
 	private final String SSO_PREFIX = "02.";
@@ -34,21 +33,6 @@ public class HtmlController extends BaseController{
 	
 	private final String CORE_PREFIX = "00.";
 
-	@RequestMapping(value = { "/help"}, method = RequestMethod.GET)
-	public String help(ModelMap map) {	
-		map.addAttribute("message","");
-		return "help";
-	}
-	@RequestMapping(value = { "/login"}, method = RequestMethod.GET)
-	public String login(ModelMap map) {	
-		map.addAttribute("message","");
-		return "login";
-	}
-	@RequestMapping(value = { "/logout"}, method = RequestMethod.GET)
-	public String logout(ModelMap map) {	
-		map.addAttribute("message","");
-		return "logout";
-	}
 
 	
 	/***********************
@@ -76,18 +60,7 @@ public class HtmlController extends BaseController{
 	 * core
 	 */
 	
-	@RequestMapping(value = { "/core" }, method = RequestMethod.GET)
-	public String toCoreIndex(ModelMap map) {	
-		map.addAttribute("message","");
-		return CORE_PREFIX + "core/settings";
-	}
 
-	//labor setting
-	@RequestMapping(value = { "/core/settings"}, method = RequestMethod.GET)
-	public String toCoreSettingPage(ModelMap map) {	
-		map.addAttribute("message","");
-		return CORE_PREFIX + "core/settings";
-	}
 	
 	@RequestMapping(value = { "/core/user/{page}" }, method = RequestMethod.GET)
 	public String toCoreUserPages(ModelMap map,@PathVariable(value="page") String page) {	
@@ -104,12 +77,6 @@ public class HtmlController extends BaseController{
 	public String toCoreFingerprintPages(ModelMap map,@PathVariable(value="page") String page) {	
 		map.addAttribute("message","");
 		return CORE_PREFIX + "core/fingerprint/"+page;
-	}
-	
-	@RequestMapping(value = { "/core/sysconfig/{page}" }, method = RequestMethod.GET)
-	public String toCoreSysconfigPages(ModelMap map,@PathVariable(value="page") String page) {	
-		map.addAttribute("message","");
-		return CORE_PREFIX + "core/sysconfig/"+page;
 	}
 	
 	@RequestMapping(value = { "/core/auth/{page}" }, method = RequestMethod.GET)

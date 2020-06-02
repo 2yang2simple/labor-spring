@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
+
 import com.labor.common.util.StringUtil;
 import com.labor.spring.base.AbstractInterceptor;
 import com.labor.spring.constants.WebConstants;

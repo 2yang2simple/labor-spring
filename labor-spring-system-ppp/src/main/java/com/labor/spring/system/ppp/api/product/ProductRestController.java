@@ -35,6 +35,7 @@ import com.labor.common.util.StringUtil;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
 import com.labor.spring.core.service.SysconfigConstants;
+import com.labor.spring.system.ppp.ApplicationProperties;
 import com.labor.spring.system.ppp.api.document.DocumentDto;
 import com.labor.spring.system.ppp.api.document.DocumentServiceIntf;
 import com.labor.spring.system.ppp.api.document.DocumentStatus;
@@ -48,7 +49,6 @@ import com.labor.spring.system.ppp.entity.gallery.Gallery;
 import com.labor.spring.system.ppp.entity.gallery.GalleryImage;
 import com.labor.spring.system.ppp.entity.product.Product;
 import com.labor.spring.system.ppp.entity.product.ProductDocument;
-import com.labor.spring.system.ppp.util.ApplicationProperties;
 import com.labor.spring.util.WebUtil;
 
 @RestController

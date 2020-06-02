@@ -18,12 +18,12 @@ import com.labor.common.util.FileUtil;
 import com.labor.common.util.ImageUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
+import com.labor.spring.system.oss.AliyunOssUtil;
+import com.labor.spring.system.oss.ApplicationProperties;
 import com.labor.spring.system.oss.controller.vo.ObjectStorageType;
+import com.labor.spring.system.oss.controller.vo.ObjectStorageUtil;
 import com.labor.spring.system.oss.entity.ObjectBody;
 import com.labor.spring.system.oss.entity.ObjectHeader;
-import com.labor.spring.system.oss.util.AliyunOssUtil;
-import com.labor.spring.system.oss.util.ApplicationProperties;
-import com.labor.spring.system.oss.util.ObjectStorageUtil;
 import com.labor.spring.util.WebUtil;
 
 @Service("ObjectStorageServiceImpl")

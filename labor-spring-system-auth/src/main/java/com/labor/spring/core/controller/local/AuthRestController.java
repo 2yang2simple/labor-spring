@@ -32,7 +32,6 @@ import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.base.BaseRestController;
 import com.labor.spring.bean.ClientRegisted;
-import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultStatus;
 import com.labor.spring.constants.WebConstants;
@@ -48,7 +47,7 @@ import com.labor.spring.core.service.RoleServiceIntf;
 import com.labor.spring.core.service.SysconfigConstants;
 import com.labor.spring.core.service.SysconfigServiceIntf;
 import com.labor.spring.core.service.UserServiceIntf;
-import com.labor.spring.feign.auth.AuthLoginService;
+import com.labor.spring.feign.api.auth.AuthLoginService;
 import com.labor.spring.util.WebUtil;
 
 
@@ -83,8 +82,7 @@ public class AuthRestController extends BaseRestController {
 		saveUserFingerprint(user,dbfp, rememberme);
 		//save user permissions
 		saveUserPermissions2Session(user);
-		//shiro doGetAuthenticationInfo login
-		WebUtil.doLoginShiro(user.getId().toString());
+
 	}
 
 	private void saveUserFingerprint(User puser, Fingerprint pfp, String rememberMe) {
@@ -550,8 +548,7 @@ public class AuthRestController extends BaseRestController {
 		WebUtil.setSessionAttribute(WebConstants.KEY_USER, null);
 		WebUtil.setSessionAttribute(WebConstants.KEY_FP, null);
 		WebUtil.setSessionAttribute(WebConstants.KEY_PERMISSION, null);
-		//****Shiro logout
-		WebUtil.doLogoutShiro();
+		
 		//dosomething to logincount;
 		fpService.deleteOnline(WebUtil.getSessionId());
 		return "1";

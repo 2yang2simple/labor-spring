@@ -20,25 +20,20 @@ import com.labor.common.util.FileUtil;
 import com.labor.common.util.ImageUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.base.BaseController;
+import com.labor.spring.core.controller.AbstractCoreController;
+import com.labor.spring.system.oss.AliyunOssUtil;
+import com.labor.spring.system.oss.ApplicationProperties;
 import com.labor.spring.system.oss.controller.vo.ObjectStorageType;
+import com.labor.spring.system.oss.controller.vo.ObjectStorageUtil;
 import com.labor.spring.system.oss.controller.vo.ObjectStorageVO;
-import com.labor.spring.system.oss.util.AliyunOssUtil;
-import com.labor.spring.system.oss.util.ApplicationProperties;
-import com.labor.spring.system.oss.util.ObjectStorageUtil;
 import com.labor.spring.util.WebUtil;
 
 @Controller
-public class HtmlController extends BaseController{
+public class HtmlController extends AbstractCoreController{
 	
 	@Autowired
 	private ApplicationProperties properties;
-	
-	@RequestMapping(value = { "/help"}, method = RequestMethod.GET)
-	public String help(ModelMap map) {	
-		map.addAttribute("message","");
-		return "help";
-	}
-	
+		
 	@ResponseBody
 	@RequestMapping(value = {"/{query}"}, method = RequestMethod.GET)
 	public ModelAndView find(

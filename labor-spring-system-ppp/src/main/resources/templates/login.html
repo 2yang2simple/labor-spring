@@ -1,0 +1,130 @@
+<html layout:decorator="fragment/layout"><div layout:fragment="content">
+
+<span id="tips" style="color: red; font-weight: bold;">&nbsp;</span>
+	<table class="table" border=0>
+	<tr class="visible-lg visible-md">
+		<td width="20%">
+		<span style="float:right;font-weight:bold;">CF</span>
+		</td>
+		<td><input readonly="true" class="form-control" type="text" id="cfmd5" name="cfmd5">
+		</td>
+	</tr>
+		<td>
+		<span class="visible-lg visible-md" style="float:right;font-weight:bold;" th:text="#{auth.label.phone}"></span>
+		</td>
+		<td><input class="form-control" type="text" name="name" id="name" placeholder="phone">
+		</td>
+	</tr>
+		<td>
+		<span class="visible-lg visible-md" style="float:right;font-weight:bold;" th:text="#{auth.label.verifycode}"></span>
+		</td>
+		<td><input class="form-control" type=password name="verifycode" id="verifycode" placeholder="code"> 
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+				<center>
+				<button type='button' class='btn btn-primary' id="loginbutton" onclick='doLogin();' th:text="#{auth.button.login}"></button>
+				</center>
+		</td>
+	</tr>
+	</table>
+</div></html>
+<script type="text/javascript" th:src="@{/js/fingerprint2.min.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+/*
+	if (window.requestIdleCallback) {
+		console.log("requestIdleCallback");
+		requestIdleCallback(doBeforeLogin);
+	} else {
+		console.log("setTimeout");
+		setTimeout(doBeforeLogin, 500);
+	}
+*/
+});
+/***start post canvas fingerptint*********/
+var redirecturl=getQueryString("redirecturl");
+var callbackurl=getQueryString("callbackurl");
+if (redirecturl==null){
+	redirecturl = getContextPath()+"";
+}
+if (callbackurl==null){
+	callbackurl = getContextPath()+"";
+}
+
+var cfmd5;
+if (window.requestIdleCallback) {
+	console.log("requestIdleCallback");
+	requestIdleCallback(postFingerprint);
+} else {
+	console.log("setTimeout");
+	setTimeout(postFingerprint, 500);
+}
+function postFingerprint(){
+	f(function(cf){
+		cfmd5 = cf;
+		$("input[name='cfmd5']").val(cfmd5);
+	});
+}
+/***end post canvas fingerptint**********/
+
+$("input[name='name']").keydown(function() {
+    if (event.keyCode == "13") {
+        $("input[name='verifycode']").focus();
+        $("input[name='verifycode']").select();
+    }
+});
+$("input[name='verifycode']").keydown(function() {
+    if (event.keyCode == "13") {
+        doLogin();
+    }
+});
+
+function doLogin(){
+	
+	$("#loginbutton").button('loading').queue();
+
+	document.getElementById("tips").innerText="\n";
+	var name = $("input[name='name']").val();
+	var verifycode=$("input[name='verifycode']").val();
+	var cfmd5=$("input[name='cfmd5']").val();
+	
+	
+	if (name==null||name==""||verifycode==null||verifycode==""){
+		document.getElementById("tips").innerText="Empty Name or Verifycode.";
+		$("#loginbutton").button('reset');
+        $("#loginbutton").dequeue(); 
+		return;
+	} 
+	var url = "/rest/feign/auth/logins/cellphone?&client-uuid=" + cfmd5 +
+				"&code=" + verifycode +
+				"&name=" + name;
+	
+	var button = $("#loginbutton");
+	$.ajax({
+		type: "POST",
+		url: l(url),
+		async: false,
+		contentType: "application/json;charset=utf-8",
+		dataType: "json",
+		success:function (result) {
+			handleResultCodeDisplayError("tips", result, function (result) {
+				window.location.href = getContextPath();
+			});
+			if (result==null||result.code!='1'){
+				$("#loginbutton").button('reset');
+		        $("#loginbutton").dequeue(); 
+			}
+		},
+        complete:function(){
+        	$("#loginbutton").button('reset');
+            $("#loginbutton").dequeue(); 
+        }
+	});
+
+}
+
+
+</script>

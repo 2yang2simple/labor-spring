@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.labor.common.constants.CommonConstants;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
-import com.labor.spring.core.entity.User;
+import com.labor.spring.feign.api.auth.UserVO;
+import com.labor.spring.system.ppp.HanLPExtractor;
 import com.labor.spring.system.ppp.api.oss.AttachmentServiceIntf;
 import com.labor.spring.system.ppp.api.tag.TagRepository;
 import com.labor.spring.system.ppp.api.tag.TagServiceIntf;
@@ -27,7 +28,6 @@ import com.labor.spring.system.ppp.entity.document.DocumentContent;
 import com.labor.spring.system.ppp.entity.document.DocumentTag;
 import com.labor.spring.system.ppp.entity.document.DocumentUser;
 import com.labor.spring.system.ppp.entity.tag.Tag;
-import com.labor.spring.system.ppp.util.HanLPExtractor;
 import com.labor.spring.util.WebUtil;
 @Service
 public class DocumentServiceImpl implements DocumentServiceIntf {
@@ -47,8 +47,8 @@ public class DocumentServiceImpl implements DocumentServiceIntf {
 	@Autowired
 	private DocumentUserRepository documentUserRepository;
 	
-	@Autowired
-	private DocumentUserFinderRepository documentUserFinderRepository;
+//	@Autowired
+//	private DocumentUserFinderRepository documentUserFinderRepository;
 
 	@Autowired
 	private TagServiceIntf tagService;
@@ -176,16 +176,17 @@ public class DocumentServiceImpl implements DocumentServiceIntf {
 	}
 	
 	//create document users
-	private List<User> executeCreateUserList(Integer docId, List<User> userList) {
-		List<User> ret = null;
+	private List<DocumentUser> executeCreateUserList(Integer docId, List<DocumentUser> userList) {
+		List<DocumentUser> ret = null;
 		if (docId!=null&&docId>0&&userList!=null) {
-			ret =  new ArrayList<User>();
+			ret =  new ArrayList<DocumentUser>();
 			int size = userList.size();
 			for(int i=0;i<size;i++) {
-				User user = userList.get(i);
+				DocumentUser user = userList.get(i);
 				DocumentUser du = new DocumentUser();
 				du.setDocId(docId);
-				du.setUserId(user.getId());
+				du.setUserId(user.getUserId());
+				du.setUserName(user.getUserName());
 				documentUserRepository.save(du);
 				ret.add(user);//user object should be validate by web 
 			}
@@ -250,8 +251,8 @@ public class DocumentServiceImpl implements DocumentServiceIntf {
 	}
 	
 	//update document users
-	private List<User> executeUpdateUserList(Integer docId, List<User> userList) {
-		List<User> ret = null;
+	private List<DocumentUser> executeUpdateUserList(Integer docId, List<DocumentUser> userList) {
+		List<DocumentUser> ret = null;
 		if(userList!=null&&userList.size()>0) {
 			documentUserRepository.deleteByDocId(docId);
 			ret = executeCreateUserList(docId,userList);
@@ -329,7 +330,7 @@ public class DocumentServiceImpl implements DocumentServiceIntf {
 	}
 	@Override
 	@Transactional
-	public List<User> createUserList(Integer docId, List<User> userList) {
+	public List<DocumentUser> createUserList(Integer docId, List<DocumentUser> userList) {
 		return executeCreateUserList(docId, userList);
 	}
 	
@@ -374,7 +375,7 @@ public class DocumentServiceImpl implements DocumentServiceIntf {
 	
 	@Override
 	@Transactional
-	public List<User> updateUserList(Integer docId, List<User> userList) {
+	public List<DocumentUser> updateUserList(Integer docId, List<DocumentUser> userList) {
 		return executeUpdateUserList(docId,userList);
 	}
 	
@@ -399,8 +400,8 @@ public class DocumentServiceImpl implements DocumentServiceIntf {
 		types.add(TagType.DOCUMENT_PRODUCT);
 		
 		List<DocumentTag> dtagList = documentTagRepository.findByDocIdAndTagTypeIn(docId,types);
-		List<User> duserList = documentUserFinderRepository.findUserListByDocId(docId);
-		Optional<User> creator = documentUserFinderRepository.findCreatorByDocId(docId);
+		List<DocumentUser> duserList = documentUserRepository.findByDocId(docId);
+		UserVO creator = findCreator(docId);
 		List<DocumentContent> dcttList = documentContentRepository.findVersionsByDocIdOrderByIdDesc(docId);
 		
 		ret.setId(docId);
@@ -411,12 +412,18 @@ public class DocumentServiceImpl implements DocumentServiceIntf {
 		ret.setCommentList(dcmtList);
 		ret.setTagList(dtagList);
 		ret.setUserList(duserList);
-		ret.setCreator(creator.orElse(new User()));
+		ret.setCreator(creator);
 		return ret;
 	}
+	
 	@Override
-	public Optional<User> findCreator(Integer docId){
-		return documentUserFinderRepository.findCreatorByDocId(docId);
+	public UserVO findCreator(Integer docId){
+		UserVO ret = new UserVO();
+		Document doc = documentRepository.findOneById(docId).orElse(null);
+		if (doc!=null) {
+			ret.setUserId(Long.valueOf(doc.getCreatedBy()));
+		}
+		return ret;
 	}
 	
 	@Override

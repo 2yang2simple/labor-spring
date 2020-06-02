@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.labor.common.util.FileUtil;
 import com.labor.common.util.StringUtil;
-import com.labor.spring.bean.LoginCache;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
-import com.labor.spring.core.entity.User;
 import com.labor.spring.core.service.SysconfigConstants;
-import com.labor.spring.feign.auth.AuthLoginService;
+import com.labor.spring.feign.api.auth.AuthLoginService;
+import com.labor.spring.feign.api.auth.UserVO;
+import com.labor.spring.system.ppp.ApplicationProperties;
 import com.labor.spring.system.ppp.api.document.DocumentDto;
 import com.labor.spring.system.ppp.api.document.DocumentServiceIntf;
 import com.labor.spring.system.ppp.api.document.DocumentStatus;
@@ -38,7 +38,6 @@ import com.labor.spring.system.ppp.entity.document.DocumentContent;
 import com.labor.spring.system.ppp.entity.gallery.Gallery;
 import com.labor.spring.system.ppp.entity.project.Project;
 import com.labor.spring.system.ppp.entity.project.ProjectDocument;
-import com.labor.spring.system.ppp.util.ApplicationProperties;
 import com.labor.spring.util.WebUtil;
 
 @RestController
@@ -108,8 +107,8 @@ public class ProjectRestController {
 	        String message = bindingResult.getFieldError().getDefaultMessage();
 	        return Result.failure(ResultCode.FAILURE_PARAM_INVALID,message);
 	    }
-		User creator = documentService.findCreator(docid).orElse(null);
-		if (creator==null||!authLoginService.isCurrentUserOrSuperUser(creator.getId(),null)) {
+		UserVO creator = documentService.findCreator(docid);
+		if (creator==null||!authLoginService.isCurrentUserOrSuperUser(creator.getUserId(),null)) {
 	    	return Result.failure(ResultCode.FAILURE_PERMISSION_NOACCESS, ResultCode.MSG_FAILURE_PERMISSION_NOACCESS);
 	    }
 		ProjectDocument pd = projectService.findDocument(id, docid, null,ProjectStatus.DOCUMENT_OPENED).orElse(null);
@@ -132,8 +131,8 @@ public class ProjectRestController {
 	        String message = bindingResult.getFieldError().getDefaultMessage();
 	        return Result.failure(ResultCode.FAILURE_PARAM_INVALID,message);
 	    }
-		User creator = documentService.findCreator(docid).orElse(null);
-		if (!authLoginService.isCurrentUserOrSuperUser(creator.getId(),null)) {
+	    UserVO creator = documentService.findCreator(docid);
+		if (!authLoginService.isCurrentUserOrSuperUser(creator.getUserId(),null)) {
 	    	return Result.failure(ResultCode.FAILURE_PERMISSION_NOACCESS, ResultCode.MSG_FAILURE_PERMISSION_NOACCESS);
 	    }
 		ProjectDocument pd = projectService.findDocument(id, docid, null, ProjectStatus.DOCUMENT_OPENED).orElse(null);
@@ -160,7 +159,7 @@ public class ProjectRestController {
 			return Result.failure(ResultCode.FAILURE_DATA_NOT_FOUND,ResultCode.MSG_FAILURE_DATA_NOT_FOUND);
 		}
 	    if (comment!=null) {
-	    	LoginCache currentuser = authLoginService.findLoginCacheCurrent();
+	    	UserVO currentuser = authLoginService.findLoginCacheCurrent();
 	    	if (currentuser!=null) {
 		    	comment.setCreator(currentuser.getUserName()+" "+currentuser.getUserRealName());
 	    	}
@@ -292,10 +291,10 @@ public class ProjectRestController {
 			ret.getDocument().setFilePath(hidepath+"hasdownload|");
 		}
 		
-		User creator = ret.getCreator();
+		UserVO creator = ret.getCreator();
 		Long creatorid = 0L;
 		if (creator!=null) {
-			creatorid = creator.getId();
+			creatorid = creator.getUserId();
 		}
 		if(!authLoginService.isCurrentUserOrSuperUser(creatorid,null)) {
 			ret.setContentList(null);

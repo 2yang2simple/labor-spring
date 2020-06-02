@@ -32,9 +32,8 @@ import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
+import com.labor.spring.system.ppp.ApplicationProperties;
 import com.labor.spring.system.ppp.entity.oss.Attachment;
-import com.labor.spring.system.ppp.util.ApplicationProperties;
-
 import com.labor.spring.util.WebUtil;
 @RestController
 @RequestMapping("/attachments")

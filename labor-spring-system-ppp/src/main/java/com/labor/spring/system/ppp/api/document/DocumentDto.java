@@ -2,11 +2,12 @@ package com.labor.spring.system.ppp.api.document;
 
 import java.util.List;
 
-import com.labor.spring.core.entity.User;
+import com.labor.spring.feign.api.auth.UserVO;
 import com.labor.spring.system.ppp.entity.document.Document;
 import com.labor.spring.system.ppp.entity.document.DocumentComment;
 import com.labor.spring.system.ppp.entity.document.DocumentContent;
 import com.labor.spring.system.ppp.entity.document.DocumentTag;
+import com.labor.spring.system.ppp.entity.document.DocumentUser;
 import com.labor.spring.system.ppp.entity.oss.Attachment;
 
 public class DocumentDto {
@@ -23,7 +24,7 @@ public class DocumentDto {
 	
 	private String userid;
 	
-	private User creator;
+	private UserVO creator;
 	
 	private Document document;
 	
@@ -33,7 +34,7 @@ public class DocumentDto {
 	
 	private List<DocumentComment> commentList;
 	
-	private List<User> userList;
+	private List<DocumentUser> userList;
 	
 	private List<DocumentTag> tagList;
 	
@@ -63,11 +64,11 @@ public class DocumentDto {
 		this.commentList = commentList;
 	}
 
-	public List<User> getUserList() {
+	public List<DocumentUser> getUserList() {
 		return userList;
 	}
 
-	public void setUserList(List<User> userList) {
+	public void setUserList(List<DocumentUser> userList) {
 		this.userList = userList;
 	}
 
@@ -119,11 +120,11 @@ public class DocumentDto {
 		this.userid = userid;
 	}
 
-	public User getCreator() {
+	public UserVO getCreator() {
 		return creator;
 	}
 
-	public void setCreator(User creator) {
+	public void setCreator(UserVO creator) {
 		this.creator = creator;
 	}
 

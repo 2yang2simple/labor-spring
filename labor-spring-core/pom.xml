@@ -27,11 +27,6 @@
 	<dependencies>
 		<!-- internal dependencies -->
 		<dependency>
-			<groupId>com.labor.common</groupId>
-			<artifactId>labor-common</artifactId>
-			<version>${labor-common.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.labor.spring.feign</groupId>
 			<artifactId>labor-spring-feign</artifactId>
 			<version>${labor-spring-feign.version}</version>

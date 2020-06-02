@@ -8,11 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.labor.spring.core.entity.User;
+import com.labor.spring.feign.api.auth.UserVO;
 import com.labor.spring.system.ppp.entity.document.Document;
 import com.labor.spring.system.ppp.entity.document.DocumentComment;
 import com.labor.spring.system.ppp.entity.document.DocumentContent;
 import com.labor.spring.system.ppp.entity.document.DocumentTag;
+import com.labor.spring.system.ppp.entity.document.DocumentUser;
 import com.labor.spring.system.ppp.entity.tag.Tag;
 
 public interface DocumentServiceIntf {
@@ -24,14 +25,14 @@ public interface DocumentServiceIntf {
 	public DocumentTag createTag(Integer docId, Integer tagId, String tagName);
 	public DocumentTag createTag(Integer docId, String tagName, String tagType);
 	public List<DocumentTag> createTagList(Integer docId, List<DocumentTag> tagList, String tagType);
-	public List<User> createUserList(Integer docId, List<User> userList);
+	public List<DocumentUser> createUserList(Integer docId, List<DocumentUser> userList);
 	
 	public Document update(Integer docId, DocumentDto documentDto);
 	public Document updateDocument(Integer docId, Document document);
 	public DocumentComment updateComment(Integer docId, Integer commentId, DocumentComment comment);
 	public DocumentContent updateContent(Integer docId, Integer contentId, DocumentContent content);
 	public List<DocumentTag> updateTagList(Integer docId, List<DocumentTag> tagList, String tagType);
-	public List<User> updateUserList(Integer docId, List<User> userList);
+	public List<DocumentUser> updateUserList(Integer docId, List<DocumentUser> userList);
 	
 	public DocumentDto findByUuid(String uuid);
 	public DocumentDto findById(Integer id);
@@ -39,7 +40,8 @@ public interface DocumentServiceIntf {
 	public Optional<Document> findDocumentByUuid(String uuid);
 	public Optional<Document> findDocumentById(Integer id);
 	public Optional<DocumentContent> findContentById(Integer docId, Integer contentId);
-	public Optional<User> findCreator(Integer docId);
+	
+	public UserVO findCreator(Integer docId);
 	
 	public List<Document> findDocumentListByExample(Document entity);
 	public List<Document> findDocumentListByExample(Document document, Sort sort);

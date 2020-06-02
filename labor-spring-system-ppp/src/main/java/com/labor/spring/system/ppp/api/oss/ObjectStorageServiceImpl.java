@@ -22,11 +22,11 @@ import com.labor.common.util.FileUtil;
 import com.labor.common.util.ImageUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
+import com.labor.spring.system.ppp.ApplicationProperties;
 import com.labor.spring.system.ppp.entity.gallery.Gallery;
 import com.labor.spring.system.ppp.entity.gallery.GalleryImage;
 import com.labor.spring.system.ppp.entity.oss.ObjectBody;
 import com.labor.spring.system.ppp.entity.oss.ObjectHeader;
-import com.labor.spring.system.ppp.util.ApplicationProperties;
 import com.labor.spring.util.WebUtil;
 @Service
 public class ObjectStorageServiceImpl implements ObjectStorageServiceIntf{

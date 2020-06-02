@@ -1,12 +1,7 @@
 package com.labor.spring.core.asample;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,22 +20,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.labor.common.constants.CommonConstants;
-import com.labor.common.util.ClassUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.base.BaseRestController;
 import com.labor.spring.bean.Result;
-import com.labor.spring.bean.ResultCode;
 import com.labor.spring.bean.ResultStatus;
-import com.labor.spring.core.GlobalInfo;
-import com.labor.spring.core.entity.Fingerprint;
-import com.labor.spring.core.entity.Permission;
-import com.labor.spring.core.entity.Role;
-import com.labor.spring.core.entity.Sysconfig;
-import com.labor.spring.core.entity.User;
-import com.labor.spring.core.service.RoleServiceIntf;
 import com.labor.spring.core.service.SysconfigConstants;
-import com.labor.spring.core.service.SysconfigServiceIntf;
 import com.labor.spring.util.PropertyMapperUtil;
 
 /**

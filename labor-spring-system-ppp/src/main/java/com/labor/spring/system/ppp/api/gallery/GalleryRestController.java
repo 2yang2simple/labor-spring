@@ -44,7 +44,8 @@ import com.labor.common.util.ImageUtil;
 import com.labor.common.util.StringUtil;
 import com.labor.spring.bean.Result;
 import com.labor.spring.bean.ResultCode;
-import com.labor.spring.feign.auth.AuthLoginService;
+import com.labor.spring.feign.api.auth.AuthLoginService;
+import com.labor.spring.system.ppp.ApplicationProperties;
 import com.labor.spring.system.ppp.api.document.DocumentDto;
 import com.labor.spring.system.ppp.api.oss.FileObject;
 import com.labor.spring.system.ppp.api.oss.ObjectStorageServiceIntf;
@@ -53,7 +54,6 @@ import com.labor.spring.system.ppp.entity.document.DocumentContent;
 import com.labor.spring.system.ppp.entity.gallery.Gallery;
 import com.labor.spring.system.ppp.entity.gallery.GalleryImage;
 import com.labor.spring.system.ppp.entity.oss.ObjectHeader;
-import com.labor.spring.system.ppp.util.ApplicationProperties;
 import com.labor.spring.util.WebUtil;
 
 import net.coobird.thumbnailator.Thumbnails;

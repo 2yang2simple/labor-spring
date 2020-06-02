@@ -17,4 +17,7 @@ public interface DocumentUserRepository extends JpaRepository<DocumentUser,Long>
 	@Modifying
 	@Query(value = "DELETE FROM tbl_doc_user WHERE doc_id = ?1", nativeQuery = true)
 	public int deleteByDocId(Integer docId);
+	
+	
+	public List<DocumentUser> findByDocId(Integer docId);
 }

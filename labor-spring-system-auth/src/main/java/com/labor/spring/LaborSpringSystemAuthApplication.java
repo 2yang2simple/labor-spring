@@ -9,9 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import com.labor.spring.feign.auth.AuthCacheService;
-import com.labor.spring.feign.auth.AuthCacheServiceFeignRedisImpl;
-import com.labor.spring.feign.auth.AuthCacheServiceLocalImpl;
+import com.labor.spring.feign.api.auth.AuthCacheService;
+import com.labor.spring.feign.api.auth.AuthCacheServiceFeignRedisImpl;
+import com.labor.spring.feign.api.auth.AuthCacheServiceLocalTestImpl;
+import com.labor.spring.system.auth.service.AuthCacheServiceLocalImpl;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -30,11 +31,11 @@ public class LaborSpringSystemAuthApplication {
 	public AuthCacheService authCacheService() {
 		
 		//production
-		AuthCacheServiceFeignRedisImpl authCacheService = new AuthCacheServiceFeignRedisImpl();
+//		AuthCacheServiceFeignRedisImpl authCacheService = new AuthCacheServiceFeignRedisImpl();
 		//test
 //		AuthCacheServiceFeignImpl authCacheService = new AuthCacheServiceFeignImpl();
 		//development
-//		AuthCacheServiceLocalImpl authCacheService = new AuthCacheServiceLocalImpl();
+		AuthCacheServiceLocalImpl authCacheService = new AuthCacheServiceLocalImpl();
 		
 		return authCacheService;
 	}
