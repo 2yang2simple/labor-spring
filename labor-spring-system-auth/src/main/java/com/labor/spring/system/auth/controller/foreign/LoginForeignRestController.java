@@ -56,11 +56,11 @@ public class LoginForeignRestController {
 		
 		String ret = null;
 		
+		//update client info
+		String clientinfo = sysconfigService.findValueByKey(ClientRegisted.getPrefix()+clientKey);
+		ClientRegisted.putClientInfo(clientinfo);
+		
 		ClientInfo ci = ClientRegisted.getClientInfo(clientKey);
-		if (ci==null) {
-			String clientinfo = sysconfigService.findValueByKey(ClientRegisted.getPrefix()+clientKey);
-			ci = ClientRegisted.putClientInfo(clientinfo);
-		}
 		if (ci==null) {
 			throw new ParameterException("client not registed.");
 		}

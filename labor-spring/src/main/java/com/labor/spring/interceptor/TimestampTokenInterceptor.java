@@ -1,41 +1,47 @@
 package com.labor.spring.interceptor;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
-import org.springframework.lang.Nullable;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.labor.common.constants.CommonConstants;
 import com.labor.common.util.StringUtil;
 import com.labor.common.util.TokenUtil;
 import com.labor.spring.base.AbstractInterceptor;
 import com.labor.spring.bean.ClientRegisted;
 import com.labor.spring.constants.WebConstants;
+import com.labor.spring.util.WebUtil;
 
 public class TimestampTokenInterceptor extends AbstractInterceptor{
+	
+	public static void main(String[] args) {
+		String tk = "20200604231402.bc5087931d0e0e10abdc735c65658b25";
+    	
+		String[] str = tk.split("\\.");
+		
+		System.err.println(str.length);
+		System.err.println(TokenUtil.isValidatedDateSaltingToken(tk,"de07c085bfe741caaef26e7b4adf0096"));
+	}
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String redirecturl =  request.getContextPath() + "/public/noprivilege/0";
 		
-		String timestamp = request.getHeader(WebConstants.KEY_TIMESTAMP);
-		String timestamptoken = request.getHeader(WebConstants.KEY_TIMESTAMPTOKEN);
-		String clientkey= request.getParameter("client-key");
-		String token = ClientRegisted.getSecret(clientkey);
+		String timestamp = WebUtil.getRequest(WebConstants.KEY_TIMESTAMP);
+		String timestamptoken = WebUtil.getRequest(WebConstants.KEY_TIMESTAMPTOKEN);
+		
+		String token = ClientRegisted.getSecret(ClientRegisted.CLIENTKEY_DEFAULT);
 		
 		LogManager.getLogger().debug("|timestamp:"+timestamp+"|timestamptoken:"+timestamptoken);
-		if (!TokenUtil.isValidatedDateSaltingToken(timestamp,timestamptoken,token)) {
+		
+		boolean validated = false;
+		if (StringUtil.isEmpty(timestamp)) {
+			validated = TokenUtil.isValidatedDateSaltingToken(timestamptoken,token);
+		} else {
+			validated = TokenUtil.isValidatedDateSaltingToken(timestamp,timestamptoken,token);
+		}
+		//old 
+		if (!validated) {
 			String g = request.getParameter("g");
 			String t = request.getParameter("t");
 			LogManager.getLogger().debug("g:"+g +"|t:"+t);
@@ -44,25 +50,6 @@ public class TimestampTokenInterceptor extends AbstractInterceptor{
 				return false;
 			}
 		}
-//		
-//		LogManager.getLogger().debug("getRequestURI:"+request.getRequestURI());
-//		//http://localhost:8080/subject?g=20190730174515&t=c1e55bad62cd6398f1cb642771627123
-//		String g = request.getParameter("g");
-//		String t = request.getParameter("t");
-//		String d = request.getParameter("d");
-//		String authorization = request.getHeader("authorization");
-//		if (!StringUtil.isEmpty(d)) {
-//			if(StringUtil.isEqualedTrimLower(SysconfigConstants.DEVICETYPE_ANDROID, d)) {
-//				token = SysconfigConstants.AUTHCODE_ANDROID;
-//			}
-//		}
-//		LogManager.getLogger().debug("g:"+g +"|t:"+t+"|authorization:"+authorization);
-//		if (!TokenUtil.isValidatedDateSaltingToken(g,t,token)) {
-//			redirect(request,response,redirecturl);
-//			return false;
-//		}
-
-
 		return true;
 	}
 	

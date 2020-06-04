@@ -42,6 +42,11 @@ public class StarterRunner implements ApplicationRunner {
 		} else {
 			LogManager.getLogger().error("aliyunossAccessKey is null.");
 		}
+		
+		ClientRegisted.putClientInfo(
+				"oss|web-canvas|cookies|de07c085bfe741caaef26e7b4adf0096|http://localhost:8080/oss/rest/feign/auth/logins/users/tokens/keys|http://localhost:8080/oss");
+		ClientRegisted.CLIENTKEY_DEFAULT = "oss";
+		
     }
 	
 	

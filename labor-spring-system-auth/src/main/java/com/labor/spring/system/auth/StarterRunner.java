@@ -40,7 +40,7 @@ public class StarterRunner implements ApplicationRunner {
 		ClientRegisted.putClientInfo(
 				"auth|web-canvas|cookies|de07c085bfe741caaef26e7b4adf0096|http://localhost:8080/auth/rest/feign/auth/logins/users/tokens/keys|http://localhost:8080/auth");
 
-
+		ClientRegisted.CLIENTKEY_DEFAULT = "auth";
     }
 	
 	

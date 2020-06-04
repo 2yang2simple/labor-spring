@@ -10,7 +10,8 @@ import com.labor.spring.constants.WebConstants;
 public class ClientRegisted {
 
 	private final static HashMap<String,ClientInfo> REGISTED_CLIENTS = new HashMap<String,ClientInfo>();
-//	private final static String CLIENTKEY_DEFAULT = "auth";
+	public  static String CLIENTKEY_DEFAULT = "";
+	
 	static {
 		
 		//dev

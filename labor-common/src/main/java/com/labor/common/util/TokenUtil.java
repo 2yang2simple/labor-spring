@@ -261,6 +261,27 @@ public class TokenUtil {
 				
 		return time+ran;  
 	}
+    
+    /**
+     * validate token salted with date。
+     * @param time.token(time+token)
+     * 	8888.2323243434343
+     * @return
+     */
+    public static boolean isValidatedDateSaltingToken(String timetoken, String token) {
+    	if (StringUtil.isEmpty(timetoken)) {
+			return false;
+		}
+    	
+		String[] str = timetoken.split("\\.");
+		
+		if (str==null||str.length!=2) {
+			return false;
+		}
+		
+    	return  isValidatedDateSaltingToken(str[0],str[1],token);
+    			
+    }
 
     /**
      * validate token salted with date。
@@ -278,7 +299,7 @@ public class TokenUtil {
 		Long gap = Long.valueOf(now) - Long.valueOf(time);
 		LogManager.getLogger().debug("g:"+time +"|now:"+now+"|gap:"+gap);
 		//if the gap between g time of request and now time of the filter bigger than 100, about 1 min, return false;
-		if(gap>100) {
+		if(gap>1000) {
 			return false;
 		}
 		
@@ -296,7 +317,8 @@ public class TokenUtil {
       	} else {
       		url = url + "&";
       	}
-    	url = url + "g="+g+"&t="+t;
+//    	url = url + "g="+g+"&t="+t;
+    	url = url + "timestamp-token="+g+"."+t;
     	return url;
     }
     public static void main(String[] args) {
