@@ -48,7 +48,7 @@
 					<outputDirectory>${final-file-path}</outputDirectory>
 			        <webResources>
 			            <resource>
-			                <directory>${project.basedir}/build/test</directory>
+			                <directory>${project.basedir}/build/prod</directory>
 			                <targetPath>WEB-INF/classes</targetPath>
 			                <includes>
 			                    <include>*.*</include>
