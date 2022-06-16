@@ -31,6 +31,8 @@
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<final-file-path>D:\02.projects\00.tomcat8\webapps</final-file-path>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<maven.compiler.source>1.8</maven.compiler.source>
+    		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<!-- 
