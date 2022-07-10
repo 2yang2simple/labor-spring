@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="attachment">
+
+<!-- 
+parameterClass and resultClass require the java.lang.String ets while
+parameterType and resultType need defind the type typeAlias and resultMap  like below
+<typeAlias alias="AclVO" type="com.labor.xx.xx.xx.AclVO"/>
+<resultMap id="UserResult" class="UserVO">
+	   	<result property="userid" column="USER_ID"/>
+</resultMap>
+-->
+<!-- Use type aliases to avoid typing the full classname every time. -->
+
+<!-- Result maps describe the mapping between the columns returned
+       from a query, and the class properties.  A result map isn't
+       necessary if the columns (or aliases) match to the properties 
+       exactly. -->
+
+	
+	
+	<insert id="insertAttachment" parameterClass="java.util.HashMap" >
+	insert into tbl_core_attachment(
+		<isNotEmpty property="atta_name">
+	  	atta_name,
+    	</isNotEmpty>
+    	<isNotEmpty property="atta_filepath">
+	   	atta_filepath,
+	   	</isNotEmpty>
+    	<isNotEmpty property="atta_filename">
+	   	atta_filename,
+	   	</isNotEmpty>
+	   	<isNotEmpty property="atta_filetype">
+	   	atta_filetype,
+	   	</isNotEmpty>
+	   	<isNotEmpty property="active_status">
+	   	active_status,
+	   	</isNotEmpty>
+    	<isNotEmpty property="data_description">
+	    data_description,
+	   	</isNotEmpty>
+    	<isNotEmpty property="created_by">
+	    created_by,
+	    </isNotEmpty>
+	    <isNotEmpty property="creation_date">
+	    creation_date,
+	    </isNotEmpty>
+	    <isNotEmpty property="last_updated_by">
+	    last_updated_by,
+	    </isNotEmpty>
+	    creation_date,
+	    last_update_date
+	) values (
+    	<isNotEmpty property="atta_name">
+        #atta_name#, 
+    	</isNotEmpty>
+    	<isNotEmpty property="atta_filepath">
+        #atta_filepath#, 
+    	</isNotEmpty>
+    	<isNotEmpty property="atta_filename">
+        #atta_filename#,
+    	</isNotEmpty>
+    	<isNotEmpty property="atta_filetype">
+	   	#atta_filetype#,
+	   	</isNotEmpty>
+	   	<isNotEmpty property="active_status">
+	   	#active_status#,
+	   	</isNotEmpty>
+	   	<isNotEmpty property="data_description">
+	   	#data_description#,
+	   	</isNotEmpty>
+    	<isNotEmpty property="created_by">
+	    #created_by#,
+	   	</isNotEmpty>
+    	<isNotEmpty property="last_updated_by">
+	    #last_updated_by#,
+	    </isNotEmpty>
+	    now(),
+	    now()
+	    )
+  	</insert>
+  	
+  	<select id="getAttachmentById" resultClass="java.util.HashMap" parameterClass="java.lang.String" >
+	select 
+	   	t1.atta_id,
+	   	t1.atta_name,
+	  	t1.atta_filepath,
+	   	t1.atta_filename,
+	   	t1.atta_filetype
+	from 
+		tbl_core_attachment t1
+	where 
+	   	t1.atta_id = #atta_id#
+	   	and t1.active_status = 1
+  	</select>
+  	
+  	<select id="getAttachmentByName" resultClass="java.util.HashMap" parameterClass="java.lang.String" >
+	select 
+	   	t1.atta_id,
+	   	t1.atta_name,
+	  	t1.atta_filepath,
+	   	t1.atta_filename,
+	   	t1.atta_filetype
+	from 
+		tbl_core_attachment t1
+	where 
+	   	t1.atta_filename = #atta_filename#
+	   	and t1.active_status = 1
+  	</select>
+ 
+</sqlMap>
